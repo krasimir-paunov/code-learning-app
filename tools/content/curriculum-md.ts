@@ -56,9 +56,12 @@ export function parseCurriculumMd(markdown: string): MdTrack[] {
     const h2 = /^## (.+)$/.exec(line);
     if (h2) {
       const heading = (h2[1] ?? '').replaceAll('\\', '');
-      inCurriculum = !['Legend', 'Track order and interleaving', 'Visualizer inventory'].includes(
-        heading,
-      );
+      inCurriculum = ![
+        'Legend',
+        'Track order and interleaving',
+        'Visualizer inventory',
+        'Changes during the build',
+      ].includes(heading);
       if (inCurriculum) {
         track = { heading, modules: [] };
         tracks.push(track);

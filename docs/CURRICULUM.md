@@ -90,19 +90,19 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| H1.1 | `html.what-is-html` | Elements, tags, attributes | Core | Read and write an element; know tag vs element vs attribute. | — | `anatomy-explorer` (hover parts of `<a href>`), `live-editor` | FB, BUG | 4 | done |
-| H1.2 | `html.document-skeleton` | The document skeleton | Core | Know what each line of the boilerplate does (`doctype`, `lang`, `charset`, `viewport`, `title`). | ↑ | `skeleton-toggles`: switch lines off, watch the phone preview/tab title/encoding break | RO, BUG | 5 | done |
-| H1.3 | `html.browser-pipeline` | From URL to pixels | Core | Follow URL → request → parse → DOM → render; see how browsers repair bad nesting. | ↑ | `dom-tree`: type HTML, the DOM tree updates live | PO, CH | 6 | done |
-| H1.4 | `html.devtools-elements` | Inspecting with DevTools | Core | Use the Elements panel to inspect and live-edit any page. | ↑ | `devtools-sim` | CH, BUG | 4 | done |
+| H1.1 | `html.what-is-html` | Elements, tags, attributes | Core | Read and write an element; know tag vs element vs attribute. | — | `anatomy-explorer` (click any part of a snippet: element, tags, attribute, name, value, content) | CH, FB, BUG | 4 | done |
+| H1.2 | `html.document-skeleton` | The document skeleton | Core | Know what each line of the boilerplate does (`doctype`, `lang`, `charset`, `viewport`, `title`). | ↑ | `skeleton-toggles`: switch lines off, see compatMode, a phone at 980px, the tab title, mojibake, lang | CH, RO, PO | 5 | done |
+| H1.3 | `html.browser-pipeline` | From URL to pixels | Core | Follow URL → request → parse → DOM → render; see how browsers repair bad nesting. | ↑ | `dom-tree`: type HTML and step through bytes, tokens, the DOM tree (parser-added elements flagged) and the render | RO, PO, CH | 6 | done |
+| H1.4 | `html.devtools-elements` | Inspecting with DevTools | Core | Use the Elements panel to inspect and live-edit any page. | ↑ | `devtools-sim` (Elements tree, Styles pane with overridden declarations, live edits, reload) | CH, CH, BUG | 4 | done |
 
 ### H2 · Text and structure — Entry: H1.4
 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| H2.1 | `html.headings-paragraphs` | Headings and the outline | Core | Build a logical heading hierarchy (one `h1`, no skipped levels). | — | `outline-view` (screen-reader headings list beside the editor) | BUG, RO | 5 | done |
-| H2.2 | `html.text-semantics` | Meaningful inline text | Core | Choose `strong`/`em`/`code`/`time`/`abbr`/`mark` by meaning, not looks. | ↑ | `sr-preview` (what a screen reader announces) | FB, CH | 5 | done |
-| H2.3 | `html.lists` | Lists | Core | Use `ul`, `ol`, `dl` and nesting correctly (menus are lists). | ↑ | `live-editor` | LC | 4 | done |
-| H2.4 | `html.landmarks` | Page landmarks | Core | Structure a page with `header`/`nav`/`main`/`aside`/`footer`/`section`/`article`. | ↑ | `landmark-map`: drag semantic tags onto regions of a page mockup | CH, LC | 7 | done |
+| H2.1 | `html.headings-paragraphs` | Headings and the outline | Core | Build a logical heading hierarchy (one `h1`, no skipped levels). | — | `outline-view` (headings list beside the editor, "Next heading" stepping, fake-heading detection) | BUG, RO, CH | 5 | done |
+| H2.2 | `html.text-semantics` | Meaningful inline text | Core | Choose `strong`/`em`/`code`/`time`/`abbr`/`mark` by meaning, not looks. | ↑ | `semantics-lens`: choose an element per phrase; Looks / Means (roles) / Data lenses | FB, CH, CH | 5 | done |
+| H2.3 | `html.lists` | Lists | Core | Use `ul`, `ol`, `dl` and nesting correctly (menus are lists). | ↑ | `list-shaper`: indent, reorder, switch ul/ol/dl; markup and list counts | CH, PO, LC | 4 | done |
+| H2.4 | `html.landmarks` | Page landmarks | Core | Structure a page with `header`/`nav`/`main`/`aside`/`footer`/`section`/`article`. | ↑ | `landmark-map`: apply elements to a page wireframe; live landmarks list | CH, CH, LC | 7 | done |
 | H2.5 | `html.div-span` | When `div` and `span` are right | Ext | Use non-semantic containers only for styling/grouping hooks. | ↑ | `sr-preview` | BUG | 4 | todo |
 
 ### H3 · Links, images and media — Entry: H2.4
@@ -723,3 +723,18 @@ Visualizers are reusable; one implementation powers many lessons through props. 
 | After Phase 6 (TypeScript) | `type-narrowing` (plus TS modes of `compiler-sim`, `build-pipeline`, `network-panel`) |
 
 Many small "visualizers" (e.g. `type-sorter`, `truthiness-sorter`) are configurations of one generic `bucket-sort` widget; Phase 2 starts by extracting shared primitives (step engine, bucket sorter, timeline, tree renderer) so later visualizers are mostly configuration.
+
+---
+
+## Changes during the build
+
+Changes to the plan above, with the reason. Interactive elements and challenge types in the tables reflect what was built.
+
+**Phase 2 (HTML and CSS, Core)**
+
+- H1.1 `html.what-is-html`: the anatomy explorer alone (no separate live editor); a `choice` challenge was added. The explorer covers both reading and naming parts, and a quick choice checks void elements and quoting.
+- H1.2 `html.document-skeleton`: `find-bug` replaced by `choice` + `predict-output`. The sandbox wraps learner HTML in its own document, so missing doctype, charset or viewport lines can't be demonstrated or proven there; the predict-output tests the parser's real doctype rule instead.
+- H1.3 `html.browser-pipeline`: `dom-tree` also shows the bytes, tokens and render stages, so the whole URL-to-pixels objective is interactive; a `reorder` challenge was added for the pipeline order.
+- H2.2 `html.text-semantics`: `sr-preview` became `semantics-lens`. Screen readers mostly don't voice `strong`/`em` by default, so an honest "what a screen reader says" preview would show nothing changing; the lens shows the roles and machine-readable data the elements add instead.
+- H2.3 `html.lists`: `list-shaper` instead of a plain live editor, so nesting (the main mistake) is something you do rather than read about. Live-code stays as a challenge.
+- H2.4 `html.landmarks`: elements are applied by choosing a tag and clicking a block instead of dragging, which works the same with a keyboard, a mouse or touch.
