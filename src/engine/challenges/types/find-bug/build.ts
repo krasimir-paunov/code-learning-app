@@ -18,13 +18,20 @@ const schema = z
       }),
       z.strictObject({ accept: z.array(z.string().min(1)).min(1) }),
     ]),
-    /** JS tests: the build proves the correct fix passes, every distractor and the bug fail. */
+    /**
+     * Tests (shared harness): the build proves the correct fix passes and every distractor and
+     * the bug fail. JavaScript runs in Node; HTML and CSS run in the browser sandbox.
+     */
     tests: SourceSchema.optional(),
+    /** The page a CSS snippet styles (required for CSS tests). */
+    page: SourceSchema.optional(),
   })
   .refine(
     (c) => !('choices' in c.fix) || c.fix.choices.filter((x) => x.correct).length === 1,
     'fix.choices needs exactly one correct choice',
-  );
+  )
+  .refine((c) => !c.tests || c.code.lang !== 'css' || c.page, '`tests` on CSS need a `page`')
+  .refine((c) => !c.page || c.code.lang === 'css', '`page` is only for CSS snippets');
 
 type Authored = z.infer<typeof schema>;
 
@@ -78,13 +85,24 @@ export default {
     `<p>Line ${c.bugLines.join(', ')}. Replace it with:</p>${ctx.highlight(correctText(c), c.code.lang)}`,
   async buildCheck(c, ctx) {
     if (!c.tests) return [];
-    if (c.code.lang !== 'js') return ['find-bug `tests` are only supported for JavaScript'];
+    const lang = c.code.lang;
+    if (lang !== 'js' && lang !== 'html' && lang !== 'css')
+      return ['find-bug `tests` support JavaScript, HTML and CSS'];
     const source = ctx.source(c.code);
     const tests = ctx.source(c.tests);
+    const page = c.page ? ctx.source(c.page) : '';
     const problems: string[] = [];
+    const run = (code: string) => {
+      if (lang === 'js') return ctx.runJs({ 'main.js': code }, tests);
+      const files: Record<string, string> =
+        lang === 'html' ? { 'index.html': code } : { 'index.html': page, 'style.css': code };
+      return ctx.runInBrowser({ files, tests });
+    };
     const passesAll = async (code: string) => {
-      const run = await ctx.runJs({ 'main.js': code }, tests);
-      return run.status === 'ok' && run.tests.length > 0 && run.tests.every((t) => t.passed);
+      const result = await run(code);
+      return (
+        result.status === 'ok' && result.tests.length > 0 && result.tests.every((t) => t.passed)
+      );
     };
     if (await passesAll(source))
       problems.push('the buggy code passes every test; the tests do not catch the bug');
