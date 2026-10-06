@@ -12,7 +12,7 @@ interface CodeBlockProps {
   className?: string;
 }
 
-function CodePane({ html, output }: { html: string; output?: string }) {
+function CodePane({ html, output, label }: { html: string; output?: string; label: string }) {
   return (
     <>
       {/* Horizontal scroll inside the block: wrapping would change what code means. */}
@@ -20,10 +20,11 @@ function CodePane({ html, output }: { html: string; output?: string }) {
         className={styles.code}
         // Highlighted HTML is generated at build time from repository content (trusted).
         dangerouslySetInnerHTML={{ __html: html }}
-        // The scroll container must be keyboard-scrollable when it overflows.
+        // The scroll container must be keyboard-scrollable when it overflows. A named group, not
+        // a region: a lesson has many code blocks, and they are not page landmarks.
         tabIndex={0}
-        role="region"
-        aria-label="Code"
+        role="group"
+        aria-label={label}
       />
       {output !== undefined && (
         <div className={styles.output}>
@@ -56,7 +57,13 @@ export function CodeBlock({ block, preferredLang, className }: CodeBlockProps) {
           tabs={block.tabs.map((tab) => ({
             id: tab.lang,
             label: LANG_LABELS[tab.lang],
-            content: <CodePane html={tab.html} output={tab.output} />,
+            content: (
+              <CodePane
+                html={tab.html}
+                output={tab.output}
+                label={`${LANG_LABELS[tab.lang]} code`}
+              />
+            ),
           }))}
         />
       ) : (
@@ -65,7 +72,11 @@ export function CodeBlock({ block, preferredLang, className }: CodeBlockProps) {
             <span className={styles.lang}>{LANG_LABELS[current.lang]}</span>
             {copy}
           </div>
-          <CodePane html={current.html} output={current.output} />
+          <CodePane
+            html={current.html}
+            output={current.output}
+            label={`${LANG_LABELS[current.lang]} code`}
+          />
         </>
       )}
     </figure>
