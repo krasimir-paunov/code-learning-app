@@ -1,0 +1,152 @@
+id: html.lists
+version: 1
+title: Lists
+summary: Pick the right list for the job and nest lists the only correct way.
+minutes: 4
+tags: [ul, ol, dl, nesting, menus]
+
+concept:
+  title: Three lists, one nesting rule
+  body: |
+    - `<ul>`: items where order doesn't matter (features, a shopping list, a menu).
+    - `<ol>`: items where order matters (steps, rankings). The browser numbers them.
+    - `<dl>`: terms `<dt>` with their descriptions `<dd>` (a glossary, product specs).
+
+    Every item of `<ul>` and `<ol>` is an `<li>`. A nested list goes **inside** the `<li>` it
+    belongs to, never between items.
+
+    Screen readers announce a list and how many items it has, so a navigation menu written as a
+    list tells people up front how long it is.
+  code:
+    caption: One of each
+    tabs:
+      - lang: html
+        file: snippets/three-lists.html
+
+playground:
+  visualizer: list-shaper
+  props:
+    presets:
+      - label: Recipe
+        kind: ol
+        nestedKind: ol
+        items:
+          - { text: Make the batter, depth: 0 }
+          - { text: Whisk flour and milk, depth: 1 }
+          - { text: Beat in the eggs, depth: 1 }
+          - { text: Rest for 10 minutes, depth: 0 }
+          - { text: Fry in a hot pan, depth: 0 }
+      - label: Menu
+        kind: ul
+        nestedKind: ul
+        items:
+          - { text: Home, depth: 0, href: / }
+          - { text: Shop, depth: 0, href: /shop }
+          - { text: Shoes, depth: 1, href: /shop/shoes }
+          - { text: Bags, depth: 1, href: /shop/bags }
+          - { text: About, depth: 0, href: /about }
+      - label: Specs
+        kind: dl
+        items:
+          - { text: Weight, depth: 0 }
+          - { text: 1.2 kg, depth: 1 }
+          - { text: Colours, depth: 0 }
+          - { text: Blue, depth: 1 }
+          - { text: Grey, depth: 1 }
+  prompt: |
+    Indent **Rest for 10 minutes** and watch the markup: the nested list moves *inside* the
+    `<li>` above it, and the counts under "What assistive technology gets" change.
+  explore:
+    - Switch the recipe to `<ul>`. Would a reader still know the order matters?
+    - Open **Specs**. In a `<dl>`, indenting turns a term into a description of the term above.
+
+challenges:
+  - id: which-list
+    type: choice
+    prompt: Which content belongs in a description list (`<dl>`)?
+    options:
+      - text: "A product's specs: weight, colours, warranty, each with its value"
+        correct: true
+        why: Each spec is a term with a description, exactly what `<dt>` and `<dd>` pair up.
+      - text: The steps to reset a password
+        why: Order matters, so it is an `<ol>`.
+      - text: The links in a site's main menu
+        why: A menu is a list of links where order doesn't change the meaning, so a `<ul>`.
+      - text: Ingredients for a cake
+        why: A plain set of items, so a `<ul>`.
+    explanation: Use `<dl>` for name-value pairs, `<ol>` when order carries meaning, `<ul>` otherwise.
+
+  - id: direct-items
+    type: predict-output
+    prompt: The list was nested the wrong way. How many items does the menu list really have?
+    code: { lang: html, file: snippets/direct-items.html }
+    answer: '2'
+    choices: ['1', '2', '3', '4']
+    verify: browser
+    hints:
+      - '`:scope > li` counts only `<li>` elements directly inside the menu.'
+      - Is the inner `<ul>` an item?
+    explanation: |
+      The inner `<ul>` sits between the items instead of inside one, so it is not an item of
+      anything. The menu has two items, and the nested list belongs to none of them.
+
+  - id: build-menu
+    type: live-code
+    prompt: |
+      Build the main menu inside the `<nav>`: Home, Shop and About as links, with Shoes and Bags
+      in a submenu under Shop. The comment lists every address.
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/menu.starter.html }
+    solution:
+      index.html: { file: snippets/menu.solution.html }
+    tests: { file: snippets/menu.test.js }
+    hints:
+      - 'Start with `<ul>` and three `<li>`, each holding an `<a href>`.'
+      - The submenu `<ul>` goes inside Shop's `<li>`, after the Shop link.
+    explanation: |
+      A menu is a list of links. The submenu is part of the Shop item, so it lives inside that
+      `<li>`, and assistive technology announces it as a list of 2 inside the list of 3.
+
+production:
+  - title: Bullet-free lists still need to be lists
+    body: |
+      Designs often remove bullets with `list-style: none`. Safari's VoiceOver then stops
+      announcing the element as a list. Add `role="list"` when the item count matters to readers.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/plain-list.html
+  - title: '`<ol>` counts any way you need'
+    body: '`start` sets the first number, `reversed` counts down (a top 3 that ends at 1), and `type` switches to letters or roman numerals.'
+    code:
+      tabs:
+        - lang: html
+          file: snippets/reversed.html
+
+mistake:
+  title: A nested list between the items
+  body: |
+    The submenu `<ul>` is placed after Shop's `<li>` instead of inside it. Browsers render it
+    almost the same, but it belongs to no item, and the outer list now has a child that isn't
+    an `<li>` at all.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/nested.bad.html
+        output: LI LI UL LI
+        verify: browser
+  fix: Move the nested list inside the `<li>` it belongs to, before that item's end tag.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/nested.good.html
+        output: LI LI LI
+        verify: browser
+
+recap:
+  - "`<ul>` when order doesn't matter, `<ol>` when it does, `<dl>` for terms and descriptions."
+  - A nested list goes inside the `<li>` it belongs to.
+  - Menus are lists of links; screen readers announce how many items they hold.
+
+related: [html.headings-paragraphs, html.landmarks, html.links]

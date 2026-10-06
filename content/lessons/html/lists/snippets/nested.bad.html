@@ -1,0 +1,12 @@
+<ul id="menu">
+  <li>Home</li>
+  <li>Shop</li>
+  <ul>
+    <li>Shoes</li>
+  </ul>
+  <li>About</li>
+</ul>
+<script>
+  const items = document.querySelector('#menu').children;
+  console.log(Array.from(items, (el) => el.tagName).join(' '));
+</script>

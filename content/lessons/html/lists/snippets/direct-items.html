@@ -1,0 +1,11 @@
+<ul id="menu">
+  <li>Home</li>
+  <ul>
+    <li>Shoes</li>
+  </ul>
+  <li>About</li>
+</ul>
+<script>
+  const menu = document.querySelector('#menu');
+  console.log(menu.querySelectorAll(':scope > li').length);
+</script>
