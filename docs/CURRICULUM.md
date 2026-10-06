@@ -100,7 +100,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
 | H2.1 | `html.headings-paragraphs` | Headings and the outline | Core | Build a logical heading hierarchy (one `h1`, no skipped levels). | — | `outline-view` (headings list beside the editor, "Next heading" stepping, fake-heading detection) | BUG, RO, CH | 5 | done |
-| H2.2 | `html.text-semantics` | Meaningful inline text | Core | Choose `strong`/`em`/`code`/`time`/`abbr`/`mark` by meaning, not looks. | ↑ | `semantics-lens`: choose an element per phrase; Looks / Means (roles) / Data lenses | FB, CH, CH | 5 | done |
+| H2.2 | `html.text-semantics` | Meaningful inline text | Core | Choose `strong`/`em`/`code`/`time`/`abbr`/`mark` by meaning, not looks. | ↑ | `semantics-lens`: choose an element per phrase; Looks / Means (roles) / Data lenses | FB, CH, CH, LC | 5 | done |
 | H2.3 | `html.lists` | Lists | Core | Use `ul`, `ol`, `dl` and nesting correctly (menus are lists). | ↑ | `list-shaper`: indent, reorder, switch ul/ol/dl; markup and list counts | CH, PO, LC | 4 | done |
 | H2.4 | `html.landmarks` | Page landmarks | Core | Structure a page with `header`/`nav`/`main`/`aside`/`footer`/`section`/`article`. | ↑ | `landmark-map`: apply elements to a page wireframe; live landmarks list | CH, CH, LC | 7 | done |
 | H2.5 | `html.div-span` | When `div` and `span` are right | Ext | Use non-semantic containers only for styling/grouping hooks. | ↑ | `sr-preview` | BUG | 4 | todo |
@@ -109,9 +109,9 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| H3.1 | `html.links` | Links | Core | Write links (absolute, fragment, `mailto:`, `download`); know `target="_blank"` now implies `noopener`. | — | `live-editor` | FB, BUG | 5 | done |
-| H3.2 | `html.urls-paths` | URLs and relative paths | Core | Resolve relative URLs (`./`, `../`, `/`) against a base. | ↑ | `url-resolver`: file tree + base URL + href → resolved URL | PO | 6 | done |
-| H3.3 | `html.images` | Images | Core | Use `alt` correctly (incl. empty alt) and `width`/`height` to prevent layout shift; `loading="lazy"`. | ↑ | `image-lab`: images-off toggle, layout-shift replay | BUG, LC | 6 | done |
+| H3.1 | `html.links` | Links | Core | Write links (absolute, fragment, `mailto:`, `download`); know `target="_blank"` now implies `noopener`. | — | `link-lab`: build a link and click it in a mini page (URL resolution, fragments, mailto, new tabs, vague text) | FB, BUG, CH, CH | 5 | done |
+| H3.2 | `html.urls-paths` | URLs and relative paths | Core | Resolve relative URLs (`./`, `../`, `/`) against a base. | ↑ | `url-resolver`: file tree + current page + href; the resolution walk step by step (trace mode) | TR, PO, CH | 6 | done |
+| H3.3 | `html.images` | Images | Core | Use `alt` correctly (incl. empty alt) and `width`/`height` to prevent layout shift; `loading="lazy"`. | ↑ | `image-lab`: alt text per image purpose with images off and screen reader output; layout shift measured with and without width/height | BUG, LC, CH | 6 | done |
 | H3.4 | `html.responsive-images` | Responsive images | Ext | Use `srcset`/`sizes` and `picture`; predict which file the browser downloads. | ↑ | `srcset-picker`: viewport + DPR sliders highlight the chosen candidate | PO | 7 | todo |
 | H3.5 | `html.media-embeds` | Video, audio, iframes | Ext | Embed media with controls and captions (`track`); give iframes a `title`. | ↑ | `live-editor` | FB | 5 | todo |
 
@@ -738,3 +738,7 @@ Changes to the plan above, with the reason. Interactive elements and challenge t
 - H2.2 `html.text-semantics`: `sr-preview` became `semantics-lens`. Screen readers mostly don't voice `strong`/`em` by default, so an honest "what a screen reader says" preview would show nothing changing; the lens shows the roles and machine-readable data the elements add instead.
 - H2.3 `html.lists`: `list-shaper` instead of a plain live editor, so nesting (the main mistake) is something you do rather than read about. Live-code stays as a challenge.
 - H2.4 `html.landmarks`: elements are applied by choosing a tag and clicking a block instead of dragging, which works the same with a keyboard, a mouse or touch.
+- H2.2 `html.text-semantics`: a `live-code` challenge was added after the module review, so learners apply the elements instead of only recognising them.
+- H3.1 `html.links`: `link-lab` instead of a plain live editor: every kind of href is clicked and its real outcome shown (the browser's URL parser decides). Two `choice` challenges were added (implied `noopener`, link text).
+- H3.2 `html.urls-paths`: a `trace` challenge (click the folders the browser walks through) and a `choice` were added to the planned `predict-output`.
+- H3.3 `html.images`: a `choice` challenge was added. `loading="lazy"` is taught in the concept and production notes rather than in the playground, because a demo of lazy loading with local placeholder images would not behave like real network loading.
