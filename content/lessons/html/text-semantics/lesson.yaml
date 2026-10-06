@@ -128,6 +128,24 @@ challenges:
       The **Means** lens shows the same thing: `strong`, `em`, `code`, `mark` and `time` carry a
       role; `b`, `i` and `span` change only how text looks.
 
+  - id: markup-notice
+    type: live-code
+    prompt: |
+      Mark up the notice by meaning: "Warning" is important, "not" is stressed, `update.sh` is
+      a file name, and the date must be machine-readable as `2026-03-14`. Keep the wording.
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/notice.starter.html }
+    solution:
+      index.html: { file: snippets/notice.solution.html }
+    tests: { file: snippets/notice.test.js }
+    hints:
+      - 'Four elements: one for importance, one for stress, one for code, one for a date.'
+      - '`<time datetime="2026-03-14">14 March</time>`'
+    explanation: |
+      Each phrase now says what it is. The text looks almost the same, but tools, scripts and
+      the next developer can read the meaning.
+
 production:
   - title: Keys go in `<kbd>`
     body: Documentation marks keys the user presses with `<kbd>`, next to `<code>` for things they type or read.
