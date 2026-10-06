@@ -1,6 +1,8 @@
 /**
  * Serves validated content as virtual modules:
- * - virtual:content/manifest → the skill graph with build-time layout (eager, small)
+ * - virtual:content/manifest     → the skill graph with build-time layout (small, shared)
+ * - virtual:content/lessons      → { [lessonId]: () => import(lesson chunk) }
+ * - virtual:content/lesson/<id>  → one compiled lesson (lazy JSON chunk)
  * The content tooling is loaded through tsx so it shares the app's TypeScript schemas.
  * Any content error fails the build (and shows the dev overlay) with file and path.
  */
@@ -57,8 +59,21 @@ export function contentPlugin({ fixtures = false }: { fixtures?: boolean } = {})
         );
       }
       const name = id.slice(RESOLVED.length);
-      if (name === 'manifest')
+      if (name === 'manifest') {
         return `export default ${JSON.stringify(runtimeManifest(bundle.manifest))};`;
+      }
+      if (name === 'lessons') {
+        // One lazy chunk per lesson, keyed by id.
+        const entries = bundle.lessons.map(
+          (l) =>
+            `${JSON.stringify(l.id)}: () => import(${JSON.stringify(`${PREFIX}lesson/${l.id}`)})`,
+        );
+        return `export const lessonLoaders = {${entries.join(',')}};`;
+      }
+      if (name.startsWith('lesson/')) {
+        const lesson = bundle.lessons.find((l) => l.id === name.slice('lesson/'.length));
+        if (lesson) return `export default ${JSON.stringify(lesson.compiled)};`;
+      }
       this.error(`Unknown content module "${name}"`);
     },
     configureServer(server) {

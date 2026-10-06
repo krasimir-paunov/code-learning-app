@@ -113,21 +113,6 @@
   --scrim: color-mix(in oklch, var(--ink-950) 82%, transparent);
 }
 
-/* Shiki emits these variable names; map them to the semantic code tokens. */
-:root {
-  --shiki-foreground: var(--code-fg);
-  --shiki-background: var(--code-bg);
-  --shiki-token-constant: var(--code-number);
-  --shiki-token-string: var(--code-string);
-  --shiki-token-string-expression: var(--code-string);
-  --shiki-token-comment: var(--code-comment);
-  --shiki-token-keyword: var(--code-keyword);
-  --shiki-token-parameter: var(--code-fg);
-  --shiki-token-function: var(--code-function);
-  --shiki-token-punctuation: var(--code-punctuation);
-  --shiki-token-link: var(--code-property);
-}
-
 /* ---------- 3. Theme-independent tokens ---------- */
 :root {
   /* Typography */

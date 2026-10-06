@@ -1,0 +1,33 @@
+/* Shared layout for challenge views. */
+.stack {
+  display: grid;
+  gap: var(--space-3);
+  min-inline-size: 0;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.label {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.answer {
+  inline-size: 100%;
+  min-block-size: 5.5rem;
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--code-bg);
+  color: var(--code-fg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-code);
+  line-height: var(--lh-code);
+  resize: vertical;
+}

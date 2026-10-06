@@ -1,0 +1,35 @@
+.code {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  overflow-x: auto;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--code-bg);
+  color: var(--code-fg);
+  font-size: var(--fs-code);
+  line-height: 2;
+}
+
+.line {
+  white-space: pre;
+}
+
+.blank {
+  min-block-size: 1.8em;
+  margin-inline: 2px;
+  padding: 0 0.3em;
+  border: var(--border-width) dashed var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--bg-0);
+  color: var(--text-1);
+  font: inherit;
+  vertical-align: baseline;
+
+  &:focus-visible {
+    border-style: solid;
+  }
+
+  &[aria-invalid='true'] {
+    border: 2px solid var(--danger);
+  }
+}

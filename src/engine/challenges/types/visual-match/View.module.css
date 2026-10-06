@@ -1,0 +1,89 @@
+.layout {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-4);
+
+  @container (min-width: 760px) {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
+}
+
+.previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.figure {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+
+  & figcaption {
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+  }
+}
+
+/* Learner pages render on the browser's default white canvas, at the exact grading size. */
+.stage {
+  position: relative;
+  max-inline-size: 100%;
+  overflow: hidden;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--canvas-page);
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+}
+
+.ghost {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.frame {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  border: 0;
+}
+
+.html {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+
+  & summary {
+    min-block-size: var(--touch-target);
+    align-content: center;
+    cursor: pointer;
+  }
+
+  & pre {
+    padding: var(--space-2) var(--space-3);
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    background: var(--code-bg);
+    color: var(--code-fg);
+    font-size: var(--fs-code);
+  }
+}
+
+.diffs {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding-inline-start: var(--space-5);
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+
+  & code {
+    color: var(--danger);
+  }
+}

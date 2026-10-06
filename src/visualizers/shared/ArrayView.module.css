@@ -1,0 +1,120 @@
+.array {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: repeat(var(--count), minmax(0, 1fr));
+  gap: 3px;
+  min-inline-size: 0;
+  padding-block-end: 1.6rem;
+}
+
+.cells {
+  align-items: start;
+}
+
+.bars {
+  align-items: end;
+  block-size: 10rem;
+  padding-block-end: 0;
+}
+
+.dense {
+  gap: 1px;
+}
+
+.cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-inline-size: 0;
+  aspect-ratio: 1;
+  max-block-size: 3.25rem;
+  padding: 0;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  color: var(--text-1);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    opacity var(--dur-fast) var(--ease-out);
+
+  &:is(button):not(:disabled):hover {
+    border-color: var(--accent);
+    background: var(--bg-3);
+  }
+
+  &[data-mark='discarded'] {
+    border-style: dashed;
+    opacity: 0.45;
+  }
+
+  &[data-mark='found'],
+  &[data-mark='sorted'] {
+    border-color: var(--success);
+    background: color-mix(in oklch, var(--success) 22%, var(--bg-2));
+  }
+
+  &[data-mark='pivot'] {
+    border-color: var(--reward);
+  }
+
+  &[data-wrong] {
+    border-color: var(--danger);
+    background: color-mix(in oklch, var(--danger) 20%, var(--bg-2));
+  }
+}
+
+.bars .cell {
+  aspect-ratio: auto;
+  max-block-size: none;
+  block-size: 100%;
+  align-items: end;
+  border: 0;
+  background: transparent;
+}
+
+.bar {
+  inline-size: 100%;
+  min-block-size: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--text-3);
+}
+
+.bars .cell[data-mark='sorted'] .bar {
+  background: var(--success);
+}
+
+.bars .cell[data-mark='pivot'] .bar {
+  background: var(--reward);
+}
+
+.active {
+  border-color: var(--accent);
+  box-shadow: var(--glow-cyan);
+}
+
+.bars .active .bar {
+  background: var(--accent);
+}
+
+.value {
+  font-size: clamp(0.65rem, 2.6cqi, var(--fs-sm));
+}
+
+.index {
+  position: absolute;
+  inset-block-start: calc(100% + 2px);
+  color: var(--text-3);
+  font-size: 0.7rem;
+}
+
+.pointer {
+  position: absolute;
+  inset-block-end: calc(100% + 2px);
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+}

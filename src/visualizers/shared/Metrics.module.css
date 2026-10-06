@@ -1,0 +1,30 @@
+.metric {
+  display: grid;
+  gap: 2px;
+}
+
+.label {
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+}
+
+.value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.complexity {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-1);
+
+  & code {
+    padding: 0 var(--space-1);
+    border-radius: var(--radius-sm);
+    background: var(--bg-3);
+    color: var(--reward);
+    font-size: var(--fs-sm);
+  }
+}
