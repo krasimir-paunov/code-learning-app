@@ -1,0 +1,172 @@
+id: html.urls-paths
+version: 1
+title: URLs and relative paths
+summary: Predict exactly which file a relative URL points to, from any page.
+minutes: 6
+tags: [urls, relative paths, root-relative, resolution]
+
+concept:
+  title: Relative URLs start where the page is
+  body: |
+    A relative URL is resolved against the address of the page it is on:
+
+    - `photos/ridge.jpg` or `./photos/ridge.jpg`: start in the page's folder.
+    - `../`: go up one folder first (once per `../`).
+    - `/images/logo.svg`: start at the site root, whatever page you are on.
+    - `https://…`: a complete address; the page doesn't matter.
+
+    The same href means different files on different pages. That is why links and images in
+    shared headers usually start with `/`. Scripts resolve URLs the same way, with
+    `new URL(href, page)`.
+  code:
+    caption: The browser's resolution, run in Node
+    tabs:
+      - lang: js
+        file: snippets/resolve.js
+        output: |
+          /blog/2026/photos/ridge.jpg
+          /blog/images/map.png
+          /images/logo.svg
+          https://cdn.example/lib.js
+        verify: node
+
+playground:
+  visualizer: url-resolver
+  props:
+    files:
+      - /index.html
+      - /about.html
+      - /images/logo.svg
+      - /css/site.css
+      - /blog/index.html
+      - /blog/images/map.png
+      - /blog/2026/spring-trails.html
+      - /blog/2026/photos/ridge.jpg
+    page: /blog/2026/spring-trails.html
+    hrefs:
+      - photos/ridge.jpg
+      - ../images/map.png
+      - ../../css/site.css
+      - /images/logo.svg
+      - images/logo.svg
+      - ../index.html
+      - https://cdn.example/lib.js
+  prompt: |
+    Pick **../images/map.png**: the walk starts in the page's folder, `..` climbs to `/blog/`,
+    then goes down to the file. Now pick **images/logo.svg**: same file name, wrong folder.
+  explore:
+    - Click **about.html** in the tree to stand on another page. Which hrefs still work?
+    - Type `../../../../index.html`. What does `..` do at the root?
+
+challenges:
+  - id: walk-the-folders
+    type: trace
+    prompt: |
+      Click the folders the browser walks through, in order, and then the file it lands on.
+    visualizer: url-resolver
+    props:
+      files:
+        - /index.html
+        - /css/site.css
+        - /blog/index.html
+        - /blog/2026/spring-trails.html
+        - /blog/2026/photos/ridge.jpg
+      page: /blog/2026/spring-trails.html
+      href: ../../css/site.css
+    expect: ['/blog/', '/', '/css/', '/css/site.css']
+    hints:
+      - Start in the page's own folder, `/blog/2026/`. Each `..` goes up one level.
+    explanation: |
+      From `/blog/2026/`, the first `..` goes to `/blog/`, the second to the root `/`. Then
+      `css/` goes down into `/css/`, and `site.css` is the file.
+
+  - id: predict-paths
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: js, file: snippets/predict.js }
+    answer: |
+      /shop/bags/day-pack.html
+      /shop/shoes/sizes.html
+      /cart
+    choices:
+      - |
+        /shop/bags/day-pack.html
+        /shop/shoes/sizes.html
+        /cart
+      - |
+        /bags/day-pack.html
+        /shop/shoes/sizes.html
+        /shop/shoes/cart
+      - |
+        /shop/bags/day-pack.html
+        /sizes.html
+        /cart
+      - |
+        /shop/shoes/bags/day-pack.html
+        /shop/shoes/sizes.html
+        /shop/cart
+    verify: node
+    hints:
+      - The page's folder is `/shop/shoes/`.
+      - '`./` means "this folder"; a leading `/` means the site root.'
+    explanation: |
+      `..` climbs from `/shop/shoes/` to `/shop/`, then `bags/day-pack.html` goes down again.
+      `./sizes.html` stays in `/shop/shoes/`. `/cart` ignores the page and starts at the root.
+
+  - id: shared-header
+    type: choice
+    prompt: |
+      The site header, with the logo, is included on every page, from `/index.html` to
+      `/blog/2026/spring-trails.html`. Which `src` shows the logo everywhere?
+    options:
+      - text: '`/images/logo.svg`'
+        correct: true
+        why: It starts at the root, so it means the same file on every page.
+      - text: '`images/logo.svg`'
+        why: It works on `/index.html` but looks in `/blog/2026/images/` on the blog post.
+      - text: '`../images/logo.svg`'
+        why: 'It works on pages at most one folder deep (on the home page `..` has nowhere to go), but on the blog post it points into `/blog/images/`.'
+      - text: '`./images/logo.svg`'
+        why: "Same as `images/logo.svg`, relative to each page's folder."
+    explanation: Markup shared by pages at different depths needs root-relative URLs (or a build tool that writes the right path).
+
+production:
+  - title: Sites in a subfolder need a base path
+    body: |
+      GitHub Pages serves a project at `https://user.github.io/my-site/`. A root-relative
+      `/images/logo.svg` skips `my-site/` entirely. Build tools fix this with a base setting;
+      this app is built with one.
+    code:
+      tabs:
+        - lang: js
+          file: snippets/vite.config.js
+  - title: DevTools shows the resolved address
+    body: |
+      When an image or stylesheet fails, the **Network** panel lists the full URL the browser
+      requested, with a 404 status. Compare it with where the file really is.
+
+mistake:
+  title: Root-relative paths on a site in a subfolder
+  body: |
+    The site works locally at `/`, then breaks on GitHub Pages: every `/images/…` request
+    leaves the project folder.
+  bad:
+    tabs:
+      - lang: js
+        file: snippets/subfolder.bad.js
+        output: https://user.github.io/images/logo.svg
+        verify: node
+  fix: Use paths relative to the page, or let your build tool add the base path.
+  good:
+    tabs:
+      - lang: js
+        file: snippets/subfolder.good.js
+        output: https://user.github.io/my-site/images/logo.svg
+        verify: node
+
+recap:
+  - Relative URLs start in the page's folder; each `../` goes up one; a leading `/` starts at the root.
+  - The same href can mean different files on different pages; shared markup needs root-relative paths.
+  - The resolution is exactly `new URL(href, page)`, and DevTools' Network panel shows the result.
+
+related: [html.links, html.images]
