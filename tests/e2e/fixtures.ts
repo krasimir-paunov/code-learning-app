@@ -42,6 +42,8 @@ export function sampleProgress() {
 export async function seedProgress(page: Page, progress: unknown) {
   await page.addInitScript(
     ([key, value]) => {
+      // Init scripts also run in the code sandbox's iframes, which have no storage access.
+      if (window !== window.top) return;
       if (!sessionStorage.getItem('seeded')) {
         localStorage.setItem(key, value);
         sessionStorage.setItem('seeded', '1');
