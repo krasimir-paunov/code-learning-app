@@ -1,0 +1,5 @@
+/* A library's defaults: zero specificity, so any of your rules win */
+:where(.btn) {
+  padding: 8px 14px;
+  border-radius: 8px;
+}

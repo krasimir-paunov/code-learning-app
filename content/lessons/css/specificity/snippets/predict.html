@@ -1,0 +1,15 @@
+<nav class="menu">
+  <a id="home" class="link active" href="/">Home</a>
+  <a class="link" href="/shop">Shop</a>
+</nav>
+<style>
+  #home { color: rgb(255, 0, 0); }
+  .menu .link.active { color: rgb(0, 128, 0); }
+  nav a { color: rgb(0, 0, 255); }
+  .link { color: rgb(255, 165, 0); }
+</style>
+<script>
+  for (const a of document.querySelectorAll('a')) {
+    console.log(getComputedStyle(a).color);
+  }
+</script>

@@ -1,0 +1,8 @@
+#sidebar a {
+  color: #9aa6b8;
+}
+
+/* Later, this never applies inside the sidebar: (0, 1, 0) < (1, 0, 1) */
+.link-highlight {
+  color: #ff8c00;
+}

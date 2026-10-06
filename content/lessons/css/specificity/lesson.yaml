@@ -1,0 +1,162 @@
+id: css.specificity
+version: 1
+title: Specificity
+summary: Predict which of two matching rules wins, and keep styles easy to override.
+minutes: 7
+tags: [specificity, cascade, important, ids]
+
+concept:
+  title: A score with three columns
+  body: |
+    When rules disagree about an element, the browser compares their selectors' **specificity**,
+    a score of three columns: (IDs, classes, types). Classes include attribute selectors and
+    pseudo-classes.
+
+    Compare from the left: one ID beats any number of classes, and one class beats any number of
+    types. If the scores tie, the rule that comes **later** wins.
+
+    Two things skip the score: an inline `style` attribute beats every selector, and
+    `!important` beats everything that isn't `!important`. That is why IDs and `!important`
+    start wars: the next fix needs something even stronger.
+  code:
+    caption: Scores for common selectors
+    tabs:
+      - lang: css
+        file: snippets/scores.css
+
+playground:
+  visualizer: specificity-duel
+  props:
+    html: '<div class="card"><button id="buy" class="btn primary" data-target>Buy now</button></div>'
+    css: 'button { font: inherit; font-size: 20px; font-weight: 700; padding: 10px 18px; border: 2px solid currentColor; border-radius: 8px; background: transparent; }'
+    rules:
+      - selector: .card .btn
+        color: { value: '#ff8c00', name: orange }
+      - selector: .btn
+        color: { value: '#2fd2c3', name: teal }
+    inline: { value: '#c084fc', name: purple }
+    picks:
+      - button
+      - .btn
+      - .primary
+      - .btn.primary
+      - .card .btn
+      - '#buy'
+      - button#buy
+      - ':where(#buy)'
+      - .card button
+  prompt: |
+    Rule B comes later, yet the button is orange: (0, 2, 0) beats (0, 1, 0). Change B's selector
+    to `#buy`, then tick **!important** on A.
+  explore:
+    - Make both selectors `.btn`, then press **Swap the order of A and B**.
+    - Turn on the inline style. Which rule can still beat it?
+
+challenges:
+  - id: predict-winners
+    type: predict-output
+    prompt: |
+      Red is `rgb(255, 0, 0)`, green `rgb(0, 128, 0)`, blue `rgb(0, 0, 255)` and orange
+      `rgb(255, 165, 0)`. What colour is each link?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      rgb(255, 0, 0)
+      rgb(255, 165, 0)
+    choices:
+      - |
+        rgb(255, 0, 0)
+        rgb(0, 0, 255)
+      - |
+        rgb(0, 128, 0)
+        rgb(255, 165, 0)
+      - |
+        rgb(255, 0, 0)
+        rgb(255, 165, 0)
+      - |
+        rgb(0, 128, 0)
+        rgb(0, 0, 255)
+    verify: browser
+    hints:
+      - 'Score each selector: `#home` (1, 0, 0), `.menu .link.active` (0, 3, 0), `nav a` (0, 0, 2), `.link` (0, 1, 0).'
+      - For Shop, which rules match it at all?
+    explanation: |
+      Home: the ID's (1, 0, 0) beats `.menu .link.active`'s three classes. Shop matches only
+      `nav a` (0, 0, 2) and `.link` (0, 1, 0). One class beats two types, so Shop is orange,
+      even though `nav a` uses more selectors.
+
+  - id: grey-button
+    type: find-bug
+    prompt: The Buy button should be green but stays grey. Click the buggy line, then choose the fix (no `!important`).
+    code: { lang: css, file: snippets/buy.bug.css }
+    page: { file: snippets/card.html }
+    bugLines: [4]
+    fix:
+      choices:
+        - { text: '.card .buy {', correct: true }
+        - { text: 'button.buy {' }
+        - { text: '.buy, .btn {' }
+        - { text: '.buy:hover {' }
+    tests: { file: snippets/buy.test.js }
+    hints:
+      - '`.card .btn` scores (0, 2, 0). What does `.buy` score?'
+      - With equal scores, the later rule wins.
+    explanation: |
+      `.card .buy` also scores (0, 2, 0), and it comes later, so it wins the tie. `button.buy` is
+      only (0, 1, 1): one type is never worth a class.
+
+  - id: id-cost
+    type: choice
+    prompt: A teammate makes a stubborn style work by changing `.sidebar a` to `#sidebar a`. What is the cost?
+    options:
+      - text: Every later override of those links now needs an ID, or `!important`.
+        correct: true
+        why: '(1, 0, 1) can only be beaten by another ID or by `!important`, and the escalation continues.'
+      - text: None; IDs are faster to match.
+        why: Selector speed is not the issue; overriding the style later is.
+      - text: The links stop being keyboard-focusable.
+        why: Selectors never change behaviour, only styling.
+      - text: IDs are invalid in CSS selectors.
+        why: They are valid. They are just very hard to override.
+    explanation: Keep selectors at class level so later rules can win by order or one more class.
+
+production:
+  - title: '`:where()` writes zero-specificity defaults'
+    body: |
+      Libraries and resets wrap selectors in `:where()`, which counts nothing, so any rule of
+      yours wins without a fight.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/where.css
+  - title: Flat specificity on purpose
+    body: |
+      BEM, CSS Modules and utility classes all keep almost every selector at one class
+      (0, 1, 0). Then the order of the stylesheet decides, which is easy to reason about.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/flat.css
+  - title: DevTools shows the score
+    body: In Chrome's Styles pane, hover a selector to see its specificity. Crossed-out declarations lost on exactly this score.
+
+mistake:
+  title: Styling with IDs
+  body: |
+    `#sidebar a` scores (1, 0, 1). A later class rule for a highlighted link, (0, 1, 0), never
+    applies inside the sidebar, and someone reaches for `!important`.
+  bad:
+    tabs:
+      - lang: css
+        file: snippets/ids.bad.css
+  fix: Use classes for styling. Keep IDs for links (`#reviews`) and scripts.
+  good:
+    tabs:
+      - lang: css
+        file: snippets/ids.good.css
+
+recap:
+  - Specificity is (IDs, classes, types), compared from the left; ties go to the later rule.
+  - Inline styles beat selectors; `!important` beats everything that isn't.
+  - Style with classes and keep specificity flat, so overriding stays easy.
+
+related: [css.selectors, css.inheritance, css.cascade-layers]

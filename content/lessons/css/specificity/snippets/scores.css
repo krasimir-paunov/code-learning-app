@@ -1,0 +1,6 @@
+/*                         (IDs, classes, types) */
+button { }              /* (0, 0, 1) */
+.btn { }                /* (0, 1, 0) */
+.card .btn { }          /* (0, 2, 0) */
+button.btn:hover { }    /* (0, 2, 1) */
+#buy { }                /* (1, 0, 0) */
