@@ -1,0 +1,16 @@
+.notice {
+  padding: var(--space-2) var(--gutter);
+  border-block-end: var(--border-width) solid var(--warning);
+  background: color-mix(in oklch, var(--warning) 10%, var(--bg-1));
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+}
+
+.dismiss {
+  min-block-size: 32px;
+  padding-inline: var(--space-2);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-size: var(--fs-xs);
+}

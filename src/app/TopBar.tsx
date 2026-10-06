@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { Link, NavLink } from 'react-router';
 import { cx } from '../components/cx.ts';
 import { APP_NAME } from '../config/app.ts';
+import { ProgressWidgets } from '../features/progress/ProgressWidgets.tsx';
 import styles from './TopBar.module.css';
 
 function NavItem({ to, icon, children }: { to: string; icon: ReactNode; children: string }) {
@@ -34,6 +35,7 @@ export function TopBar() {
           Profile
         </NavItem>
       </nav>
+      <ProgressWidgets />
     </header>
   );
 }

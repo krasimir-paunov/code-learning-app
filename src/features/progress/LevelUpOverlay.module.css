@@ -1,0 +1,10 @@
+.dialog {
+  border-color: var(--reward);
+  box-shadow: var(--glow-magenta), var(--shadow-raised);
+}
+
+.title {
+  color: var(--reward);
+  font-size: var(--fs-xl);
+  line-height: var(--lh-xl);
+}

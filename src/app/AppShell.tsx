@@ -1,6 +1,8 @@
 import { Suspense, useEffect, useRef } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import { TerminalLoader } from '../effects/TerminalLoader.tsx';
+import { LevelUpOverlay } from '../features/progress/LevelUpOverlay.tsx';
+import { StorageNotice } from '../features/progress/StorageNotice.tsx';
 import styles from './AppShell.module.css';
 import { ErrorBoundary } from './ErrorBoundary.tsx';
 import { TopBar } from './TopBar.tsx';
@@ -35,6 +37,7 @@ export function AppShell() {
         Skip to content
       </a>
       <TopBar />
+      <StorageNotice />
       <main id="main" className={styles.main} tabIndex={-1}>
         <ErrorBoundary key={pathname}>
           <Suspense fallback={<TerminalLoader line="loading page" />}>
@@ -42,6 +45,7 @@ export function AppShell() {
           </Suspense>
         </ErrorBoundary>
       </main>
+      <LevelUpOverlay />
     </div>
   );
 }
