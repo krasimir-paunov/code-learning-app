@@ -1,0 +1,171 @@
+id: html.what-is-html
+version: 1
+title: Elements, tags, attributes
+summary: Read any piece of HTML as elements built from tags, attributes and content.
+minutes: 4
+tags: [elements, tags, attributes, void elements]
+
+concept:
+  title: Tags wrap content into elements
+  body: |
+    HTML says what each piece of a page *is*. You mark a piece by wrapping it in **tags**:
+    a **start tag** `<a>` and an **end tag** `</a>`. Start tag, content and end tag together
+    are one **element**.
+
+    **Attributes** configure an element. They always go in the start tag, as `name="value"`.
+
+    A few elements, such as `<img>`, are **void**: they can't hold content, so they are only a
+    start tag. The image's file and its text alternative are attributes, not content.
+  code:
+    caption: A link element and a void image element
+    tabs:
+      - lang: html
+        file: snippets/link-and-image.html
+
+playground:
+  visualizer: anatomy-explorer
+  props:
+    examples:
+      - label: Link
+        source: '<a href="https://developer.mozilla.org/" title="Free web reference">MDN Web Docs</a>'
+        notes:
+          href: Where the link goes.
+          title: Advisory text that some browsers show as a tooltip.
+      - label: Image
+        source: '<img src="cat.jpg" alt="A ginger cat asleep on a keyboard" width="160" height="100">'
+        preview: '<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22100%22%3E%3Crect width=%22160%22 height=%22100%22 fill=%22%232a3446%22/%3E%3Ctext x=%2280%22 y=%2255%22 fill=%22%23c9d4e3%22 font-family=%22sans-serif%22 font-size=%2214%22 text-anchor=%22middle%22%3Ecat.jpg%3C/text%3E%3C/svg%3E" alt="A ginger cat asleep on a keyboard" width="160" height="100">'
+        notes:
+          src: The address of the image file.
+          alt: The text alternative, read by screen readers and shown if the image fails.
+          width: The intrinsic width in pixels (it lets the browser reserve space).
+          height: The intrinsic height in pixels.
+      - label: Nested
+        source: '<p>Press <strong>Save</strong> before you leave.</p>'
+      - label: Boolean
+        source: '<button type="button" disabled>Save</button>'
+        notes:
+          type: What the button does; "button" means it does nothing on its own.
+          disabled: Turns the button off.
+  prompt: |
+    Click **href** in the link. The panel shows where it sits: in an attribute, in the start tag,
+    in the element. Then open **Image**: there is no end tag.
+  explore:
+    - In **Nested**, click `strong`. A whole element can be part of another element's content.
+    - In **Boolean**, click `disabled`. It has no value; being present is enough.
+
+challenges:
+  - id: written-correctly
+    type: choice
+    prompt: Which image is written correctly?
+    options:
+      - text: '`<img src="cat.jpg" alt="A sleeping cat">`'
+        correct: true
+        why: '`<img>` is void: one start tag, with the file and the description as attributes.'
+      - text: '`<img src="cat.jpg" alt="A sleeping cat"></img>`'
+        why: "`<img>` can't have content, so `</img>` is an error. Browsers silently drop it."
+      - text: '`<img>cat.jpg</img>`'
+        why: The file goes in the `src` attribute. Void elements never wrap content.
+      - text: '`<img src=cat.jpg alt=A sleeping cat>`'
+        why: 'An unquoted value ends at the first space: `alt` becomes "A", and `sleeping` and `cat` become two extra attributes.'
+    explanation: |
+      Void elements carry everything in attributes, and every value with a space must be quoted.
+      Quote all values and you never have to think about it.
+
+  - id: pricing-link
+    type: fill-blank
+    prompt: Turn **See pricing** into a link to `/pricing`.
+    code: { lang: html, file: snippets/pricing.html }
+    blanks:
+      tag:
+        accept: ['a']
+        caseSensitive: false
+        label: the tag name
+      attr:
+        accept: ['href']
+        caseSensitive: false
+        label: the attribute name
+    check:
+      file: snippets/pricing.check.html
+      output: |
+        /pricing
+        See pricing
+      verify: browser
+    hints:
+      - The end tag `</a>` already tells you the element.
+      - 'The attribute that holds a link''s destination is short for "hypertext reference".'
+    explanation: '`<a href="/pricing">See pricing</a>`: the `a` element, with its destination in the `href` attribute.'
+
+  - id: missing-quote
+    type: find-bug
+    prompt: |
+      The **Docs** link has vanished, and **Blog** goes to a strange address. Click the buggy
+      line, then choose the fix.
+    code: { lang: html, file: snippets/nav.bug.html }
+    bugLines: [3]
+    fix:
+      choices:
+        - { text: '<a href="/docs">Docs</a>', correct: true }
+        - { text: '<a href="/docs>Docs"</a>' }
+        - { text: '<a href="/docs>Docs</a>"' }
+        - { text: '<a href=''/docs">Docs</a>' }
+    tests: { file: snippets/nav.test.js }
+    hints:
+      - Count the quotes on each line.
+      - 'Without its closing quote, the value runs on until the next `"`, on the Blog line.'
+    explanation: |
+      The browser kept reading the `href` value until it found another quote, a line later.
+      The Docs text and the start of the Blog link became part of a URL. One missing quote, two
+      broken links.
+
+production:
+  - title: Lowercase tags, double-quoted values
+    body: |
+      HTML ignores case and accepts some unquoted values, but teams don't rely on that. Style
+      guides and formatters such as Prettier settle on lowercase tag names and double-quoted
+      values, which also rules out the space and missing-quote bugs above.
+  - title: Global attributes work on every element
+    body: |
+      `id`, `class`, `lang`, `hidden`, `title` and custom `data-*` attributes can go on any
+      element. CSS selects by `class`, links jump to an `id`, and scripts read `data-*` values.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/global-attributes.html
+          output: |
+            note
+            fr
+            2
+          verify: browser
+  - title: View source vs the Elements panel
+    body: |
+      **View source** shows the markup the server sent. DevTools' **Elements** panel shows the
+      elements the browser built from it. When the two differ, the browser repaired your HTML:
+      two lessons from now you watch it happen.
+
+mistake:
+  title: '`<div />` does not close the div'
+  body: |
+    In JSX and XML, `<div />` is a complete element. In HTML the slash is ignored on normal
+    elements, so the div stays open and swallows everything after it.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/self-closing.bad.html
+        output: 'true'
+        verify: browser
+  fix: |
+    Write the end tag. Only void elements, such as `<img>` and `<br>`, stand alone (the slash
+    is allowed on them and changes nothing).
+  good:
+    tabs:
+      - lang: html
+        file: snippets/self-closing.good.html
+        output: 'false'
+        verify: browser
+
+recap:
+  - An element is a start tag, content and an end tag; void elements like `<img>` are only a start tag.
+  - Attributes go in the start tag as `name="value"`. Quote every value.
+  - '`<div />` closes nothing in HTML: write the end tag.'
+
+related: [html.document-skeleton, html.browser-pipeline]
