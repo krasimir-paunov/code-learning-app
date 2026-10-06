@@ -1,0 +1,8 @@
+.tracer {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.target {
+  color: var(--text-2);
+}
