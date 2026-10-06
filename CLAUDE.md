@@ -20,7 +20,7 @@ Interactive learning web app (working title **Project Neon**; the name lives onl
 
 ## Approved decisions (Phase 0)
 
-- **272 lessons**, each tagged **Core** (job-ready, 207) or **Extended** (depth, 65). All are on the map from Phase 1; unbuilt ones show "coming soon".
+- **273 lessons**, each tagged **Core** (job-ready, 207) or **Extended** (depth, 66). All are on the map from Phase 1; unbuilt ones show "coming soon".
 - **Two passes:** Pass 1 builds Core lessons track by track (Phases 2–6, then J14) and can ship as v1.0; Pass 2 adds Extended lessons in the same order. A Core lesson never hard-requires an Extended one.
 - **C# gate is soft:** the C# track *recommends* JS fundamentals (and some Algorithms lessons) via a "Recommended path" banner with a one-click, per-track skip. Never a hard lock. **Free roam** is a global setting that opens everything.
 - **TypeScript module** (J14, 6 Core lessons) at the end of the JS track, built after Phase 6 and before the v1.0 release gate.

@@ -761,7 +761,7 @@ tracks:
           - id: algo.sorting-race
             title: The sorting race
             minutes: 6
-            objective: See algorithms race; comparisons, swaps, stability.
+            objective: See algorithms race; comparisons, swaps vs writes, stability.
           - id: algo.naive-sorts
             title: Bubble and selection sort
             minutes: 7
@@ -861,6 +861,11 @@ tracks:
             title: Heaps and priority queues
             minutes: 8
             objective: Heap as an array; O(log n) push/pop; `PriorityQueue` in .NET.
+            tier: extended
+          - id: algo.heap-sort
+            title: Heap sort
+            minutes: 7
+            objective: 'Build a max-heap in place, then move the max to the end: O(n log n) with O(1) extra space, not stable; the fallback inside introsort.'
             tier: extended
           - id: algo.tries
             title: Tries

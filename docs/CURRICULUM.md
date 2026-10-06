@@ -75,10 +75,10 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 | HTML | 8 | 21 (121) | 6 (33) | 27 | 154 |
 | CSS | 10 | 30 (190) | 13 (71) | 43 | 261 |
 | JavaScript (incl. TypeScript J14, 6 Core) | 14 | 54 (349) | 12 (74) | 66 | 423 |
-| Algorithms & Data Structures | 10 | 27 (193) | 14 (102) | 41 | 295 |
+| Algorithms & Data Structures | 10 | 27 (193) | 15 (109) | 42 | 302 |
 | C# | 11 | 42 (285) | 10 (56) | 52 | 341 |
 | .NET (ASP.NET Core, EF Core) | 10 | 33 (236) | 10 (60) | 43 | 296 |
-| **Total** | **63** | **207 (1,374 ≈ 23 h)** | **65 (396 ≈ 6.6 h)** | **272** | **1,770 ≈ 29.5 h** |
+| **Total** | **63** | **207 (1,374 ≈ 23 h)** | **66 (403 ≈ 6.7 h)** | **273** | **1,777 ≈ 29.6 h** |
 
 ---
 
@@ -424,7 +424,7 @@ Core, but scheduled after Phase 6 and before the v1.0 release gate (see ROADMAP)
 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| A3.1 | `algo.sorting-race` | The sorting race | Core | See algorithms race; comparisons, swaps, stability. | — | `sort-race` (sizes, speeds, step mode, live counters and Big O) | CH, PO | 6 | todo |
+| A3.1 | `algo.sorting-race` | The sorting race | Core | See algorithms race; comparisons, swaps vs writes, stability. | — | `sort-race`: pick any of bubble, selection, insertion, merge, quick and heap sort; sizes, speeds, step mode, live counters (swaps, or writes for merge sort) and Big O | CH, PO | 6 | todo |
 | A3.2 | `algo.naive-sorts` | Bubble and selection sort | Ext | See why both are O(n²) and never used in production. | ↑ | `sort-race` (step mode) | TR | 7 | todo |
 | A3.3 | `algo.insertion-sort` | Insertion sort | Ext | O(n²) worst, near O(n) on nearly-sorted data; used inside hybrid sorts. | ↑ | `sort-race` | TR, PO | 7 | todo |
 | A3.4 | `algo.merge-sort` | Merge sort | Core | Divide and conquer; stable O(n log n); extra memory. | ↑ A4.1 | `split-merge-tree` | TR, RO | 9 | todo |
@@ -464,7 +464,8 @@ Core, but scheduled after Phase 6 and before the v1.0 release gate (see ROADMAP)
 | A7.3 | `algo.bst` | Binary search trees | Core | Insert/search/delete; a sorted insert degenerates into a list. | ↑ | `tree-lab` (BST mode) | TR | 9 | todo |
 | A7.4 | `algo.balanced-trees` | Balanced trees | Ext | Why balance matters; red-black trees power `SortedDictionary` (know it exists). | ↑ | `tree-lab` (balanced vs degenerate) | CH | 5 | todo |
 | A7.5 | `algo.heaps` | Heaps and priority queues | Ext | Heap as an array; O(log n) push/pop; `PriorityQueue` in .NET. | ↑ | `heap-lab` (array + tree views) | TR, PO | 8 | todo |
-| A7.6 | `algo.tries` | Tries | Ext | Prefix trees for autocomplete. | ↑ | `tree-lab` (trie mode) | TR, LC | 6 | todo |
+| A7.6 | `algo.heap-sort` | Heap sort | Ext | Build a max-heap in place, then move the max to the end: O(n log n) with O(1) extra space, not stable; the fallback inside introsort. | ↑ | `heap-lab` (sort mode: array and tree views) | TR, PO | 7 | todo |
+| A7.7 | `algo.tries` | Tries | Ext | Prefix trees for autocomplete. | ↑ | `tree-lab` (trie mode) | TR, LC | 6 | todo |
 
 ### A8 · Graphs — Entry: A7.3
 

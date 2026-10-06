@@ -6,7 +6,7 @@ test('the list view shows every planned lesson and the Core filter hides depth l
 }) => {
   await page.goto('/map?view=list');
   const lessons = page.locator('main ol > li');
-  await expect(lessons).toHaveCount(272);
+  await expect(lessons).toHaveCount(273);
   await page.getByRole('radio', { name: 'Core only' }).click();
   await expect(lessons).toHaveCount(207);
   await expect(page).toHaveURL(/tier=core/);

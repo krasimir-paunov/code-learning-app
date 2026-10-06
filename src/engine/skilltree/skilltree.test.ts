@@ -206,9 +206,9 @@ describe('content/curriculum.yaml', () => {
   const curriculum = CurriculumSchema.parse(parse(fs.readFileSync(file, 'utf8')));
   const graph = buildSkillGraph(curriculum);
 
-  it('is a valid graph with all 272 planned lessons', () => {
+  it('is a valid graph with all 273 planned lessons', () => {
     expect(validateSkillGraph(curriculum, graph)).toEqual([]);
-    expect(graph.order).toHaveLength(272);
+    expect(graph.order).toHaveLength(273);
     const core = Object.values(graph.nodes).filter((n) => n.tier === 'core');
     expect(core).toHaveLength(207);
   });
