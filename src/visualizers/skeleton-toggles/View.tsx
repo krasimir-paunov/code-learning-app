@@ -108,7 +108,11 @@ export default function SkeletonTogglesView({ props }: VisualizerViewProps<Skele
                 className={styles.phonePage}
                 style={{ inlineSize: layoutWidth, transform: `scale(${scale})` }}
               >
-                <ShadowStage html={pageHtml} css="h1 { font-size: 28px; } p { font-size: 17px; }" />
+                <ShadowStage
+                  html={pageHtml}
+                  css="h1 { font-size: 28px; } p { font-size: 17px; }"
+                  inert
+                />
               </div>
             </div>
             <p>

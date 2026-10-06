@@ -21,8 +21,13 @@ interface ShadowStageProps {
   className?: string;
   style?: CSSProperties;
   label?: string;
-  /** A picture of the page, not a working one: links and form submits do nothing. */
+  /**
+   * A picture of a page: not focusable, not clickable and hidden from assistive technology
+   * (its headings and links would otherwise join the lesson's own).
+   */
   inert?: boolean;
+  /** Interactive, but links and form submits do nothing (they would leave the lesson). */
+  noNavigation?: boolean;
 }
 
 /**
@@ -37,6 +42,7 @@ export function ShadowStage({
   style,
   label,
   inert = false,
+  noNavigation = false,
 }: ShadowStageProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [root, setRoot] = useState<ShadowRoot | null>(null);
@@ -58,7 +64,7 @@ export function ShadowStage({
     styleRef.current = authored;
     contentRef.current = content;
     setRoot(shadow);
-    if (!inert) return;
+    if (!noNavigation) return;
     const stop = (event: Event) => event.preventDefault();
     shadow.addEventListener('click', stop);
     shadow.addEventListener('submit', stop);
@@ -66,7 +72,7 @@ export function ShadowStage({
       shadow.removeEventListener('click', stop);
       shadow.removeEventListener('submit', stop);
     };
-  }, [inert]);
+  }, [noNavigation]);
 
   useLayoutEffect(() => {
     if (!root || !contentRef.current) return;
@@ -88,6 +94,7 @@ export function ShadowStage({
       style={style}
       role={label ? 'region' : undefined}
       aria-label={label}
+      inert={inert}
     />
   );
 }

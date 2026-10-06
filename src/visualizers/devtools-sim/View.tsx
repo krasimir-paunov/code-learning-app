@@ -188,7 +188,7 @@ function Simulator({ props, onEdit }: { props: DevtoolsSimProps; onEdit: () => v
           <span className={styles.url}>{props.url}</span>
         </div>
         <div className={styles.frame} ref={setFrame} data-inspecting={inspecting || undefined}>
-          <ShadowStage html={props.html} css={props.css} onRender={onRender} inert />
+          <ShadowStage html={props.html} css={props.css} onRender={onRender} noNavigation />
           {box && (
             <div className={styles.overlay} aria-hidden="true">
               <div className={styles.marginBox} style={box.margin} />
