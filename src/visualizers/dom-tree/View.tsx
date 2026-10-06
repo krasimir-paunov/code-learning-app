@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { Badge } from '../../components/Badge.tsx';
-import { CodeEditor } from '../../components/code-editor/CodeEditor.tsx';
-import { SegmentedControl } from '../../components/SegmentedControl.tsx';
 import { Tabs } from '../../components/Tabs.tsx';
 import { Toggle } from '../../components/Toggle.tsx';
 import { mountSandbox } from '../../engine/runners/web-sandbox/index.ts';
 import type { VisualizerViewProps } from '../contract.ts';
-import { useDebounced } from '../shared/use-debounced.ts';
+import { ExampleEditor } from '../shared/ExampleEditor.tsx';
+import { useExampleSources } from '../shared/use-example-sources.ts';
 import type { DomTreeProps } from './build.ts';
 import {
   addedElements,
@@ -110,12 +109,10 @@ function RenderStage({ source }: { source: string }) {
 }
 
 export default function DomTreeView({ props }: VisualizerViewProps<DomTreeProps>) {
-  const [example, setExample] = useState('0');
-  const [sources, setSources] = useState(() => props.examples.map((e) => e.source));
+  const editor = useExampleSources(props.examples);
+  const settled = editor.settled;
   const [stage, setStage] = useState('dom');
   const [showWhitespace, setShowWhitespace] = useState(false);
-  const source = sources[Number(example)] ?? '';
-  const settled = useDebounced(source, 300);
 
   const tokens = tokenize(settled);
   const tree = buildTree(new DOMParser().parseFromString(settled, 'text/html'), tokens);
@@ -127,24 +124,7 @@ export default function DomTreeView({ props }: VisualizerViewProps<DomTreeProps>
     <div className={styles.frameWrap}>
       <div className={styles.lab}>
         <div className={styles.editor}>
-          {props.examples.length > 1 && (
-            <SegmentedControl
-              label="Start from"
-              size="sm"
-              options={props.examples.map((e, i) => ({ value: String(i), label: e.label }))}
-              value={example}
-              onChange={setExample}
-            />
-          )}
-          <CodeEditor
-            key={example}
-            value={source}
-            onChange={(value) =>
-              setSources((all) => all.map((s, i) => (i === Number(example) ? value : s)))
-            }
-            language="html"
-            label="HTML source"
-          />
+          <ExampleEditor examples={props.examples} state={editor} label="HTML source" />
         </div>
 
         <div className={styles.pipeline}>
