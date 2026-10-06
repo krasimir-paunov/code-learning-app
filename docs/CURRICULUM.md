@@ -52,7 +52,7 @@ The map shows every track from day one; hard prerequisites keep the order honest
 | 5 | S1–S5 | **C# comes after JS fundamentals and A1.** C# lessons skip "what is a loop" and focus on what is new: static types, compilation, value vs reference types, OOP. `List<T>`/`Dictionary` lessons build on the dynamic-array and hash-table lessons. |
 | 6 | S6–S11 with A7–A10, J10–J13 | LINQ (after JS array methods), async, modern C#. Trees/graphs/DP run in parallel; algorithm code samples have JS **and** C# tabs. |
 | 7 | N1–N10 | .NET needs interfaces (DI), async (every endpoint), LINQ (EF Core). Everything is taught through simulators. |
-| Optional | J14 | TypeScript essentials, for learners heading into front-end jobs. Built after Phase 6. |
+| 8 | J14 | TypeScript essentials: most professional front-end code is TypeScript. Core, but built after Phase 6 (before the v1.0 release gate) because it is easiest once JavaScript is solid. |
 
 Hard cross-track gates (also listed in the tables):
 - CSS starts after `html.what-is-html`; JS starts after `html.document-skeleton`.
@@ -74,11 +74,11 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 |---|---|---|---|---|---|
 | HTML | 8 | 21 (121) | 6 (33) | 27 | 154 |
 | CSS | 10 | 30 (190) | 13 (71) | 43 | 261 |
-| JavaScript (incl. optional TypeScript, 6 Ext) | 14 | 48 (309) | 18 (114) | 66 | 423 |
+| JavaScript (incl. TypeScript J14, 6 Core) | 14 | 54 (349) | 12 (74) | 66 | 423 |
 | Algorithms & Data Structures | 10 | 27 (193) | 14 (102) | 41 | 295 |
 | C# | 11 | 42 (285) | 10 (56) | 52 | 341 |
 | .NET (ASP.NET Core, EF Core) | 10 | 33 (236) | 10 (60) | 43 | 296 |
-| **Total** | **63** | **201 (1,334 ≈ 22 h)** | **71 (436 ≈ 7 h)** | **272** | **1,770 ≈ 29.5 h** |
+| **Total** | **63** | **207 (1,374 ≈ 23 h)** | **65 (396 ≈ 6.6 h)** | **272** | **1,770 ≈ 29.5 h** |
 
 ---
 
@@ -256,7 +256,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 
 ## JavaScript
 
-**Ordering rationale:** this is where programming fundamentals are taught for the whole app (C# builds on it). Values and control flow first, then functions and closures (the core of JS), then data (arrays/objects/references) because it feeds both the DOM and Algorithms. Errors come before async so `try/catch` is known when `await` arrives. The DOM comes after the language so learners don't confuse JS with browser APIs. Classes are later and lighter than in C#: modern JS codebases are mostly functions and modules. Testing, security and performance close the track because they are what separates hobby code from production code. An optional TypeScript module (J14) follows the boss: most professional front-end code is TypeScript, and it is far easier to learn once JavaScript itself is solid.
+**Ordering rationale:** this is where programming fundamentals are taught for the whole app (C# builds on it). Values and control flow first, then functions and closures (the core of JS), then data (arrays/objects/references) because it feeds both the DOM and Algorithms. Errors come before async so `try/catch` is known when `await` arrives. The DOM comes after the language so learners don't confuse JS with browser APIs. Classes are later and lighter than in C#: modern JS codebases are mostly functions and modules. Testing, security and performance close the track because they are what separates hobby code from production code. A TypeScript module (J14, Core) follows the boss: most professional front-end code is TypeScript, and it is far easier to learn once JavaScript itself is solid.
 
 ### J1 · Values — Entry: H1.2
 
@@ -383,18 +383,18 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 |---|---|---|---|---|---|---|---|---|---|
 | J13.1 | `js.boss` | Boss: searchable list app | Core | Fetch, render, filter (debounced) and persist a list, passing a test suite. | — | `live-editor` + `test-runner` | LC, BUG | 10 | todo |
 
-### J14 · TypeScript essentials (optional) — Entry: J13.1
+### J14 · TypeScript essentials — Entry: J13.1
 
-Built after Phase 6 (see ROADMAP). Samples are checked with the real TypeScript compiler (`verify: tsc`), including the exact error messages shown.
+Core, but scheduled after Phase 6 and before the v1.0 release gate (see ROADMAP). Samples are checked with the real TypeScript compiler (`verify: tsc`), including the exact error messages shown.
 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| J14.1 | `js.ts-why` | Why TypeScript | Ext | Catch bugs before running; types are checked at build time and erased at runtime. | — | `compiler-sim` (TS mode) | BUG, CH | 6 | todo |
-| J14.2 | `js.ts-basic-types` | Annotations and inference | Ext | Annotate where it helps, let inference do the rest; `type` vs `interface`; optional properties. | ↑ | `compiler-sim` | FB, BUG | 7 | todo |
-| J14.3 | `js.ts-unions-narrowing` | Unions and narrowing | Ext | Union and literal types; narrow with `typeof`, `in` and discriminated unions. | ↑ | `type-narrowing` (the type at each line, live) | FB, CH | 8 | todo |
-| J14.4 | `js.ts-generics-utility` | Generics and utility types | Ext | Typed functions, simple generics, `Partial`, `Pick`, `Omit`, `Record`. | ↑ | `compiler-sim` | FB, PO | 7 | todo |
-| J14.5 | `js.ts-unknown-boundaries` | `any`, `unknown` and runtime data | Ext | Prefer `unknown` to `any`; types don't validate API responses, so validate at the boundary. | ↑ | `network-panel` (typed vs validated) | BUG, CH | 6 | todo |
-| J14.6 | `js.ts-in-projects` | TypeScript in real projects | Ext | `tsconfig` `strict`, `@types` packages, how build tools and recent Node versions run TS by stripping types. | ↑ | `build-pipeline` (TS mode) | RO, CH | 6 | todo |
+| J14.1 | `js.ts-why` | Why TypeScript | Core | Catch bugs before running; types are checked at build time and erased at runtime. | — | `compiler-sim` (TS mode) | BUG, CH | 6 | todo |
+| J14.2 | `js.ts-basic-types` | Annotations and inference | Core | Annotate where it helps, let inference do the rest; `type` vs `interface`; optional properties. | ↑ | `compiler-sim` | FB, BUG | 7 | todo |
+| J14.3 | `js.ts-unions-narrowing` | Unions and narrowing | Core | Union and literal types; narrow with `typeof`, `in` and discriminated unions. | ↑ | `type-narrowing` (the type at each line, live) | FB, CH | 8 | todo |
+| J14.4 | `js.ts-generics-utility` | Generics and utility types | Core | Typed functions, simple generics, `Partial`, `Pick`, `Omit`, `Record`. | ↑ | `compiler-sim` | FB, PO | 7 | todo |
+| J14.5 | `js.ts-unknown-boundaries` | `any`, `unknown` and runtime data | Core | Prefer `unknown` to `any`; types don't validate API responses, so validate at the boundary. | ↑ | `network-panel` (typed vs validated) | BUG, CH | 6 | todo |
+| J14.6 | `js.ts-in-projects` | TypeScript in real projects | Core | `tsconfig` `strict`, `@types` packages, how build tools and recent Node versions run TS by stripping types. | ↑ | `build-pipeline` (TS mode) | RO, CH | 6 | todo |
 
 ---
 

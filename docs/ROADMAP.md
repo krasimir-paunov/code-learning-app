@@ -6,13 +6,13 @@ Each phase ends with a working, deployed app. Lesson counts come from [CURRICULU
 
 All **272** lessons are on the map from Phase 1 (unbuilt ones show as "coming soon"). Content is built in two passes:
 
-- **Pass 1, Core (201 lessons, ~22 h of learning):** Phases 2–6 build only each track's **Core** lessons, the ones needed to be job-ready. Because Core lessons never require Extended ones, the app is complete and coherent after Pass 1 and **can ship as v1.0** (Release gate below).
-- **Pass 2, Extended (71 lessons, ~7 h):** the same tracks in the same order, adding depth lessons, then the optional TypeScript module.
+- **Pass 1, Core (207 lessons, ~23 h of learning):** Phases 2–6 build only each track's **Core** lessons, the ones needed to be job-ready, then the TypeScript module (J14). Because Core lessons never require Extended ones, the app is complete and coherent after Pass 1 and **can ship as v1.0** (Release gate below).
+- **Pass 2, Extended (65 lessons, ~6.6 h):** the same tracks in the same order, adding depth lessons.
 
 ```
-Phase 1 ─► Pass 1: P2 Core ─► P3 Core ─► P4 Core ─► P5 Core ─► P6 Core ─► Release gate (v1.0, can ship)
-                                                                              │
-           Pass 2: P2 Ext ─► P3 Ext ─► P4 Ext ─► P5 Ext ─► P6 Ext ─► TypeScript module ─► Phase 8 (v2.0)
+Phase 1 ─► Pass 1: P2 Core ─► P3 Core ─► P4 Core ─► P5 Core ─► P6 Core ─► TypeScript (J14) ─► Release gate (v1.0, can ship)
+                                                                                                   │
+           Pass 2: P2 Ext ─► P3 Ext ─► P4 Ext ─► P5 Ext ─► P6 Ext ─► Phase 8 (v2.0)
 Phase 7 (optional C# runner): any time after Phase 5 Core; independent of content passes.
 ```
 
@@ -24,8 +24,8 @@ Phase 7 (optional C# runner): any time after Phase 5 Core; independent of conten
 | 4 Algorithms & DS | 26 | 14 |
 | 5 C# | 42 | 10 |
 | 6 .NET | 33 | 10 |
-| After Phase 6: TypeScript (J14) | — | 6 |
-| **Total** | **201** | **71** |
+| After Phase 6: TypeScript (J14) | 6 | — |
+| **Total** | **207** | **65** |
 
 **Definition of done for any lesson** (applies to every content phase):
 1. Follows the six-part anatomy; 3–10 minutes; first interaction within 30 seconds.
@@ -97,6 +97,14 @@ Exit criteria: both lessons pass the lesson DoD; Lighthouse ≥ 90 (mobile) on m
 - Cheat sheet: **.NET** complete.
 - Exit: Core path complete; simulator behavior matches documented framework behavior (each simulator folder has a README with its sources).
 
+### TypeScript module (J14, Core) · after Phase 6
+
+- **6 Core lessons** at the end of the JS track (entry: `js.boss`). Scheduled here, not in Phase 3, because TypeScript is easiest once JavaScript is solid and the compiler tooling from Phase 5 (`compiler-sim`) is already built.
+- Visualizers: `type-narrowing`; TS modes of `compiler-sim`, `build-pipeline` and `network-panel`.
+- `verify: tsc` for every sample; diagnostics shown to learners are the real compiler's (`expectErrors`).
+- Cheat sheet: a TypeScript section in the **JavaScript** sheet.
+- Exit: J14 playable end to end; every TS claim and diagnostic verified with `tsc --strict`.
+
 ### Release gate · v1.0 (end of Pass 1)
 
 The Phase 8 audits, run against the Core app: WCAG 2.2 AA audit (automated + manual NVDA/VoiceOver), performance (Lighthouse, low-end Android), full `verify:snippets` on current LTS toolchains, link check, copy edit, PWA/offline, onboarding ("new to programming" vs "experienced" → suggests Free roam), privacy note. Then the decision to launch: final name (`APP_NAME` only), optional custom domain, v1.0 tag. Extended nodes remain on the map as "coming soon".
@@ -114,7 +122,6 @@ Same order, same Definition of Done. Each step can ship on its own (continuous d
 | Phase 4 (Ext) Algorithms | 14 | `heap-lab`, `interval-lab`, `dp-table` (naive and insertion sorts are new modes of `sort-race`) |
 | Phase 5 (Ext) C# | 10 | `collection-chooser`, `thread-interleave`, `attribute-lens`, `allocation-meter` |
 | Phase 6 (Ext) .NET | 10 | `openapi-preview`, `cache-sim`, `trace-waterfall`, `rate-limit-sim` |
-| TypeScript module (J14) | 6 | `type-narrowing`; TS modes of `compiler-sim`, `build-pipeline`, `network-panel`; `verify: tsc` with real compiler diagnostics |
 
 Exit for Pass 2: all 272 lessons `done`; bosses get optional extra rounds drawing on Extended material.
 
