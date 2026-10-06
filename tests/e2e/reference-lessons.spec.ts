@@ -27,6 +27,7 @@ test('binary search: the off-by-one fix and the implementation pass their tests'
   await expect(bug).toContainText('Passed');
 
   const implement = page.locator('#challenge-implement');
+  await implement.scrollIntoViewIfNeeded();
   await implement.getByRole('textbox', { name: 'main.js editor' }).click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.insertText(
@@ -57,6 +58,8 @@ test('box model: the fill-blank and visual-match challenges accept the right CSS
   await expect(blank).toContainText('Passed');
 
   const match = page.locator('#challenge-match-card');
+  // CodeMirror loads only once an editor nears the viewport.
+  await match.scrollIntoViewIfNeeded();
   await match.getByRole('textbox', { name: 'style.css editor' }).click();
   await page.keyboard.press('ControlOrMeta+A');
   await page.keyboard.insertText(

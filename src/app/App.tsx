@@ -2,17 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 import { MotionProvider } from '../effects/MotionProvider.tsx';
 import { useProgress } from '../engine/progress/store.ts';
 import { AppShell } from './AppShell.tsx';
-import { lazyNamed } from './lazy-named.ts';
-
-const LandingPage = lazyNamed(() => import('../features/landing/LandingPage.tsx'), 'LandingPage');
-const MapPage = lazyNamed(() => import('../features/map/MapPage.tsx'), 'MapPage');
-const LessonPage = lazyNamed(() => import('../features/lesson/LessonPage.tsx'), 'LessonPage');
-const CheatSheetsPage = lazyNamed(
-  () => import('../features/cheatsheets/CheatSheetsPage.tsx'),
-  'CheatSheetsPage',
-);
-const ProfilePage = lazyNamed(() => import('../features/profile/ProfilePage.tsx'), 'ProfilePage');
-const NotFoundPage = lazyNamed(() => import('./NotFoundPage.tsx'), 'NotFoundPage');
+import { landing, lesson, map, notFound, profile, sheets } from './routes.ts';
 
 export function App() {
   const effects = useProgress((s) => s.progress.settings.effects);
@@ -21,14 +11,14 @@ export function App() {
       <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
           <Route element={<AppShell />}>
-            <Route index element={<LandingPage />} />
-            <Route path="map" element={<MapPage />} />
-            <Route path="map/:moduleId" element={<MapPage />} />
-            <Route path="learn/:lessonId" element={<LessonPage />} />
-            <Route path="cheatsheets" element={<CheatSheetsPage />} />
-            <Route path="cheatsheets/:track" element={<CheatSheetsPage />} />
-            <Route path="profile" element={<ProfilePage />} />
-            <Route path="*" element={<NotFoundPage />} />
+            <Route index element={<landing.Component />} />
+            <Route path="map" element={<map.Component />} />
+            <Route path="map/:moduleId" element={<map.Component />} />
+            <Route path="learn/:lessonId" element={<lesson.Component />} />
+            <Route path="cheatsheets" element={<sheets.Component />} />
+            <Route path="cheatsheets/:track" element={<sheets.Component />} />
+            <Route path="profile" element={<profile.Component />} />
+            <Route path="*" element={<notFound.Component />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -1,7 +1,6 @@
 import { Map as MapIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { lessonLoaders } from 'virtual:content/lessons';
 import { useDocumentTitle } from '../../app/use-document-title.ts';
 import { LinkButton } from '../../components/Button.tsx';
 import { EmptyState } from '../../components/EmptyState.tsx';
@@ -10,6 +9,7 @@ import { TerminalLoader } from '../../effects/TerminalLoader.tsx';
 import { manifest } from '../../engine/content/manifest.ts';
 import type { CompiledLesson } from '../../engine/content/lesson-types.ts';
 import { stripBackticks } from '../../engine/content/text.ts';
+import { cachedLesson, loadLesson } from './lesson-data.ts';
 import { LessonPlayer } from './LessonPlayer.tsx';
 
 type Load = { id: string; lesson?: CompiledLesson; error?: boolean };
@@ -17,21 +17,23 @@ type Load = { id: string; lesson?: CompiledLesson; error?: boolean };
 export function LessonPage() {
   const { lessonId = '' } = useParams();
   const node = manifest.nodes[lessonId];
-  const [load, setLoad] = useState<Load>({ id: '' });
+  const [load, setLoad] = useState<Load>(() => {
+    const lesson = cachedLesson(lessonId);
+    return lesson ? { id: lessonId, lesson } : { id: '' };
+  });
   useDocumentTitle(node ? stripBackticks(node.title) : 'Lesson not found');
 
   useEffect(() => {
-    const loader = lessonLoaders[lessonId];
-    if (!loader) return;
+    if (!node?.published) return;
     let current = true;
-    loader().then(
-      (module) => current && setLoad({ id: lessonId, lesson: module.default }),
+    loadLesson(lessonId).then(
+      (lesson) => current && setLoad({ id: lessonId, lesson }),
       () => current && setLoad({ id: lessonId, error: true }),
     );
     return () => {
       current = false;
     };
-  }, [lessonId]);
+  }, [lessonId, node?.published]);
 
   if (!node) {
     return (

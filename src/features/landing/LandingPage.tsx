@@ -1,6 +1,5 @@
 import { BookOpen, Pause, Play, Rocket } from 'lucide-react';
-import { Suspense, useState } from 'react';
-import { lazyNamed } from '../../app/lazy-named.ts';
+import { lazy, Suspense, useState } from 'react';
 import { useDocumentTitle } from '../../app/use-document-title.ts';
 import { Button, LinkButton } from '../../components/Button.tsx';
 import { REPO_URL } from '../../config/app.ts';
@@ -10,7 +9,9 @@ import { FlexDemo } from './FlexDemo.tsx';
 import styles from './LandingPage.module.css';
 
 // Loaded only when the landing page renders below the fold; it is not part of the hero.
-const SortRaceDemo = lazyNamed(() => import('./SortRaceDemo.tsx'), 'SortRaceDemo');
+const SortRaceDemo = lazy(async () => ({
+  default: (await import('./SortRaceDemo.tsx')).SortRaceDemo,
+}));
 
 const ANATOMY = [
   ['Concept', 'One mental model, readable in under a minute.'],

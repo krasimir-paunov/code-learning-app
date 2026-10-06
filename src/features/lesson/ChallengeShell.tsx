@@ -4,6 +4,7 @@ import { Badge } from '../../components/Badge.tsx';
 import { Button } from '../../components/Button.tsx';
 import { InlineCode } from '../../components/InlineCode.tsx';
 import { TerminalLoader } from '../../effects/TerminalLoader.tsx';
+import { WhenNear } from '../../components/WhenNear.tsx';
 import type { GradeResult } from '../../engine/challenges/contract.ts';
 import { challengeTypes, challengeViews } from '../../engine/challenges/registry.ts';
 import type { CompiledChallenge } from '../../engine/content/lesson-types.ts';
@@ -28,6 +29,7 @@ interface ChallengeShellProps {
 export function ChallengeShell({ challenge, index, total, lesson, disabled }: ChallengeShellProps) {
   const runtime = challengeTypes[challenge.type];
   const View = challengeViews[challenge.type];
+  const loader = <TerminalLoader line={`loading ${challenge.type}`} />;
   const record = useProgress((s) => s.progress.lessons[lesson.id]?.challenges[challenge.id]);
   const recordPass = useProgress((s) => s.recordPass);
   const recordFailedAttempt = useProgress((s) => s.recordFailedAttempt);
@@ -98,15 +100,17 @@ export function ChallengeShell({ challenge, index, total, lesson, disabled }: Ch
         </p>
       )}
 
-      <Suspense fallback={<TerminalLoader line={`loading ${challenge.type}`} />}>
-        <View
-          id={challenge.id}
-          spec={challenge.spec}
-          disabled={disabled}
-          submit={submit}
-          state={{ attempts, hintsUsed, revealed, passed, lastResult }}
-        />
-      </Suspense>
+      <WhenNear fallback={loader}>
+        <Suspense fallback={loader}>
+          <View
+            id={challenge.id}
+            spec={challenge.spec}
+            disabled={disabled}
+            submit={submit}
+            state={{ attempts, hintsUsed, revealed, passed, lastResult }}
+          />
+        </Suspense>
+      </WhenNear>
 
       <div className={styles.feedback} aria-live="polite">
         {lastResult && (

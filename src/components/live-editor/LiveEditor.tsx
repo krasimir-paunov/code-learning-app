@@ -6,6 +6,7 @@ import { Dialog } from '../Dialog.tsx';
 import { Kbd } from '../Kbd.tsx';
 import { Tabs } from '../Tabs.tsx';
 import { cx } from '../cx.ts';
+import { useNearViewport } from '../use-near-viewport.ts';
 import { CodeEditor } from '../code-editor/CodeEditor.tsx';
 import type { ConsoleEntry, Diagnostic, RunResult } from '../../engine/runners/contract.ts';
 import { mountSandbox, type SandboxHandle } from '../../engine/runners/web-sandbox/index.ts';
@@ -124,11 +125,14 @@ export function LiveEditor({
     return () => element.removeEventListener('keydown', onKeyDown);
   }, [run]);
 
+  // The first automatic run waits until the editor is near the viewport: the preview is not
+  // visible before then, and building the sandbox document would compete with the first paint.
+  const near = useNearViewport(root);
   useEffect(() => {
-    if (!runAutomatically) return;
+    if (!runAutomatically || !near) return;
     const timer = setTimeout(() => void run(files), AUTO_RUN_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [files, run, runAutomatically]);
+  }, [files, run, runAutomatically, near]);
 
   function update(name: string, value: string) {
     setFiles((previous) => ({ ...previous, [name]: value }));

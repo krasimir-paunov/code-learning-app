@@ -6,6 +6,7 @@ import { CodeBlock } from '../../components/CodeBlock.tsx';
 import { IconButton } from '../../components/IconButton.tsx';
 import { InlineCode } from '../../components/InlineCode.tsx';
 import { TerminalLoader } from '../../effects/TerminalLoader.tsx';
+import { WhenNear } from '../../components/WhenNear.tsx';
 import { manifest, trackOf, useNodeStatuses } from '../../engine/content/manifest.ts';
 import type { CompiledLesson } from '../../engine/content/lesson-types.ts';
 import type { LessonRef } from '../../engine/progress/actions.ts';
@@ -28,6 +29,7 @@ function Playground({ lesson }: { lesson: CompiledLesson }) {
   const frame = useRef<HTMLDivElement>(null);
   const [resetKey, setResetKey] = useState(0);
   const View = visualizerViews[lesson.playground.visualizer];
+  const loader = <TerminalLoader line={`loading ${lesson.playground.visualizer}`} />;
   return (
     <div ref={frame} className={styles.playground}>
       <div className={styles.playgroundBar}>
@@ -52,13 +54,15 @@ function Playground({ lesson }: { lesson: CompiledLesson }) {
         </div>
       </div>
       {View ? (
-        <Suspense fallback={<TerminalLoader line={`loading ${lesson.playground.visualizer}`} />}>
-          <View
-            key={resetKey}
-            props={lesson.playground.props}
-            title={`Playground for ${lesson.title}`}
-          />
-        </Suspense>
+        <WhenNear fallback={loader}>
+          <Suspense fallback={loader}>
+            <View
+              key={resetKey}
+              props={lesson.playground.props}
+              title={`Playground for ${lesson.title}`}
+            />
+          </Suspense>
+        </WhenNear>
       ) : (
         <p>Unknown visualizer “{lesson.playground.visualizer}”.</p>
       )}
