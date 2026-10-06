@@ -1,0 +1,111 @@
+.list {
+  display: grid;
+  gap: var(--space-6);
+  inline-size: min(100%, 56rem);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.track {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.trackTitle {
+  padding-block-end: var(--space-2);
+  border-block-end: 2px solid var(--track);
+  color: var(--track);
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+}
+
+.module {
+  display: grid;
+  gap: var(--space-2);
+  scroll-margin-block-start: calc(var(--topbar-height) + var(--space-4));
+}
+
+.moduleTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-md);
+}
+
+.lessons {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-1);
+  list-style: none;
+}
+
+.lesson {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: var(--space-3);
+  min-block-size: var(--touch-target);
+  padding: var(--space-2) var(--space-3);
+
+  & + & {
+    border-block-start: var(--border-width) solid var(--border);
+  }
+
+  &[data-state='planned'] {
+    color: var(--text-2);
+  }
+
+  &[data-state='completed'] .icon {
+    color: var(--success);
+  }
+
+  &[data-state='available'] .icon,
+  &[data-state='in-progress'] .icon {
+    color: var(--accent);
+  }
+
+  @media (min-width: 640px) {
+    grid-template-columns: auto 1fr auto;
+  }
+}
+
+.icon {
+  flex: none;
+  inline-size: 16px;
+  block-size: 16px;
+  color: var(--text-3);
+}
+
+.lessonTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 500;
+}
+
+.meta {
+  grid-column: 2;
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+
+  @media (min-width: 640px) {
+    grid-column: 3;
+  }
+}
+
+.recommended {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--info);
+  font-size: var(--fs-xs);
+
+  & svg {
+    inline-size: 12px;
+    block-size: 12px;
+  }
+}

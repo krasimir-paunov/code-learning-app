@@ -1,0 +1,1437 @@
+# Source of truth for the skill tree. Mirrors docs/CURRICULUM.md (content:check enforces parity).
+# A lesson listed here without content/lessons/<track>/<slug>/lesson.yaml is "planned" (coming soon).
+# Rules (ARCHITECTURE §5): a Core lesson requires the previous Core lesson of its module; an Extended
+# lesson requires the previous lesson of either tier; a module's first lesson requires the module's
+# `requires` (default: the last Core lesson of the previous module in the track). `requires` on a lesson
+# adds hard edges, `recommends` adds soft gates, `related` adds dashed non-blocking edges.
+# Lesson and module ids are permanent.
+tracks:
+  - id: html
+    title: HTML
+    short: HTML
+    color: track-html
+    modules:
+      - id: html.how-the-web-works
+        title: How the web works
+        lessons:
+          - id: html.what-is-html
+            title: Elements, tags, attributes
+            minutes: 4
+            objective: Read and write an element; know tag vs element vs attribute.
+          - id: html.document-skeleton
+            title: The document skeleton
+            minutes: 5
+            objective: Know what each line of the boilerplate does (`doctype`, `lang`, `charset`, `viewport`, `title`).
+          - id: html.browser-pipeline
+            title: From URL to pixels
+            minutes: 6
+            objective: Follow URL → request → parse → DOM → render; see how browsers repair bad nesting.
+          - id: html.devtools-elements
+            title: Inspecting with DevTools
+            minutes: 4
+            objective: Use the Elements panel to inspect and live-edit any page.
+      - id: html.text-and-structure
+        title: Text and structure
+        lessons:
+          - id: html.headings-paragraphs
+            title: Headings and the outline
+            minutes: 5
+            objective: Build a logical heading hierarchy (one `h1`, no skipped levels).
+          - id: html.text-semantics
+            title: Meaningful inline text
+            minutes: 5
+            objective: Choose `strong`/`em`/`code`/`time`/`abbr`/`mark` by meaning, not looks.
+          - id: html.lists
+            title: Lists
+            minutes: 4
+            objective: Use `ul`, `ol`, `dl` and nesting correctly (menus are lists).
+          - id: html.landmarks
+            title: Page landmarks
+            minutes: 7
+            objective: Structure a page with `header`/`nav`/`main`/`aside`/`footer`/`section`/`article`.
+          - id: html.div-span
+            title: When `div` and `span` are right
+            minutes: 4
+            objective: Use non-semantic containers only for styling/grouping hooks.
+            tier: extended
+      - id: html.links-images-and-media
+        title: Links, images and media
+        lessons:
+          - id: html.links
+            title: Links
+            minutes: 5
+            objective: Write links (absolute, fragment, `mailto:`, `download`); know `target="_blank"` now implies `noopener`.
+          - id: html.urls-paths
+            title: URLs and relative paths
+            minutes: 6
+            objective: Resolve relative URLs (`./`, `../`, `/`) against a base.
+          - id: html.images
+            title: Images
+            minutes: 6
+            objective: Use `alt` correctly (incl. empty alt) and `width`/`height` to prevent layout shift; `loading="lazy"`.
+          - id: html.responsive-images
+            title: Responsive images
+            minutes: 7
+            objective: Use `srcset`/`sizes` and `picture`; predict which file the browser downloads.
+            tier: extended
+          - id: html.media-embeds
+            title: Video, audio, iframes
+            minutes: 5
+            objective: Embed media with controls and captions (`track`); give iframes a `title`.
+            tier: extended
+      - id: html.tables-module
+        title: Tables
+        lessons:
+          - id: html.tables
+            title: Data tables
+            minutes: 6
+            objective: Build accessible tables (`caption`, `thead`, `th scope`); never tables for layout.
+      - id: html.forms
+        title: Forms
+        lessons:
+          - id: html.form-basics
+            title: How forms submit
+            minutes: 7
+            objective: Connect `label`↔`input`, `name`, `action`, `method`; see GET vs POST payloads.
+          - id: html.input-types
+            title: Input types
+            minutes: 6
+            objective: Pick the right `type` (email, number, date, checkbox, radio, range...) and `autocomplete`.
+          - id: html.select-textarea-fieldset
+            title: Selects, textareas, groups
+            minutes: 5
+            objective: Group related controls with `fieldset`/`legend`; build radio groups.
+          - id: html.buttons
+            title: Buttons vs links
+            minutes: 4
+            objective: A button acts, a link navigates; `type` defaults to `submit` inside forms.
+          - id: html.validation
+            title: Built-in validation
+            minutes: 6
+            objective: Use `required`, `pattern`, `min`/`max`, `minlength` and the `:user-invalid` state.
+      - id: html.accessibility-essentials
+        title: Accessibility essentials
+        lessons:
+          - id: html.a11y-tree
+            title: The accessibility tree
+            minutes: 6
+            objective: Every control has a name, role and state; see how HTML maps to them.
+            tier: extended
+          - id: html.keyboard-focus
+            title: Keyboard and focus
+            minutes: 6
+            objective: Keep a logical tab order; `tabindex` 0 and -1 only, never positive.
+          - id: html.aria-basics
+            title: ARIA, carefully
+            minutes: 7
+            objective: First rule of ARIA; `aria-label(ledby)`, `aria-describedby`, `aria-expanded`, `aria-live`.
+          - id: html.native-widgets
+            title: Native interactive elements
+            minutes: 6
+            objective: Use `dialog`, `details`/`summary` and the `popover` attribute instead of custom JS widgets.
+            tier: extended
+      - id: html.head-metadata-and-loading
+        title: Head, metadata and loading
+        lessons:
+          - id: html.meta-seo
+            title: Metadata and sharing
+            minutes: 5
+            objective: Write `title`, description, canonical and Open Graph tags.
+            tier: extended
+          - id: html.loading-resources
+            title: Loading CSS and scripts
+            minutes: 7
+            objective: Predict render blocking; use `defer`, `async`, `type="module"`, `preload`.
+      - id: html.boss-stage
+        title: Boss
+        boss: true
+        lessons:
+          - id: html.boss
+            title: "Boss: accessible sign-up page"
+            minutes: 10
+            objective: Build a semantic, keyboard-usable, validated form page from a spec.
+  - id: css
+    title: CSS
+    short: CSS
+    color: track-css
+    modules:
+      - id: css.selectors-and-the-cascade
+        title: Selectors and the cascade
+        requires:
+          - html.what-is-html
+        lessons:
+          - id: css.rules
+            title: Rules and declarations
+            minutes: 5
+            objective: Write a rule; link a stylesheet; know selector, property, value.
+          - id: css.selectors
+            title: Selectors and combinators
+            minutes: 6
+            objective: Target by class, attribute, descendant, child and sibling.
+          - id: css.pseudo-classes
+            title: Pseudo-classes and elements
+            minutes: 7
+            objective: Use `:hover`, `:focus-visible`, `:nth-child`, `:not`, `::before`/`::after`.
+          - id: css.specificity
+            title: Specificity
+            minutes: 7
+            objective: Predict which rule wins; why `!important` and IDs cause wars.
+          - id: css.inheritance
+            title: Inheritance and defaults
+            minutes: 5
+            objective: Know which properties inherit; `inherit`, `initial`, `unset`, `revert`.
+          - id: css.cascade-layers
+            title: Cascade layers
+            minutes: 6
+            objective: Order whole stylesheets with `@layer` (resets, libraries, components, utilities).
+            tier: extended
+      - id: css.box-model-and-units
+        title: Box model and units
+        lessons:
+          - id: css.box-model
+            title: The box model
+            minutes: 8
+            objective: See content, padding, border, margin; size an element precisely.
+          - id: css.box-sizing
+            title: "`box-sizing`"
+            minutes: 4
+            objective: Why every reset uses `border-box`.
+          - id: css.margin-collapse
+            title: Margin collapsing
+            minutes: 5
+            objective: Predict collapsed vertical margins and how flex/grid avoid it.
+            tier: extended
+          - id: css.units
+            title: Units
+            minutes: 7
+            objective: Choose `rem`, `em`, `%`, `px`, `ch`, `vw`/`dvh` deliberately.
+          - id: css.display
+            title: "`display`"
+            minutes: 5
+            objective: "Block vs inline vs inline-block; `display: none` vs `visibility: hidden`."
+          - id: css.overflow
+            title: Overflow
+            minutes: 4
+            objective: Control overflow; truncate text with an ellipsis.
+      - id: css.color-type-and-surfaces
+        title: Color, type and surfaces
+        lessons:
+          - id: css.colors
+            title: Color
+            minutes: 6
+            objective: Use hex, `rgb()`, `hsl()`, `oklch()` and `color-mix()`; check contrast.
+          - id: css.custom-properties
+            title: Custom properties
+            minutes: 7
+            objective: Build a theme with variables, fallbacks and scoping.
+          - id: css.typography
+            title: Typography
+            minutes: 7
+            objective: Font stacks, web fonts, `line-height`, fluid sizes with `clamp()`.
+          - id: css.surfaces
+            title: Backgrounds, borders, shadows
+            minutes: 6
+            objective: Style surfaces with gradients, `border-radius`, `box-shadow`.
+      - id: css.flexbox
+        title: Flexbox
+        lessons:
+          - id: css.flex-axes
+            title: Flex axes
+            minutes: 6
+            objective: Main vs cross axis; `flex-direction` flips them.
+          - id: css.flex-alignment
+            title: Aligning with Flexbox
+            minutes: 6
+            objective: "`justify-content`, `align-items`, `gap`, auto margins."
+          - id: css.flex-sizing
+            title: Flex sizing
+            minutes: 8
+            objective: "How `flex-grow`/`shrink`/`basis` split space; the `min-width: 0` fix."
+          - id: css.flex-wrap-patterns
+            title: Wrapping and patterns
+            minutes: 6
+            objective: "`flex-wrap`; build a nav bar, media object and card row."
+      - id: css.grid
+        title: Grid
+        lessons:
+          - id: css.grid-basics
+            title: Grid basics
+            minutes: 6
+            objective: Tracks, `fr`, `gap`.
+          - id: css.grid-placement
+            title: Placing items
+            minutes: 7
+            objective: Place items by line numbers and `span`.
+          - id: css.grid-areas
+            title: Template areas
+            minutes: 6
+            objective: Lay out a page with `grid-template-areas`.
+          - id: css.grid-auto
+            title: Intrinsic grids
+            minutes: 7
+            objective: "`repeat(auto-fit, minmax())`, implicit tracks, `grid-auto-flow`."
+          - id: css.grid-vs-flex
+            title: Grid or Flexbox?
+            minutes: 5
+            objective: Decide by dimension and content-vs-layout direction.
+          - id: css.subgrid
+            title: Subgrid
+            minutes: 5
+            objective: Align nested content (card rows) to a parent grid.
+            tier: extended
+      - id: css.positioning-and-stacking
+        title: Positioning and stacking
+        lessons:
+          - id: css.position
+            title: Positioning
+            minutes: 8
+            objective: "`relative`, `absolute`, `fixed`, `sticky`; find the containing block."
+          - id: css.stacking
+            title: z-index and stacking contexts
+            minutes: 7
+            objective: "Why `z-index: 9999` doesn't work: stacking contexts."
+          - id: css.transforms
+            title: Transforms
+            minutes: 5
+            objective: "`translate`, `rotate`, `scale` (individual properties) without affecting layout."
+            tier: extended
+      - id: css.responsive-design
+        title: Responsive design
+        lessons:
+          - id: css.media-queries
+            title: Media queries
+            minutes: 6
+            objective: Mobile-first breakpoints with `min-width` and range syntax.
+          - id: css.container-queries
+            title: Container queries
+            minutes: 7
+            objective: Components that adapt to their container, not the viewport (`@container`, `cqi`).
+            tier: extended
+          - id: css.intrinsic-layout
+            title: Responsive without breakpoints
+            minutes: 6
+            objective: "`min()`, `max()`, `clamp()` and intrinsic sizing."
+            tier: extended
+          - id: css.user-preferences
+            title: User preferences
+            minutes: 5
+            objective: Respect `prefers-color-scheme` and `prefers-reduced-motion`.
+            tier: extended
+      - id: css.motion
+        title: Motion
+        lessons:
+          - id: css.transitions
+            title: Transitions
+            minutes: 6
+            objective: Transition properties with good durations and easing.
+          - id: css.keyframes
+            title: Keyframe animations
+            minutes: 6
+            objective: "`@keyframes` and animation properties."
+            tier: extended
+          - id: css.render-performance
+            title: Smooth animation
+            minutes: 6
+            objective: Animate `transform`/`opacity`; see layout → paint → composite costs.
+            tier: extended
+      - id: css.modern-css-in-teams
+        title: Modern CSS in teams
+        lessons:
+          - id: css.nesting
+            title: Native nesting
+            minutes: 5
+            objective: Nest rules with `&` without a preprocessor.
+            tier: extended
+          - id: css.modern-selectors
+            title: "`:is()`, `:where()`, `:has()`"
+            minutes: 6
+            objective: Group selectors with controlled specificity; style parents with `:has()`.
+            tier: extended
+          - id: css.logical-properties
+            title: Logical properties
+            minutes: 4
+            objective: "`margin-inline`, `padding-block`, `inset` for any writing direction."
+            tier: extended
+          - id: css.accessible-styling
+            title: Accessible styling
+            minutes: 6
+            objective: Visible focus styles, contrast, visually-hidden text, no info by color alone.
+          - id: css.form-styling
+            title: Styling form controls
+            minutes: 5
+            objective: "`accent-color`, `appearance`, consistent controls without rebuilding them."
+            tier: extended
+          - id: css.architecture
+            title: Organizing CSS
+            minutes: 6
+            objective: "BEM, utility-first (Tailwind), CSS Modules: trade-offs you will meet at work."
+      - id: css.boss-stage
+        title: Boss
+        boss: true
+        lessons:
+          - id: css.boss
+            title: "Boss: responsive landing page"
+            minutes: 10
+            objective: Match a design at three viewport widths, themed with custom properties.
+            requires:
+              - html.boss
+  - id: js
+    title: JavaScript
+    short: JS
+    color: track-js
+    modules:
+      - id: js.values
+        title: Values
+        requires:
+          - html.document-skeleton
+        lessons:
+          - id: js.first-script
+            title: Running JavaScript
+            minutes: 4
+            objective: Run code in the page and the console; `console.log`.
+          - id: js.variables
+            title: "`const` and `let`"
+            minutes: 5
+            objective: Default to `const`; `let` when reassigning; `var` only in legacy code.
+          - id: js.types
+            title: Primitive types
+            minutes: 6
+            objective: Know the 7 primitives and `typeof` (incl. `typeof null === "object"`).
+          - id: js.numbers
+            title: Numbers
+            minutes: 6
+            objective: Floating point (`0.1 + 0.2`), `NaN`, `Math`, formatting, `BigInt` exists.
+          - id: js.strings
+            title: Strings
+            minutes: 6
+            objective: Template literals, common methods, immutability.
+          - id: js.equality-truthiness
+            title: Equality and truthiness
+            minutes: 7
+            objective: "`===` always; truthy/falsy; `??` vs `||`; optional chaining."
+      - id: js.control-flow
+        title: Control flow
+        lessons:
+          - id: js.conditionals
+            title: Conditions
+            minutes: 5
+            objective: "`if`/`else`, ternary, early returns."
+          - id: js.switch
+            title: "`switch`"
+            minutes: 4
+            objective: Use `switch` and avoid accidental fall-through.
+          - id: js.loops
+            title: Loops
+            minutes: 7
+            objective: "`for`, `while`, `for...of`, `break`/`continue`; off-by-one errors."
+      - id: js.functions-module
+        title: Functions
+        lessons:
+          - id: js.functions
+            title: Functions
+            minutes: 6
+            objective: Declare, call, return; parameters vs arguments.
+          - id: js.arrow-functions
+            title: Arrow functions
+            minutes: 5
+            objective: Arrow syntax, implicit return, returning object literals.
+          - id: js.parameters
+            title: Default and rest parameters
+            minutes: 5
+            objective: Defaults, rest parameters, spreading arguments.
+          - id: js.scope
+            title: Scope
+            minutes: 7
+            objective: Block and lexical scope; shadowing.
+          - id: js.hoisting-tdz
+            title: Hoisting and the TDZ
+            minutes: 5
+            objective: Why functions are callable early and `let` throws before its line.
+            tier: extended
+          - id: js.closures
+            title: Closures
+            minutes: 8
+            objective: Functions remember their scope; counters, factories, the loop-closure bug.
+          - id: js.higher-order-functions
+            title: Functions as values
+            minutes: 6
+            objective: Pass and return functions; callbacks.
+      - id: js.data-arrays-and-objects
+        title: "Data: arrays and objects"
+        lessons:
+          - id: js.arrays
+            title: Arrays
+            minutes: 6
+            objective: Create, index, `length`, `push`/`pop`/`shift`/`unshift`, `at(-1)`.
+          - id: js.array-iteration
+            title: "`map`, `filter`, `reduce` and friends"
+            minutes: 8
+            objective: Transform data with `map`/`filter`/`reduce`/`find`/`some`/`every`.
+          - id: js.array-copying-methods
+            title: Sorting and copying
+            minutes: 6
+            objective: Default `sort` compares strings; ES2023 `toSorted`/`toReversed`/`with`.
+          - id: js.objects
+            title: Objects
+            minutes: 6
+            objective: Literals, dot vs bracket access, shorthand, computed keys.
+          - id: js.references
+            title: Values vs references
+            minutes: 7
+            objective: Assignment copies references; mutation is visible everywhere.
+          - id: js.destructuring-spread
+            title: Destructuring and spread
+            minutes: 7
+            objective: Destructure, spread, shallow vs deep copy (`structuredClone`).
+          - id: js.object-utilities
+            title: Working with objects
+            minutes: 6
+            objective: "`Object.keys/entries/fromEntries`, `Object.groupBy`."
+          - id: js.map-set
+            title: "`Map` and `Set`"
+            minutes: 6
+            objective: When to use `Map`/`Set` over objects/arrays; Set operations.
+          - id: js.json
+            title: JSON
+            minutes: 5
+            objective: "`JSON.stringify`/`parse`; what doesn't survive (Dates, `undefined`, functions)."
+      - id: js.errors-and-debugging
+        title: Errors and debugging
+        lessons:
+          - id: js.errors
+            title: Errors
+            minutes: 6
+            objective: "`throw new Error`, `try/catch/finally`, error types, `cause`."
+          - id: js.debugging
+            title: Debugging
+            minutes: 6
+            objective: Read stack traces; breakpoints and stepping.
+      - id: js.dom-and-events
+        title: DOM and events
+        requires:
+          - js.debugging
+          - css.selectors
+        lessons:
+          - id: js.dom-select
+            title: Finding elements
+            minutes: 5
+            objective: "`querySelector(All)` and the DOM tree."
+          - id: js.dom-update
+            title: Changing the page
+            minutes: 7
+            objective: "`textContent` vs `innerHTML` (XSS), `classList`, attributes, `dataset`."
+          - id: js.dom-create
+            title: Creating elements
+            minutes: 6
+            objective: "`createElement`, `append`, `<template>`, removing nodes."
+          - id: js.events
+            title: Events
+            minutes: 6
+            objective: "`addEventListener`, the event object, `preventDefault`."
+          - id: js.event-propagation
+            title: Bubbling and delegation
+            minutes: 8
+            objective: Capture → target → bubble; one listener for many items.
+          - id: js.forms
+            title: Forms with JavaScript
+            minutes: 7
+            objective: "`submit` events, `FormData`, the Constraint Validation API."
+            requires:
+              - html.validation
+          - id: js.web-storage
+            title: Web Storage
+            minutes: 5
+            objective: "`localStorage`/`sessionStorage` with JSON; limits and privacy."
+            tier: extended
+      - id: js.asynchronous-javascript
+        title: Asynchronous JavaScript
+        lessons:
+          - id: js.event-loop
+            title: The event loop
+            minutes: 9
+            objective: "Call stack, task queue, microtask queue: predict log order."
+          - id: js.timers-callbacks
+            title: Timers and callbacks
+            minutes: 5
+            objective: "`setTimeout`/`setInterval`; why nested callbacks don't scale."
+          - id: js.promises
+            title: Promises
+            minutes: 8
+            objective: States, `then`/`catch`/`finally`, chaining and returning.
+          - id: js.async-await
+            title: "`async`/`await`"
+            minutes: 8
+            objective: Write async code that reads top-down; sequential vs parallel.
+          - id: js.promise-combinators
+            title: Running promises together
+            minutes: 6
+            objective: "`Promise.all`, `allSettled`, `race`, `any`."
+          - id: js.fetch
+            title: "`fetch`"
+            minutes: 8
+            objective: Request JSON, check `response.ok` (404 doesn't reject), send bodies.
+          - id: js.abort
+            title: Cancellation and timeouts
+            minutes: 5
+            objective: "`AbortController`, `AbortSignal.timeout`; cancel stale requests."
+            tier: extended
+          - id: js.async-errors
+            title: Async errors
+            minutes: 6
+            objective: Unhandled rejections, `await` in `forEach`, missing `await`.
+      - id: js.objects-in-depth
+        title: Objects in depth
+        lessons:
+          - id: js.this
+            title: "`this`"
+            minutes: 8
+            objective: The four binding rules; arrow functions don't have their own `this`.
+          - id: js.classes
+            title: Classes
+            minutes: 7
+            objective: Constructors, methods, getters, `static`, `#private` fields.
+          - id: js.prototypes-inheritance
+            title: Inheritance and prototypes
+            minutes: 7
+            objective: "`extends`/`super`; the prototype chain under the hood."
+            tier: extended
+      - id: js.modules-and-tooling
+        title: Modules and tooling
+        lessons:
+          - id: js.modules
+            title: ES modules
+            minutes: 6
+            objective: Named vs default exports, imports, module scope.
+          - id: js.npm
+            title: npm and packages
+            minutes: 6
+            objective: "`package.json`, dependencies vs devDependencies, semver ranges, lockfiles."
+          - id: js.build-tools
+            title: What a build tool does
+            minutes: 5
+            objective: Dev server, bundling, minification, code splitting (Vite).
+            tier: extended
+      - id: js.language-power-tools
+        title: Language power tools
+        lessons:
+          - id: js.iterators-generators
+            title: Iterators and generators
+            minutes: 7
+            objective: The iteration protocol; lazy sequences with `function*`.
+            tier: extended
+          - id: js.immutability
+            title: Immutable updates
+            minutes: 6
+            objective: Pure functions and immutable state updates (as in React/Redux).
+          - id: js.regex
+            title: Regular expressions
+            minutes: 8
+            objective: "Read and write everyday regexes: classes, quantifiers, groups, flags."
+            tier: extended
+          - id: js.dates-intl
+            title: Dates and `Intl`
+            minutes: 7
+            objective: "`Date` pitfalls (0-based months, time zones); `Intl` formatting; where `Temporal` fits."
+            tier: extended
+      - id: js.testing-and-security
+        title: Testing and security
+        lessons:
+          - id: js.unit-tests
+            title: Unit testing
+            minutes: 7
+            objective: "`describe`/`it`/`expect` (Vitest); red → green → refactor."
+          - id: js.test-doubles
+            title: Mocks and async tests
+            minutes: 6
+            objective: Test async code; mock functions and modules sparingly.
+            tier: extended
+          - id: js.security
+            title: Front-end security
+            minutes: 7
+            objective: XSS, never `innerHTML`/`eval` user input, CSP basics, secrets don't belong in front-ends.
+      - id: js.browser-performance
+        title: Browser performance
+        lessons:
+          - id: js.debounce-throttle
+            title: Debounce and throttle
+            minutes: 7
+            objective: Rate-limit handlers for search boxes and scroll.
+          - id: js.observers
+            title: Observers
+            minutes: 6
+            objective: "`IntersectionObserver` and `ResizeObserver` instead of scroll/resize polling."
+            tier: extended
+          - id: js.web-workers
+            title: Web Workers
+            minutes: 6
+            objective: Move heavy work off the main thread.
+            tier: extended
+          - id: js.web-vitals
+            title: Core Web Vitals
+            minutes: 7
+            objective: What LCP, INP and CLS measure and the usual fixes.
+            tier: extended
+      - id: js.boss-stage
+        title: Boss
+        boss: true
+        lessons:
+          - id: js.boss
+            title: "Boss: searchable list app"
+            minutes: 10
+            objective: Fetch, render, filter (debounced) and persist a list, passing a test suite.
+      - id: js.typescript-essentials
+        title: TypeScript essentials
+        lessons:
+          - id: js.ts-why
+            title: Why TypeScript
+            minutes: 6
+            objective: Catch bugs before running; types are checked at build time and erased at runtime.
+          - id: js.ts-basic-types
+            title: Annotations and inference
+            minutes: 7
+            objective: Annotate where it helps, let inference do the rest; `type` vs `interface`; optional properties.
+          - id: js.ts-unions-narrowing
+            title: Unions and narrowing
+            minutes: 8
+            objective: Union and literal types; narrow with `typeof`, `in` and discriminated unions.
+          - id: js.ts-generics-utility
+            title: Generics and utility types
+            minutes: 7
+            objective: Typed functions, simple generics, `Partial`, `Pick`, `Omit`, `Record`.
+          - id: js.ts-unknown-boundaries
+            title: "`any`, `unknown` and runtime data"
+            minutes: 6
+            objective: Prefer `unknown` to `any`; types don't validate API responses, so validate at the boundary.
+          - id: js.ts-in-projects
+            title: TypeScript in real projects
+            minutes: 6
+            objective: "`tsconfig` `strict`, `@types` packages, how build tools and recent Node versions run TS by stripping types."
+  - id: algo
+    title: Algorithms & Data Structures
+    short: Algo
+    color: track-algo
+    modules:
+      - id: algo.complexity
+        title: Complexity
+        requires:
+          - js.loops
+          - js.functions
+          - js.arrays
+        lessons:
+          - id: algo.what-is-an-algorithm
+            title: Counting steps
+            minutes: 5
+            objective: Compare strategies by counting operations, not by timing.
+          - id: algo.big-o
+            title: Big O
+            minutes: 8
+            objective: Recognize O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ) by growth.
+          - id: algo.analyze-code
+            title: Analyzing code
+            minutes: 8
+            objective: Derive complexity from loops, nested loops and halving loops.
+          - id: algo.space-complexity
+            title: Space complexity
+            minutes: 5
+            objective: Count extra memory; the time/space trade-off.
+          - id: algo.amortized
+            title: Amortized cost
+            minutes: 6
+            objective: "Why `push` is O(1) amortized: capacity doubling."
+            tier: extended
+      - id: algo.searching
+        title: Searching
+        lessons:
+          - id: algo.linear-search
+            title: Linear search
+            minutes: 4
+            objective: Scan until found; best/worst/average cases.
+          - id: algo.binary-search
+            title: Binary search
+            minutes: 8
+            objective: "Halve a sorted range each step: O(log n)."
+          - id: algo.binary-search-variants
+            title: Boundaries and variants
+            minutes: 7
+            objective: Lower bound / insertion point; search "the answer" (first true).
+            tier: extended
+      - id: algo.sorting
+        title: Sorting
+        lessons:
+          - id: algo.sorting-race
+            title: The sorting race
+            minutes: 6
+            objective: See algorithms race; comparisons, swaps, stability.
+          - id: algo.naive-sorts
+            title: Bubble and selection sort
+            minutes: 7
+            objective: See why both are O(n²) and never used in production.
+            tier: extended
+          - id: algo.insertion-sort
+            title: Insertion sort
+            minutes: 7
+            objective: O(n²) worst, near O(n) on nearly-sorted data; used inside hybrid sorts.
+            tier: extended
+          - id: algo.merge-sort
+            title: Merge sort
+            minutes: 9
+            objective: Divide and conquer; stable O(n log n); extra memory.
+            requires:
+              - algo.recursion
+          - id: algo.quick-sort
+            title: Quicksort
+            minutes: 9
+            objective: Partitioning, pivot choice, the O(n²) worst case.
+          - id: algo.sorting-in-practice
+            title: Sorting in real code
+            minutes: 6
+            objective: Built-ins (TimSort in V8, introsort in .NET `Array.Sort`), stability, comparators, multi-key sorts.
+          - id: algo.counting-sort
+            title: Non-comparison sorts
+            minutes: 5
+            objective: Counting/radix sort beat O(n log n) for small integer keys (know it exists).
+            tier: extended
+      - id: algo.recursion-module
+        title: Recursion
+        requires:
+          - algo.binary-search
+        lessons:
+          - id: algo.recursion
+            title: Recursion
+            minutes: 8
+            objective: Base case + smaller problem; watch the call stack grow and unwind.
+          - id: algo.recursion-trees
+            title: Recursion trees and memoization
+            minutes: 7
+            objective: See exponential call trees (Fibonacci) collapse with a cache.
+      - id: algo.linear-structures
+        title: Linear structures
+        requires:
+          - algo.sorting-in-practice
+          - algo.recursion-trees
+        lessons:
+          - id: algo.arrays-memory
+            title: Arrays in memory
+            minutes: 6
+            objective: "Contiguous memory: O(1) index, O(n) insert in the middle."
+          - id: algo.linked-lists
+            title: Linked lists
+            minutes: 8
+            objective: Nodes and pointers; O(1) insert at a known node, O(n) access.
+          - id: algo.stacks
+            title: Stacks
+            minutes: 6
+            objective: "LIFO: undo, call stacks, bracket matching."
+          - id: algo.queues
+            title: Queues and deques
+            minutes: 6
+            objective: FIFO; circular buffers; queues in job processing.
+      - id: algo.hashing
+        title: Hashing
+        lessons:
+          - id: algo.hash-tables
+            title: Hash tables
+            minutes: 9
+            objective: "Hashing to buckets, collisions, load factor and resizing: O(1) average."
+          - id: algo.hash-patterns
+            title: Hashing patterns
+            minutes: 7
+            objective: Counting, deduplication, two-sum, grouping.
+      - id: algo.trees-and-heaps
+        title: Trees and heaps
+        lessons:
+          - id: algo.trees
+            title: Trees
+            minutes: 5
+            objective: Root, child, leaf, depth; the DOM and file systems are trees.
+          - id: algo.tree-traversal
+            title: Traversals
+            minutes: 8
+            objective: Pre/in/post-order DFS and level-order BFS.
+          - id: algo.bst
+            title: Binary search trees
+            minutes: 9
+            objective: Insert/search/delete; a sorted insert degenerates into a list.
+          - id: algo.balanced-trees
+            title: Balanced trees
+            minutes: 5
+            objective: Why balance matters; red-black trees power `SortedDictionary` (know it exists).
+            tier: extended
+          - id: algo.heaps
+            title: Heaps and priority queues
+            minutes: 8
+            objective: Heap as an array; O(log n) push/pop; `PriorityQueue` in .NET.
+            tier: extended
+          - id: algo.tries
+            title: Tries
+            minutes: 6
+            objective: Prefix trees for autocomplete.
+            tier: extended
+      - id: algo.graphs-module
+        title: Graphs
+        lessons:
+          - id: algo.graphs
+            title: Graphs
+            minutes: 7
+            objective: Vertices/edges, directed/weighted; adjacency list vs matrix.
+          - id: algo.bfs
+            title: Breadth-first search
+            minutes: 8
+            objective: Shortest path in unweighted graphs and grids.
+            requires:
+              - algo.queues
+          - id: algo.dfs
+            title: Depth-first search
+            minutes: 7
+            objective: Explore, detect cycles, flood fill.
+          - id: algo.topological-sort
+            title: Topological sort
+            minutes: 7
+            objective: Order tasks by dependencies (build systems, package managers).
+            tier: extended
+          - id: algo.dijkstra
+            title: Dijkstra's algorithm
+            minutes: 9
+            objective: Weighted shortest paths with a priority queue.
+            tier: extended
+            requires:
+              - algo.heaps
+      - id: algo.problem-solving-techniques
+        title: Problem-solving techniques
+        lessons:
+          - id: algo.two-pointers
+            title: Two pointers
+            minutes: 7
+            objective: Solve sorted-array problems in O(n).
+          - id: algo.sliding-window
+            title: Sliding window
+            minutes: 7
+            objective: Subarray/substring problems in O(n).
+          - id: algo.greedy
+            title: Greedy algorithms
+            minutes: 7
+            objective: When a local best choice is globally optimal (interval scheduling) and when it fails.
+            tier: extended
+          - id: algo.dynamic-programming
+            title: Dynamic programming
+            minutes: 10
+            objective: "Overlapping subproblems: memoization vs tabulation."
+            tier: extended
+          - id: algo.dp-classics
+            title: "Classic DP: edit distance"
+            minutes: 10
+            objective: Edit distance, the algorithm behind diffs and spell-checkers.
+            tier: extended
+          - id: algo.backtracking
+            title: Backtracking
+            minutes: 8
+            objective: Generate permutations/combinations; prune dead branches.
+            tier: extended
+      - id: algo.boss-stage
+        title: Boss
+        boss: true
+        lessons:
+          - id: algo.boss
+            title: "Boss: pick the structure"
+            minutes: 10
+            objective: Choose structure + algorithm for realistic scenarios and justify the Big O.
+  - id: cs
+    title: C#
+    short: C#
+    color: track-cs
+    modules:
+      - id: cs.csharp-toolchain
+        title: The C# toolchain
+        recommends:
+          - js.objects
+        lessons:
+          - id: cs.hello-dotnet
+            title: From C# to running code
+            minutes: 6
+            objective: SDK vs runtime; C# → IL → JIT; top-level statements; `dotnet run`.
+          - id: cs.static-typing
+            title: The compiler has your back
+            minutes: 6
+            objective: Compile-time vs runtime errors; the same bug in JS and C#.
+          - id: cs.variables-types
+            title: Variables and built-in types
+            minutes: 7
+            objective: "`int`, `long`, `double`, `decimal`, `bool`, `char`, `string`, `var`."
+          - id: cs.numbers
+            title: Numbers and conversions
+            minutes: 7
+            objective: Integer division, overflow, casts, `Parse`/`TryParse`, `decimal` for money.
+          - id: cs.strings
+            title: Strings
+            minutes: 7
+            objective: Interpolation, raw string literals, immutability, `StringBuilder`.
+      - id: cs.control-flow-and-methods
+        title: Control flow and methods
+        lessons:
+          - id: cs.control-flow
+            title: Control flow, the C# way
+            minutes: 5
+            objective: "`if`, loops, `foreach`: what differs from JS (no truthiness, block scope)."
+          - id: cs.switch-expressions
+            title: Switch expressions
+            minutes: 7
+            objective: Map values with `switch` expressions and basic patterns.
+          - id: cs.methods
+            title: Methods
+            minutes: 7
+            objective: Signatures, return types, overloading, optional and named arguments.
+          - id: cs.ref-out
+            title: "`out`, `ref`, `in`"
+            minutes: 6
+            objective: The `TryParse` pattern; when `ref` is justified.
+      - id: cs.types-and-memory
+        title: Types and memory
+        lessons:
+          - id: cs.value-vs-reference
+            title: Value vs reference types
+            minutes: 9
+            objective: "`struct` copies, `class` shares; stack/heap as a mental model."
+            recommends:
+              - js.references
+          - id: cs.nullability
+            title: Null safety
+            minutes: 8
+            objective: Nullable value and reference types; `?.`, `??`, `??=`; why `!` is a smell.
+          - id: cs.arrays
+            title: Arrays, indices and ranges
+            minutes: 6
+            objective: Arrays, `^1`, `..` ranges.
+          - id: cs.enums
+            title: Enums
+            minutes: 5
+            objective: Named constants; `[Flags]`; converting to/from strings.
+      - id: cs.object-oriented-csharp
+        title: Object-oriented C#
+        lessons:
+          - id: cs.classes
+            title: Classes and objects
+            minutes: 7
+            objective: Fields, constructors, methods, object initializers.
+          - id: cs.properties
+            title: Properties
+            minutes: 6
+            objective: Auto-properties, `init`, `required`, the `field` keyword (C# 14).
+          - id: cs.access-modifiers
+            title: Encapsulation
+            minutes: 5
+            objective: "`public`, `private`, `protected`, `internal`; expose behavior, not data."
+          - id: cs.static-members
+            title: Static vs instance
+            minutes: 5
+            objective: What belongs to the type vs the object; static classes.
+          - id: cs.inheritance-polymorphism
+            title: Inheritance and polymorphism
+            minutes: 8
+            objective: "`virtual`/`override`, `abstract`, `sealed`, `base`; prefer composition."
+          - id: cs.interfaces
+            title: Interfaces
+            minutes: 7
+            objective: Contracts; programming to interfaces (the basis of DI and testing).
+          - id: cs.records
+            title: Records
+            minutes: 7
+            objective: Value equality, `with` expressions, `record struct`; DTOs.
+          - id: cs.primary-constructors
+            title: Primary constructors
+            minutes: 5
+            objective: Primary constructors on classes; capture semantics.
+            tier: extended
+          - id: cs.equality
+            title: Equality
+            minutes: 7
+            objective: "`==` vs `Equals`, reference equality, the `GetHashCode` contract."
+      - id: cs.generics-and-collections
+        title: Generics and collections
+        recommends:
+          - algo.big-o
+        lessons:
+          - id: cs.generics
+            title: Generics
+            minutes: 7
+            objective: Type-safe reuse with generic methods/classes and constraints.
+          - id: cs.list
+            title: "`List<T>`"
+            minutes: 6
+            objective: "A dynamic array: `Capacity`, `Count`, costs of `Insert`/`Remove`."
+            recommends:
+              - algo.amortized
+          - id: cs.dictionary-hashset
+            title: "`Dictionary` and `HashSet`"
+            minutes: 7
+            objective: Hash-based lookup; `TryGetValue`; key requirements.
+            recommends:
+              - algo.hash-tables
+          - id: cs.collection-interfaces
+            title: Collection interfaces
+            minutes: 6
+            objective: "`IEnumerable<T>`, `IReadOnlyList<T>`, `IList<T>`: what to accept and return."
+          - id: cs.choosing-collections
+            title: Choosing a collection
+            minutes: 6
+            objective: "`Queue`, `Stack`, `PriorityQueue`, `SortedDictionary`, immutable/frozen collections."
+            tier: extended
+          - id: cs.collection-expressions
+            title: Collection expressions
+            minutes: 4
+            objective: "`[1, 2, ..rest]` for arrays, lists and spans (C# 12)."
+      - id: cs.delegates-and-linq
+        title: Delegates and LINQ
+        lessons:
+          - id: cs.delegates-lambdas
+            title: Delegates and lambdas
+            minutes: 7
+            objective: "`Func<>`, `Action<>`, lambdas, closures."
+          - id: cs.events
+            title: Events
+            minutes: 5
+            objective: "`event` and `EventHandler` (common in desktop/libraries, rare in web APIs)."
+            tier: extended
+          - id: cs.linq-basics
+            title: LINQ basics
+            minutes: 8
+            objective: "`Where`, `Select`, `OrderBy`, `ToList`."
+            recommends:
+              - js.array-iteration
+          - id: cs.linq-deferred
+            title: Deferred execution
+            minutes: 8
+            objective: Queries run when enumerated; multiple enumeration pitfalls.
+          - id: cs.linq-operators
+            title: Essential operators
+            minutes: 8
+            objective: "`First`/`Single`/`OrDefault`, `Any`, `GroupBy`, `ToDictionary`, `DistinctBy`, `Chunk`, `CountBy`."
+          - id: cs.linq-query-syntax
+            title: Query syntax
+            minutes: 4
+            objective: Read `from ... where ... select` (common in older code and EF queries).
+            tier: extended
+      - id: cs.errors-and-resources
+        title: Errors and resources
+        lessons:
+          - id: cs.exceptions
+            title: Exceptions
+            minutes: 7
+            objective: "`try/catch/finally`, filters, `throw;` vs `throw ex;`."
+          - id: cs.disposable
+            title: "`IDisposable` and `using`"
+            minutes: 6
+            objective: Release resources deterministically; `using` declarations.
+          - id: cs.error-design
+            title: Designing for failure
+            minutes: 6
+            objective: Guard clauses (`ArgumentNullException.ThrowIfNull`), Try-pattern vs exceptions, custom exceptions.
+            tier: extended
+      - id: cs.asynchronous-csharp
+        title: Asynchronous C#
+        lessons:
+          - id: cs.tasks-async-await
+            title: "`Task` and `async`/`await`"
+            minutes: 9
+            objective: Awaiting frees the thread; the method resumes later.
+          - id: cs.async-pitfalls
+            title: Async pitfalls
+            minutes: 8
+            objective: "`async void`, blocking with `.Result`/`.Wait()`, forgotten `await`."
+          - id: cs.task-combinators
+            title: Concurrency with tasks
+            minutes: 7
+            objective: "`Task.WhenAll`/`WhenAny`; sequential vs concurrent timing."
+          - id: cs.cancellation
+            title: Cancellation
+            minutes: 6
+            objective: Pass and honor `CancellationToken`.
+          - id: cs.async-streams
+            title: Async streams
+            minutes: 5
+            objective: "`IAsyncEnumerable<T>` and `await foreach`."
+            tier: extended
+          - id: cs.thread-safety
+            title: Thread safety
+            minutes: 8
+            objective: Race conditions; `lock`, `Interlocked`, concurrent collections.
+            tier: extended
+      - id: cs.modern-csharp
+        title: Modern C#
+        lessons:
+          - id: cs.pattern-matching
+            title: Pattern matching
+            minutes: 8
+            objective: Type, property, relational and list patterns.
+          - id: cs.extension-members
+            title: Extension members
+            minutes: 6
+            objective: Extension methods and C# 14 extension blocks.
+          - id: cs.tuples-deconstruction
+            title: Tuples and deconstruction
+            minutes: 5
+            objective: Named tuples, deconstruction, discards.
+            tier: extended
+          - id: cs.attributes-reflection
+            title: Attributes
+            minutes: 6
+            objective: Read attributes as metadata (ASP.NET Core uses them everywhere); reflection exists.
+            tier: extended
+          - id: cs.span-performance
+            title: "`Span<T>` and allocations"
+            minutes: 6
+            objective: Slicing without copying; when performance work is worth it (know it exists).
+            tier: extended
+      - id: cs.projects-and-testing
+        title: Projects and testing
+        lessons:
+          - id: cs.projects-nuget
+            title: Solutions, projects, NuGet
+            minutes: 6
+            objective: "`.csproj`, project references, packages, namespaces."
+          - id: cs.unit-testing
+            title: Unit testing with xUnit
+            minutes: 7
+            objective: "`[Fact]`, `[Theory]`, Arrange-Act-Assert."
+          - id: cs.test-doubles
+            title: Test doubles
+            minutes: 6
+            objective: Fakes vs mocks; design for testability with interfaces.
+      - id: cs.boss-stage
+        title: Boss
+        boss: true
+        lessons:
+          - id: cs.boss
+            title: "Boss: code review"
+            minutes: 10
+            objective: "Review a realistic class: find nullability, async, equality and LINQ bugs."
+  - id: net
+    title: .NET
+    short: .NET
+    color: track-net
+    modules:
+      - id: net.platform-and-http
+        title: Platform and HTTP
+        requires:
+          - cs.interfaces
+          - cs.tasks-async-await
+        lessons:
+          - id: net.ecosystem
+            title: The .NET platform
+            minutes: 5
+            objective: Runtime, BCL, SDK, LTS vs STS releases, project templates.
+          - id: net.http
+            title: HTTP for backend developers
+            minutes: 8
+            objective: Request/response anatomy, methods, headers, status codes.
+          - id: net.rest-design
+            title: Designing HTTP APIs
+            minutes: 7
+            objective: Resources, verbs, idempotency, choosing status codes.
+      - id: net.asp-net-core-foundations
+        title: ASP.NET Core foundations
+        lessons:
+          - id: net.host
+            title: "`Program.cs` and the host"
+            minutes: 6
+            objective: Builder phase (services) vs app phase (pipeline); Kestrel.
+          - id: net.middleware-pipeline
+            title: The middleware pipeline
+            minutes: 9
+            objective: Requests flow in and responses flow out through ordered middleware.
+          - id: net.middleware-order
+            title: Middleware order
+            minutes: 7
+            objective: Order exception handling, HTTPS, static files, routing, CORS, auth correctly.
+          - id: net.custom-middleware
+            title: Writing middleware
+            minutes: 6
+            objective: Inline and class middleware; short-circuiting.
+            tier: extended
+      - id: net.dependency-injection
+        title: Dependency injection
+        lessons:
+          - id: net.di
+            title: Dependency injection
+            minutes: 7
+            objective: Constructor injection and the container; why not `new`.
+          - id: net.di-lifetimes
+            title: Service lifetimes
+            minutes: 9
+            objective: Singleton, Scoped, Transient across requests.
+          - id: net.captive-dependencies
+            title: Captive dependencies
+            minutes: 7
+            objective: "Scoped inside singleton: the bug and scope validation."
+          - id: net.di-patterns
+            title: DI patterns
+            minutes: 6
+            objective: Multiple implementations, `IEnumerable<T>`, keyed services, factories.
+            tier: extended
+      - id: net.configuration-and-logging
+        title: Configuration and logging
+        lessons:
+          - id: net.configuration
+            title: Configuration
+            minutes: 7
+            objective: "`appsettings.json`, environments, environment variables, user secrets; layering."
+          - id: net.options
+            title: The options pattern
+            minutes: 6
+            objective: "`IOptions<T>`, `IOptionsSnapshot<T>`, `IOptionsMonitor<T>`; validation on start."
+          - id: net.logging
+            title: Logging
+            minutes: 7
+            objective: "`ILogger<T>`, levels, structured message templates (not interpolation)."
+      - id: net.building-apis
+        title: Building APIs
+        requires:
+          - net.logging
+          - cs.exceptions
+        lessons:
+          - id: net.minimal-api-routing
+            title: Routing
+            minutes: 7
+            objective: "`MapGet`/`MapPost`..., route templates and constraints."
+          - id: net.parameter-binding
+            title: Parameter binding
+            minutes: 8
+            objective: "Where each parameter comes from: route, query, body, header, services."
+          - id: net.results
+            title: Returning results
+            minutes: 6
+            objective: "`TypedResults`, `Results<Ok<T>, NotFound>`, correct status codes."
+          - id: net.route-groups-filters
+            title: Groups and filters
+            minutes: 6
+            objective: "`MapGroup`, shared metadata, endpoint filters."
+            tier: extended
+          - id: net.validation
+            title: Validating input
+            minutes: 6
+            objective: Data annotations and built-in Minimal API validation (`AddValidation`, .NET 10).
+          - id: net.error-handling
+            title: Errors and ProblemDetails
+            minutes: 7
+            objective: "`UseExceptionHandler`, `IExceptionHandler`, ProblemDetails responses."
+          - id: net.openapi
+            title: OpenAPI
+            minutes: 5
+            objective: Generate API docs with `Microsoft.AspNetCore.OpenApi`; explore them in a UI.
+            tier: extended
+          - id: net.controllers
+            title: Controllers
+            minutes: 7
+            objective: "`[ApiController]`, attribute routing, action results: read existing codebases."
+      - id: net.ef-core
+        title: EF Core
+        requires:
+          - net.controllers
+          - cs.linq-deferred
+        lessons:
+          - id: net.ef-intro
+            title: EF Core and the DbContext
+            minutes: 7
+            objective: Map entities to tables; `DbContext`, `DbSet<T>`, conventions.
+          - id: net.ef-querying
+            title: Querying
+            minutes: 8
+            objective: LINQ translated to SQL; where client evaluation stops.
+          - id: net.ef-change-tracking
+            title: Change tracking
+            minutes: 9
+            objective: Entity states (Added, Unchanged, Modified, Deleted) and what `SaveChanges` sends.
+          - id: net.ef-relationships
+            title: Relationships
+            minutes: 8
+            objective: One-to-many, many-to-many, navigations and foreign keys.
+          - id: net.ef-loading
+            title: Loading related data and N+1
+            minutes: 8
+            objective: "`Include`, projections; spot and fix the N+1 problem."
+          - id: net.ef-migrations
+            title: Migrations
+            minutes: 6
+            objective: Evolve the schema with migrations; apply them safely.
+          - id: net.ef-performance
+            title: Efficient queries
+            minutes: 7
+            objective: "`AsNoTracking`, `Select` projections, pagination, `ExecuteUpdate`/`ExecuteDelete`."
+            tier: extended
+          - id: net.ef-concurrency
+            title: Transactions and concurrency
+            minutes: 6
+            objective: "`SaveChanges` is a transaction; optimistic concurrency tokens."
+            tier: extended
+          - id: net.dbcontext-lifetime
+            title: DbContext lifetime
+            minutes: 6
+            objective: Scoped, not thread-safe; no DbContext in singletons or parallel queries.
+            requires:
+              - net.captive-dependencies
+      - id: net.security
+        title: Security
+        lessons:
+          - id: net.authn-authz
+            title: Authentication vs authorization
+            minutes: 6
+            objective: Who you are vs what you may do; cookies vs bearer tokens.
+          - id: net.jwt
+            title: JWT bearer tokens
+            minutes: 7
+            objective: Anatomy, signature, validation parameters, expiry.
+          - id: net.authorization
+            title: Authorization policies
+            minutes: 6
+            objective: "`RequireAuthorization`, `[Authorize]`, roles, claims and policies."
+          - id: net.web-security
+            title: Web API security
+            minutes: 8
+            objective: HTTPS, CORS, secrets management, SQL injection and parameterization.
+      - id: net.production-concerns
+        title: Production concerns
+        lessons:
+          - id: net.background-services
+            title: Background work
+            minutes: 6
+            objective: "`BackgroundService`; scopes inside hosted services."
+            tier: extended
+          - id: net.httpclient
+            title: Calling other APIs
+            minutes: 7
+            objective: "`IHttpClientFactory`, typed clients, resilience (retries, timeouts)."
+          - id: net.caching
+            title: Caching
+            minutes: 7
+            objective: In-memory, `HybridCache`, output caching; invalidation trade-offs.
+            tier: extended
+          - id: net.observability
+            title: Health and observability
+            minutes: 6
+            objective: Health checks, structured logs, OpenTelemetry traces and metrics.
+            tier: extended
+          - id: net.rate-limiting
+            title: Rate limiting
+            minutes: 5
+            objective: Fixed/sliding window and token bucket limiters.
+            tier: extended
+      - id: net.testing-and-shipping
+        title: Testing and shipping
+        lessons:
+          - id: net.integration-tests
+            title: Integration tests
+            minutes: 7
+            objective: "`WebApplicationFactory`, test databases (Testcontainers)."
+            requires:
+              - cs.unit-testing
+          - id: net.deployment
+            title: Deploying
+            minutes: 7
+            objective: "`dotnet publish`, containers without a Dockerfile, environments, reverse proxies."
+      - id: net.boss-stage
+        title: Boss
+        boss: true
+        lessons:
+          - id: net.boss
+            title: "Boss: production incident"
+            minutes: 10
+            objective: Diagnose a failing API from logs, the pipeline and SQL traces; fix in order.

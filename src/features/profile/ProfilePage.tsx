@@ -5,6 +5,7 @@ import { Dialog } from '../../components/Dialog.tsx';
 import { SegmentedControl } from '../../components/SegmentedControl.tsx';
 import { Slider } from '../../components/Slider.tsx';
 import { Toggle } from '../../components/Toggle.tsx';
+import { trackOf } from '../../engine/content/manifest.ts';
 import { toLocalDate } from '../../engine/progress/dates.ts';
 import { summarize } from '../../engine/progress/derive.ts';
 import type { Settings } from '../../engine/progress/schema.ts';
@@ -137,7 +138,7 @@ export function ProfilePage() {
             {progress.skippedRecommendations.map((track) => (
               <li key={track}>
                 <span>
-                  Skipped for <strong>{track}</strong>
+                  Skipped for <strong>{trackOf(track)?.title ?? track}</strong>
                 </span>
                 <Button size="sm" onClick={() => restoreRecommendations(track)}>
                   Show recommendations again

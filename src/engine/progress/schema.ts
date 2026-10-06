@@ -1,25 +1,29 @@
-import { z } from 'zod';
+// zod/mini: this schema ships in the app shell, where the full Zod API would cost ~10× more.
+import * as z from 'zod/mini';
 
 /** "2026-10-06" in the learner's local time zone. */
-export const LocalDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'expected YYYY-MM-DD');
+export const LocalDateSchema = z
+  .string()
+  .check(z.regex(/^\d{4}-\d{2}-\d{2}$/, 'expected YYYY-MM-DD'));
 const Timestamp = z.iso.datetime({ offset: true });
+const Count = z.int().check(z.minimum(0));
 
 export const ChallengeProgressSchema = z.object({
-  attempts: z.number().int().min(0),
-  hintsUsed: z.number().int().min(0),
+  attempts: Count,
+  hintsUsed: Count,
   revealed: z.boolean(),
-  passedAt: Timestamp.optional(),
+  passedAt: z.optional(Timestamp),
   /** Snapshot at award time: rule changes are never retroactive. */
-  xp: z.number().int().min(0),
+  xp: Count,
 });
 
 export const LessonProgressSchema = z.object({
   startedAt: Timestamp,
-  completedAt: Timestamp.optional(),
+  completedAt: z.optional(Timestamp),
   /** lesson.version when completed. */
-  contentVersion: z.number().int().min(0),
+  contentVersion: Count,
   /** Awarded once, on completion. */
-  completionXp: z.number().int().min(0),
+  completionXp: Count,
   challenges: z.record(z.string(), ChallengeProgressSchema),
 });
 
@@ -27,19 +31,16 @@ export const SettingsSchema = z.object({
   freeRoam: z.boolean(),
   effects: z.enum(['system', 'full', 'reduced', 'off']),
   preferredCodeTab: z.enum(['js', 'cs']),
-  editorFontSize: z.number().int().min(12).max(24),
+  editorFontSize: z.int().check(z.minimum(12), z.maximum(24)),
 });
 
 export const ProgressV1Schema = z.object({
   schemaVersion: z.literal(1),
   createdAt: Timestamp,
   lessons: z.record(z.string(), LessonProgressSchema),
-  activity: z.record(
-    LocalDateSchema,
-    z.object({ xp: z.number().int().min(0), passed: z.number().int().min(0) }),
-  ),
+  activity: z.record(LocalDateSchema, z.object({ xp: Count, passed: Count })),
   /** The level-up moment plays once per level. */
-  lastCelebratedLevel: z.number().int().min(1),
+  lastCelebratedLevel: z.int().check(z.minimum(1)),
   /** Tracks whose "Recommended path" banner was skipped. */
   skippedRecommendations: z.array(z.string()),
   settings: SettingsSchema,

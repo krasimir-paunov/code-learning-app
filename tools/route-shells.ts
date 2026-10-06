@@ -29,7 +29,7 @@ function shell(title: string, description: string): string {
     );
 }
 
-const routes = await listRoutes();
+const routes = await listRoutes({ fixtures: process.argv[2] === 'dist-e2e' });
 for (const route of routes) {
   const dir = path.join(outDir, ...route.path.split('/').filter(Boolean));
   fs.mkdirSync(dir, { recursive: true });

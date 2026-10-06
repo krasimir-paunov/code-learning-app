@@ -1,0 +1,51 @@
+.page {
+  display: grid;
+  gap: var(--space-4);
+  padding-block: var(--space-5) var(--space-7);
+  /* Static faint grid: allowed on the map background only (≤ 4% opacity, DESIGN §5). */
+  background-image:
+    linear-gradient(color-mix(in oklch, var(--text-1) 3%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--text-1) 3%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
+  inline-size: min(100%, var(--wide));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.titles {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  line-height: var(--lh-xl);
+}
+
+.subtitle {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
