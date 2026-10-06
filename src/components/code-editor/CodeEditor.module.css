@@ -1,5 +1,7 @@
 .editor {
   display: grid;
+  /* One column no wider than the container: long lines scroll inside the editor. */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-1);
   min-inline-size: 0;
 
