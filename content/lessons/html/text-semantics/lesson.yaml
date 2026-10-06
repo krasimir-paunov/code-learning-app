@@ -1,0 +1,171 @@
+id: html.text-semantics
+version: 1
+title: Meaningful inline text
+summary: Mark words by what they mean, so the meaning survives any styling.
+minutes: 5
+tags: [strong, em, code, time, abbr, mark, semantics]
+
+concept:
+  title: Choose the element by meaning, never by looks
+  body: |
+    Inline elements say what a phrase *is*:
+
+    - `<strong>`: important (a warning). `<em>`: stressed, so the sentence means something else.
+    - `<code>`: computer code. `<time datetime="…">`: a date software can read.
+    - `<abbr title="…">`: an abbreviation and its full form. `<mark>`: highlighted as relevant.
+
+    `<b>` and `<i>` also make text bold or italic, but add nothing to the accessibility tree.
+    Most screen readers don't change voice for `<strong>` by default; the meaning is still in the
+    page for every tool, and every developer, that reads it.
+  code:
+    caption: Each phrase says what it is
+    tabs:
+      - lang: html
+        file: snippets/meaning.html
+
+playground:
+  visualizer: semantics-lens
+  props:
+    paragraphs:
+      - - text: 'Warning:'
+          want: strong
+          why: A warning matters more than the text around it, so it is strong.
+        - ' Do '
+        - text: not
+          want: em
+          why: The stress changes what the sentence means ("do NOT"), so it is em.
+        - ' unplug the router while '
+        - text: update.sh
+          want: code
+          why: A file name is computer code.
+        - ' runs.'
+      - - 'The next update is on '
+        - text: 14 March
+          want: time
+          why: A date belongs in time, with the exact date in datetime.
+          datetime: '2026-03-14'
+        - '. Settings are stored as '
+        - text: JSON
+          want: abbr
+          why: An abbreviation belongs in abbr, with the full form in title.
+          title: JavaScript Object Notation
+        - '.'
+      - - 'Search results for “router”: keep the '
+        - text: router
+          want: mark
+          why: It is highlighted because it matches the search, which is what mark means.
+        - ' away from thick walls.'
+  prompt: |
+    Every phrase starts as a plain `<span>`. Choose elements for **Warning:** and **not**, then
+    open the **Means** lens. `<b>` and `<strong>` look the same; only one adds meaning.
+  explore:
+    - Open **Data** after marking the date and **JSON**. What can software read now?
+    - Get all six phrases right. The count above the lenses keeps score.
+
+challenges:
+  - id: doors-time
+    type: fill-blank
+    prompt: Make the opening time machine-readable as `19:30`.
+    code: { lang: html, file: snippets/doors.html }
+    blanks:
+      tag:
+        accept: ['time']
+        caseSensitive: false
+        label: the element
+      attr:
+        accept: ['datetime']
+        caseSensitive: false
+        label: the attribute
+    check:
+      file: snippets/doors.check.html
+      output: '19:30'
+      verify: browser
+    hints:
+      - The end tag already tells you the element.
+      - The machine-readable value lives in an attribute named after what it holds.
+    explanation: |
+      People read "7:30 pm"; calendars and search engines read `datetime="19:30"`. Both live
+      in one element.
+
+  - id: batteries
+    type: choice
+    prompt: |
+      A product page says "Batteries not included." Customers keep missing it, so the team wants
+      it to stand out as important. Which element?
+    options:
+      - text: '`<strong>`'
+        correct: true
+        why: It marks the phrase as important, and it is bold by default.
+      - text: '`<b>`'
+        why: Bold, but it says nothing about importance.
+      - text: '`<mark>`'
+        why: '`mark` means "highlighted as relevant", like a search match, not "important".'
+      - text: '`<em>`'
+        why: "`em` stresses a word to change the sentence's meaning; it doesn't flag a warning."
+    explanation: Importance is `<strong>`. If it should look different still, change that with CSS.
+
+  - id: adds-a-role
+    type: choice
+    multiple: true
+    prompt: Which elements give assistive technology a role, not just a look? Choose all that apply.
+    options:
+      - text: '`<strong>`'
+        correct: true
+        why: It appears in the accessibility tree with the role `strong`.
+      - text: '`<em>`'
+        correct: true
+        why: It appears with the role `emphasis`.
+      - text: '`<code>`'
+        correct: true
+        why: It appears with the role `code`.
+      - text: '`<b>`'
+        why: Bold styling only; no role.
+      - text: '`<i>`'
+        why: Italic styling only; no role.
+      - text: '`<span>`'
+        why: A span never means anything. It is a styling hook.
+    explanation: |
+      The **Means** lens shows the same thing: `strong`, `em`, `code`, `mark` and `time` carry a
+      role; `b`, `i` and `span` change only how text looks.
+
+production:
+  - title: Keys go in `<kbd>`
+    body: Documentation marks keys the user presses with `<kbd>`, next to `<code>` for things they type or read.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/kbd.html
+  - title: Scripts read `<time>` too
+    body: |
+      The element exposes its machine value as `dateTime`, so a script can show "in 3 days" or
+      add the event to a calendar without parsing "Sunday at midnight".
+    code:
+      tabs:
+        - lang: html
+          file: snippets/datetime.html
+          output: |
+            Sunday at midnight
+            2026-11-30T23:59
+          verify: browser
+
+mistake:
+  title: '`<strong>` for visual weight'
+  body: |
+    Every price in the list is wrapped in `<strong>` to make it bold. Now nothing on the page
+    can be *more* important than a price, and the markup claims meaning it doesn't have.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/strong-for-weight.bad.html
+  fix: When you want a look, use CSS. Keep `<strong>` for text that is genuinely important.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/strong-for-weight.good.html
+
+recap:
+  - '`strong` = important, `em` = stressed, `code` = code, `time` = date, `abbr` = abbreviation, `mark` = relevant.'
+  - '`b`, `i` and `span` change looks only; use CSS when looks are all you want.'
+  - Give `<time>` a `datetime` and `<abbr>` a `title`, so software can read them.
+
+related: [html.headings-paragraphs, html.lists]
