@@ -33,17 +33,19 @@ Interactive learning web app (working title **Project Neon**; the name lives onl
 - `docs/DESIGN.md`: tokens, typography, motion, component inventory, where effects may and may not appear.
 - `docs/ROADMAP.md`: phases 1–8 and the lesson Definition of Done.
 
-**Current phase:** 0 (planning) approved and complete. Phase 1 starts only when the user says so.
+**Current phase:** 1 (foundation) built locally: engine, map, progress, cheat-sheet engine and both reference lessons; CI and the first Pages deploy are pending (nothing pushed yet). Phase 2 starts only when the user says so.
 
 ## Stack
 
 React 19 + TypeScript (strict) + Vite, React Router, Zustand, Zod, CSS Modules + custom-property tokens, CodeMirror 6 (lazy), Shiki (build time), Motion (visualizer/map chunks only), dnd-kit, MiniSearch, dagre (build time), Vitest + Testing Library + Playwright + axe, ESLint (jsx-a11y) + Prettier. Node 22 LTS. .NET 10 SDK for snippet verification.
 
-## Commands (created in Phase 1)
+## Commands
 
 ```
 npm run dev              # dev server
-npm run build            # production build (+ route shells)
+npm run build            # production build (+ route shells, bundle budgets)
+npm run preview          # serve the production build
+npm run build:e2e        # build with test-fixture lessons into dist-e2e (used by npm run e2e)
 npm run test             # Vitest
 npm run e2e              # Playwright + axe
 npm run lint             # ESLint + Prettier check

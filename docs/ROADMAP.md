@@ -38,6 +38,8 @@ Phase 7 (optional C# runner): any time after Phase 5 Core; independent of conten
 
 ## Phase 1 · Foundation, engine and two reference lessons
 
+**Status: built locally; CI and deploy pending.** All nine milestones are implemented and both reference lessons are `done`. The exit criteria that can be checked locally pass (see the checklist under the exit criteria). The CI workflow exists but has not run yet because nothing is pushed, so the phase closes once CI is green and the Pages deploy is checked from a deep link.
+
 Goal: every engine piece exists and is proven by two complete lessons in two very different tracks.
 
 Milestones:
@@ -54,6 +56,15 @@ Milestones:
    - `algo.binary-search`: `search-race` + `step-tracer`; trace, predict-output, find-bug, live-code (the example in ARCHITECTURE.md).
 
 Exit criteria: both lessons pass the lesson DoD; Lighthouse ≥ 90 (mobile) on map and both lessons; bundle budgets enforced; export → clear storage → import restores progress exactly (e2e); the deployed site works from a deep link; a C# lesson with an unmet recommendation shows the banner and the skip persists (e2e, using a stub lesson in test fixtures).
+
+Exit-criteria status (local, end of Phase 1):
+- [x] Both lessons pass the lesson DoD: `content:check` and `verify:snippets` green; keyboard, 360 px, reduced motion and axe covered by e2e. A manual screen-reader pass is still to do.
+- [x] Lighthouse ≥ 90 (mobile, Lighthouse 12 against `npm run preview`): map 93, `css.box-model` 93, `algo.binary-search` 93 (landing 94, cheat sheets 94, profile 94; accessibility, best practices and SEO 100).
+- [x] Bundle budgets enforced: `npm run build` fails when `tools/check-budgets.ts` finds a chunk over budget.
+- [x] Export → clear storage → import restores progress exactly (e2e).
+- [x] C# stub lesson with an unmet recommendation shows the banner and the skip persists (e2e, fixture lesson `cs.hello-dotnet`).
+- [ ] Deployed site works from a deep link: route shells are generated and deep links pass locally; needs the first push and Pages deploy.
+- [ ] CI green on GitHub (`.github/workflows/ci.yml`; not run yet).
 
 ---
 

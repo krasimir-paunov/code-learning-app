@@ -17,16 +17,16 @@ Static, client-only single-page app. No backend, no accounts. Content lives as d
 | Language | **TypeScript** (strict) | Schemas, plugin contracts and the progress model are type-checked end to end. |
 | UI | **React 19** | Largest ecosystem for the hard parts (CodeMirror bindings, accessible drag-and-drop, animation), the most familiar framework for future contributors, and the React Compiler removes most manual memoization. |
 | Build | **Vite** | Fast dev server, first-class code splitting via dynamic `import()`, simple custom plugins for the content pipeline. |
-| Routing | **React Router** (declarative/library mode) | Plain client routing with lazy route modules; no server framework needed. |
+| Routing | **React Router 7** (declarative/library mode) | Plain client routing with lazy route modules; no server framework needed. (v8 requires Node ≥ 22.22; move up with the Node baseline.) |
 | State | **Zustand** | Tiny store for progress/settings with selector subscriptions; persistence is our own adapter (section 9). |
-| Validation | **Zod** | One schema for build-time content validation, progress import validation and TS types (`z.infer`). |
+| Validation | **Zod** | One schema for build-time content validation, progress import validation and TS types (`z.infer`). Runtime code (progress import) uses `zod/mini` to stay inside the route budget. |
 | Styling | **CSS Modules + CSS custom properties** (`tokens.css`) | Zero runtime; tokens are the single source of design truth; visualizers need bespoke CSS anyway; print stylesheets are straightforward. |
 | Editor | **CodeMirror 6** | Modular and small next to Monaco (which is ~2 MB+), works on mobile, accessible. Loaded only by challenges/playgrounds that need editing. |
 | Highlighting | **Shiki** at build time | VS Code-quality highlighting with zero client cost: code is pre-rendered to HTML in the content pipeline. |
-| Animation | **Motion** (in visualizer and map chunks only) + CSS | Layout animations (array swaps, list reordering) are much simpler; everything respects reduced motion. |
+| Animation | **Motion** (in visualizer and map chunks only) + CSS | Layout animations (array swaps, list reordering) are much simpler; everything respects reduced motion. Phase 1 needed none (CSS transitions and canvas cover it); Motion is added by the first visualizer that does. |
 | Drag and drop | **dnd-kit** | Keyboard and screen-reader support for the reorder challenge. |
 | Search | **MiniSearch** | Small full-text index with fuzzy and prefix search for cheat sheets. |
-| Graph layout | **@dagrejs/dagre** at build time | Deterministic skill-tree layout computed once, not in the browser. |
+| Graph layout | **@dagrejs/dagre** at build time | Deterministic skill-tree layout computed once, not in the browser. Used for the module view; the overview uses a simpler lane layout (one lane per track) computed in the same build step. |
 | Tests | **Vitest**, Testing Library, **Playwright** + **axe-core** | Unit (pure logic), component, end-to-end and accessibility. |
 | Lint/format | **ESLint** (flat config, `jsx-a11y`) + **Prettier** | `jsx-a11y` is the deciding factor over Biome. |
 | Fonts | **Fontsource** (self-hosted) | No third-party font requests; no layout shift with `size-adjust` fallbacks. |
@@ -61,8 +61,9 @@ Versions: latest stable at scaffold time, pinned in `package.json` and lockfile;
 │  │  ├─ content/             Zod schemas, manifest loader, types
 │  │  ├─ challenges/
 │  │  │  ├─ registry.ts       glob-discovers types/*/index.ts
-│  │  │  ├─ contract.ts       ChallengeType interface
-│  │  │  └─ types/<type>/     index.ts (schema + grade, pure), View.tsx (lazy)
+│  │  │  ├─ contract.ts       runtime contract (grade, View)
+│  │  │  ├─ build-contract.ts build contract (schema, compile, claims, buildCheck)
+│  │  │  └─ types/<type>/     build.ts (Node only), index.ts (grade, pure), View.tsx (lazy)
 │  │  ├─ runners/
 │  │  │  ├─ contract.ts       Runner interface
 │  │  │  ├─ web-sandbox/      iframe runner for HTML/CSS/JS
@@ -71,9 +72,11 @@ Versions: latest stable at scaffold time, pinned in `package.json` and lockfile;
 │  │  ├─ skilltree/           unlock rules, node state derivation
 │  │  └─ test-harness/        tiny test/expect API shared by sandbox and verify script
 │  ├─ visualizers/<id>/
-│  │  ├─ index.ts             metadata + lazy component + props schema
+│  │  ├─ build.ts             props schema, compile, trace steps (Node only)
+│  │  ├─ index.ts             runtime registration: lazy View (+ TraceView)
 │  │  ├─ model.ts             pure trace/simulation (unit-tested)
 │  │  └─ View.tsx
+│  ├─ visualizers/shared/     step-generator engine (trace.ts), algorithms/, StepPlayer, ArrayView
 │  ├─ components/             design-system components (Button, Slider, Tabs, CodeBlock...)
 │  ├─ effects/                DigitalRain, Glitch, TerminalLoader (all motion-aware)
 │  └─ styles/                 tokens.css, base.css, print.css
@@ -81,9 +84,11 @@ Versions: latest stable at scaffold time, pinned in `package.json` and lockfile;
 │  ├─ vite-plugin-content/    YAML → validated, highlighted JSON chunks + manifest + layout
 │  ├─ content-check.ts        cross-file validation (ids, graph, links, drift with CURRICULUM.md)
 │  ├─ verify-snippets.ts      runs JS (Node/Playwright) and C# (dotnet) samples, compares output
-│  └─ route-shells.ts         emits index.html copies per route for static hosting
+│  ├─ route-shells.ts         emits index.html copies per route for static hosting
+│  └─ check-budgets.ts        fails the build when a chunk exceeds its gzip budget
 ├─ tests/e2e/                 Playwright specs
-└─ public/
+├─ tests/fixtures/content/    stub lessons loaded only in e2e builds (`--mode e2e`)
+└─ public/                    sandbox.html (the runner's iframe document), favicon, robots.txt
 ```
 
 ## 4. Content pipeline
@@ -99,6 +104,7 @@ content/**/*.yaml ──► vite-plugin-content ──► Zod validate ──►
                         one lazy JSON chunk per lesson / per cheat sheet
 ```
 
+- Virtual modules: `virtual:content/manifest`, `virtual:content/lessons` (one loader per published lesson), `virtual:content/lesson/<id>/data` (a lesson's chunk; the `/data` suffix keeps ids like `js.json` from being parsed as JSON) and `virtual:content/cheatsheets`. Challenge and visualizer build plugins are discovered from `src/engine/challenges/types/*/build.ts` and `src/visualizers/*/build.ts`.
 - The **manifest** is loaded eagerly (map, search, unlock logic). Lesson bodies are loaded with `import()` when opened, and prefetched when a map node is hovered/focused.
 - Prose fields accept a restricted Markdown subset (emphasis, inline code, links, lists, fenced code). Raw HTML is rejected at build time.
 - Every reference is resolved at build time: snippet paths, visualizer ids, challenge types, `learn:` links, prerequisite ids. A broken reference fails the build with the file and path of the error.
@@ -514,55 +520,90 @@ All outputs above were verified while writing this document: Node 22 for the JS 
 
 ## 7. Visualizers
 
+Each visualizer is split so the browser never ships build tooling (contracts in `src/visualizers/contract.ts` and `src/engine/challenges/build-contract.ts`):
+
 ```ts
-// src/visualizers/<id>/index.ts
-export default defineVisualizer({
+// src/visualizers/<id>/build.ts: Node only (content build, content:check, verify:snippets)
+export default {
   id: 'search-race',
   props: SearchRacePropsSchema,              // Zod; lesson props validated at build time
-  load: () => import('./View'),              // the only heavy part; lazy
-  trace: searchRaceTrace,                    // optional pure function, reused by `trace` challenges
+  compile: (props, ctx) => props,            // optional: inline snippet files, precompute
+  trace: { props: TracePropsSchema, steps }, // optional: the step list `trace` challenges check against
+} satisfies VisualizerBuild;
+
+// src/visualizers/<id>/index.ts: runtime
+export default defineVisualizer({
+  id: 'search-race',
+  load: () => import('./View.tsx'),          // the only heavy part; lazy
+  loadTrace: () => import('./TraceView.tsx'),// optional learner-drives view
 });
 ```
 
-- **Trace-based model.** Algorithm visualizers call a pure generator that returns a list of frames (`{ array, pointers, highlights, counters, event }`). The view renders frame *i*. Play, pause, step forward/back, scrub, speed and the comparison/swap counters all come from one shared `<StepPlayer>`; no visualizer re-implements them. Big O labels come from the trace metadata.
+- **Trace-based model.** An algorithm is a pure generator (`StepGenerator`, `src/visualizers/shared/trace.ts`) that works on its own copy of the input and yields steps made of small events (`compare`, `swap`, `write`, `probe`, `mark`, `unmark`, `pointers`) plus a narration line, the reference-code line and watched variables. A `TraceCursor` pulls steps lazily and keeps a checkpoint every 64 steps, so `frame(i)` (`{ array, marks, pointers, counters, active, note }`) replays at most 64 steps: memory stays linear in events and scrubbing backwards is cheap. Counters (comparisons, swaps, writes, probes) fall out of the events. The view renders frame *i*. Play, pause, step forward/back, scrub, speed and the comparison/swap counters all come from one shared `<StepPlayer>`; no visualizer re-implements them. Big O labels come from the trace metadata.
 - **Simulators** (event loop, DI lifetimes, middleware, EF change tracking) use the same idea: a pure reducer `(state, action) → state` plus a script of actions, so they are step-able and unit-testable.
 - **Learner-drives mode.** A visualizer can run in "trace" mode, where the learner proposes the next step and the trace verifies it. That is how `trace` challenges work without duplicating algorithm code.
 - **Small screens.** Each visualizer declares a compact layout (fewer bars, stacked panels, controls in a bottom sheet). It must remain usable at 360 px wide.
 - **Motion.** Visualizers read a single `useMotionPreference()`; with reduced motion, frames change instantly (no tweening) and autoplay is off.
+- **Mounting.** Lesson playgrounds and challenge views mount when they near the viewport or once the page is idle after load (`WhenNear`), so their chunks never compete with the first paint.
+
+### How the sort race plugs in (Phase 4, `algo.sorting-race`)
+
+Everything the flagship race needs already exists and is unit-tested; Phase 4 adds a visualizer folder, not engine code.
+
+- **Algorithms:** `src/visualizers/shared/algorithms/sorting.ts` has bubble, selection, insertion, merge and quick sort as step generators (`SORTS`), with `SORT_COMPLEXITY` for the Big O labels. Each emits `compare`/`swap`/`write` events, so the live comparison and swap counters come for free.
+- **Side by side:** a `Race` is `{ lanes: TraceCursor[] }` over the same seeded input (`shuffledRange(n, seeded(seed))`). `raceFrames(race, tick)` gives every lane's frame at one shared tick, `raceLength` the longest lane, `raceStandings` the finishing order. Lanes that finish early hold their last frame.
+- **Step-through, speed, size:** the shared `StepPlayer` and `use-step-player.ts` (play/pause, step back/forward, scrub, speed; `player-math.ts` advances by elapsed time, so speed is frame-rate independent). Changing the size rebuilds the race from the seed; the cursor's checkpoints keep a 1,000-bar quick sort scrubbable.
+- **Rendering:** `ArrayView` (DOM bars, dense mode above 40 bars) is fine up to a few hundred bars. The race adds a canvas lane renderer for larger sizes that reads the same `Frame`, plus a text summary per lane for screen readers (counters announced at most once per second, `shouldAnnounce`).
+- **New folder:** `src/visualizers/sort-race/{build.ts, index.ts, View.tsx}` with props `{ algorithms, size, seed, speed }`. A `trace` mode (the learner predicts the next swap) comes from `build.ts` `trace.steps` reusing the same generators, as `step-tracer` does for binary search.
+- **Proof:** the landing page's `SortRaceDemo` already runs bubble vs insertion vs quick sort on one seeded input with this engine (28 bars), pausing off screen and never autoplaying under reduced motion.
 
 ## 8. Challenge plugins and runners
 
 ### Contract
 
+Two halves per type, in `src/engine/challenges/types/<type>/`:
+
 ```ts
-// src/engine/challenges/contract.ts
-export interface ChallengeType<Spec extends ChallengeBase, Answer> {
-  type: string;                                   // 'predict-output'
-  schema: z.ZodType<Spec>;                        // build-time + runtime validation
+// build.ts: Node only (src/engine/challenges/build-contract.ts)
+export interface ChallengeBuild<Authored, Spec> {
+  type: string;
   defaultXp: number;
-  View: () => Promise<{ default: ComponentType<ChallengeViewProps<Spec, Answer>> }>;  // lazy
-  grade(spec: Spec, answer: Answer, ctx: GradeContext): GradeResult | Promise<GradeResult>;
-  buildCheck?(spec: Spec, ctx: BuildCheckContext): Promise<BuildIssue[]>;  // e.g. "solution passes, starter fails"
-  capabilities?: (ctx: RuntimeCapabilities) => Partial<Spec>;              // e.g. offer "Run it" when a runner exists
+  schema: ZodType<Authored>;                                     // validates the authored YAML
+  compile(challenge: Authored, ctx: CompileContext): Spec;       // highlighting, Markdown, snippet files
+  solution(challenge: Authored, ctx: CompileContext): string;    // "Show solution" HTML
+  claims?(challenge: Authored, ctx: CompileContext): OutputClaim[];            // outputs verify:snippets must prove
+  buildCheck?(challenge: Authored, ctx: BuildCheckContext): Promise<string[]>; // e.g. "solution passes, starter fails"
+}
+
+// index.ts: runtime (src/engine/challenges/contract.ts)
+export interface ChallengeRuntime<Spec, Answer> {
+  type: string;
+  label: string;                                   // "Predict the output"
+  defaultXp: number;
+  grade(spec: Spec, answer: Answer, ctx: GradeContext): GradeResult | Promise<GradeResult>;  // pure
+  View: () => Promise<{ default: ComponentType<ChallengeViewProps<Spec, Answer>> }>;          // lazy
 }
 
 export interface GradeResult {
   passed: boolean;
-  feedback: Markdown;                 // specific: which test failed, which blank is wrong
+  feedback: string;                   // specific: which test failed, which blank is wrong
   details?: { label: string; passed: boolean; message?: string }[];
+  partial?: boolean;                  // a correct intermediate step; not counted as an attempt
+  highlight?: unknown;                // type-specific pointers for the view (wrong blanks, first wrong step)
 }
 
 export interface ChallengeViewProps<Spec, Answer> {
   spec: Spec;
-  state: ChallengeAttemptState;       // attempts, hints revealed, last result
+  id: string;                         // stable prefix for labels
+  state: ChallengeAttemptState;       // attempts, hints used, revealed, passed, last result
   submit(answer: Answer): Promise<GradeResult>;
-  requestHint(): void;
-  reveal(): void;
-  runners: RunnerRegistry;            // for types that execute code
+  disabled: boolean;                  // locked lessons render challenges read-only
 }
 ```
 
-`registry.ts` discovers `types/*/index.ts` with `import.meta.glob` (eager for the small pure part, lazy for `View`). The lesson schema is a discriminated union built from the registry, so a lesson with an unknown `type` fails the build.
+Hints, reveal and XP live in the shared `ChallengeShell`, so views only collect an answer. Code-executing types get runners through `GradeContext.runners`.
+
+`registry.ts` discovers `types/*/index.ts` with `import.meta.glob` (eager for the small pure part, lazy for `View`); the content plugin discovers `types/*/build.ts` the same way in Node. A lesson with an unknown `type` fails the build.
 
 ### Built-in types
 
@@ -587,19 +628,26 @@ export interface Runner {
   prepare(onProgress?: (p: LoadProgress) => void): Promise<void>;   // lazy download/boot
   run(req: RunRequest, signal: AbortSignal): Promise<RunResult>;
 }
-export interface RunRequest { files: Record<string, string>; entry?: string; tests?: string; timeoutMs?: number }
+export interface RunRequest {
+  files: Record<string, string>;
+  tests?: string;
+  timeoutMs?: number;
+  measure?: { selectors: string[]; properties?: string[] };  // boxes + computed styles (visual-match)
+  viewport?: { width: number; height: number };
+}
 export interface RunResult {
   status: 'ok' | 'compile-error' | 'runtime-error' | 'timeout';
-  stdout: string[];                              // console output, in order
+  stdout: { level: 'log' | 'info' | 'warn' | 'error'; text: string }[];  // console output, in order
   diagnostics: { message: string; line?: number; column?: number; severity: 'error' | 'warning' }[];
   tests: { name: string; passed: boolean; message?: string }[];
+  measurements?: Record<string, { found: boolean; box?: DOMRectInit; styles?: Record<string, string> }>;
   durationMs: number;
 }
 ```
 
 **`web-sandbox` (Phase 1).**
-- A fresh `<iframe sandbox="allow-scripts">` (no `allow-same-origin`, so the code runs in an opaque origin and cannot read the app's storage or DOM) using `srcdoc`, with a CSP `<meta>` that blocks all network access except data/blob URLs.
-- Communication via a `MessageChannel` port: console capture, errors, test results.
+- A fresh `<iframe sandbox="allow-scripts">` (no `allow-same-origin`, so the code runs in an opaque origin and cannot read the app's storage or DOM) loading `public/sandbox.html`, which carries its own CSP blocking all network access except data/blob URLs. (`srcdoc` was the plan, but a `srcdoc` document inherits the app's CSP, which forbids the inline scripts learner code needs.) The app posts the built document over a `MessageChannel` port and the sandbox page `document.write`s it.
+- Communication via that port: console capture, errors, test results, measurements. The document builder (acorn loop guard + harness) is its own lazy chunk.
 - Learner code and the shared test harness (`test`, `expect` with `toBe`, `toEqual`, `toThrow`, `toBeCloseTo`, plus DOM helpers for HTML/CSS tests) run in the same realm; tests run after the learner's scripts.
 - Infinite-loop protection: a loop-guard transform (inserted iteration/time checks) plus a watchdog that destroys the iframe after `timeoutMs` (default 3 s) and reports `timeout`.
 - The same harness runs in Node (`node:vm`) for build-time checks, so "the solution passes" is proven before deploy.
@@ -727,7 +775,9 @@ Results are cached by content hash (`.cache/verify.json`) so local runs only exe
 | `/cheatsheets`, `/cheatsheets/:track` | Sheets + MiniSearch |
 | `/profile` | Stats, settings, export/import |
 
-Budgets (gzip, enforced in CI): initial route JS ≤ 150 KB; lesson JSON ≤ 30 KB; a visualizer ≤ 60 KB; CodeMirror loaded only when an editor is on screen. Lighthouse performance ≥ 90 on the map and a reference lesson (mobile profile). Fonts subset to Latin, preloaded for the reading font only.
+Budgets (gzip, enforced by `tools/check-budgets.ts` in `npm run build`): initial route JS ≤ 150 KB; lesson JSON ≤ 30 KB; a visualizer ≤ 60 KB; CodeMirror loaded only when an editor is on screen. Lighthouse performance ≥ 90 on the map and a reference lesson (mobile profile). Fonts subset to Latin, preloaded for the reading font only.
+
+**First load.** Each route shell `modulepreload`s that route's lazy chunks (and, for a lesson, its content chunk), and `main.tsx` loads the initial route before the first render, so the first screen never suspends (a suspended initial route is held back by React's ~300 ms reveal throttle even when the chunk is cached). Below-the-fold lesson views mount when near the viewport or idle; CodeMirror loads only when an editor nears the viewport. Measured at the end of Phase 1 (Lighthouse 12, mobile, local preview): landing 94, map 93, both reference lessons 93, cheat sheets 94, profile 94; accessibility, best practices and SEO 100.
 
 A service worker (Phase 8, `vite-plugin-pwa`) precaches the shell and caches lesson chunks after first visit, so learning works offline; it becomes essential in Phase 7 to cache the .NET runtime.
 
@@ -736,8 +786,8 @@ A service worker (Phase 8, `vite-plugin-pwa`) precaches the shell and caches les
 **GitHub Pages, deployed by GitHub Actions.**
 
 - Free for a public repository (this project's repo is public: https://github.com/krasimir-paunov/code-learning-app, so the site is served from `https://krasimir-paunov.github.io/code-learning-app/` until a custom domain is set). Code, CI and hosting live in one place with no extra account.
-- Netlify and Vercel offer more (custom headers, rewrites, preview deploys), but their free tiers are metered (Netlify's credit-based free plan) or limited to non-commercial use (Vercel Hobby), and we do not need a server feature: the app is fully static and the sandbox uses `srcdoc` iframes, which do not depend on response headers.
-- Trade-offs we accept: no custom HTTP headers (CSP is set by `<meta>`; the sandbox iframe has its own CSP), and no SPA rewrites. Solved by **route shells**: at build time `tools/route-shells.ts` writes an `index.html` copy (with route-specific `<title>`/description) for every known route (`/map/`, `/learn/<id>/`, `/cheatsheets/<track>/`...). Deep links return 200 and share well. A `404.html` handles anything else.
+- Netlify and Vercel offer more (custom headers, rewrites, preview deploys), but their free tiers are metered (Netlify's credit-based free plan) or limited to non-commercial use (Vercel Hobby), and we do not need a server feature: the app is fully static and the sandbox iframe loads a static page with its own `<meta>` CSP, which does not depend on response headers.
+- Trade-offs we accept: no custom HTTP headers (CSP is set by `<meta>`; the sandbox iframe has its own CSP), and no SPA rewrites. Solved by **route shells**: at build time `tools/route-shells.ts` writes an `index.html` copy (with route-specific `<title>`/description) for every known route (`/map/`, `/learn/<id>/`, `/cheatsheets/<track>/`...). Deep links return 200 and share well, and each shell preloads its route's chunks. A `404.html` handles anything else.
 - The Vite `base` comes from an environment variable (`/<repo>/` on `*.github.io`, `/` with a custom domain). Add `.nojekyll` (needed in Phase 7 for the `_framework` folder of the .NET runtime).
 - If we ever need custom headers (e.g. cross-origin isolation for multithreaded WASM), the static build moves unchanged to Cloudflare Pages or Netlify.
 
