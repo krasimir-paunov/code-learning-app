@@ -1,0 +1,160 @@
+.frame {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.lab {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@container (min-width: 780px) {
+  .lab {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+/* The wireframe: top-level blocks stack; a side block sits beside the one before it. */
+.page {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-1);
+}
+
+@container (min-width: 520px) {
+  .page {
+    grid-template-columns: 2fr 1fr;
+
+    & > .block {
+      grid-column: 1 / -1;
+    }
+
+    & > .block:has(+ .block[data-side]) {
+      grid-column: 1;
+    }
+
+    & > .block[data-side] {
+      grid-column: 2;
+    }
+  }
+}
+
+.block {
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+  padding: var(--space-2);
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+
+  &[data-landmark] {
+    border-style: solid;
+    border-color: var(--accent);
+    background: color-mix(in oklch, var(--accent) 7%, var(--bg-2));
+  }
+}
+
+.blockButton {
+  display: grid;
+  gap: 0.1rem;
+  min-block-size: var(--touch-target);
+  padding: var(--space-1) var(--space-2);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  text-align: start;
+
+  &:hover {
+    background: color-mix(in oklch, var(--accent) 12%, transparent);
+  }
+}
+
+.tag {
+  color: var(--code-tag);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.label {
+  font-size: var(--fs-sm);
+}
+
+.role {
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+
+  [data-landmark] > .blockButton > & {
+    color: var(--accent);
+  }
+}
+
+.children {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+  font-size: var(--fs-sm);
+}
+
+.panelTitle {
+  font-size: var(--fs-md);
+}
+
+.landmarks {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding-inline-start: var(--space-5);
+}
+
+.muted {
+  color: var(--text-2);
+}
+
+.issue {
+  display: flex;
+  gap: var(--space-1);
+  color: var(--warning);
+
+  & svg {
+    flex: none;
+    inline-size: 16px;
+    block-size: 16px;
+    margin-block-start: 0.15em;
+  }
+}
+
+.score {
+  font-weight: 600;
+}
+
+.markup {
+  & summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  & pre {
+    max-block-size: 16rem;
+    margin-block-start: var(--space-2);
+    overflow: auto;
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--code-bg);
+    font-size: var(--fs-xs);
+  }
+}
