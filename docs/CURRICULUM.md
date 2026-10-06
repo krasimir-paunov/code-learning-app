@@ -111,7 +111,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 |---|---|---|---|---|---|---|---|---|---|
 | H3.1 | `html.links` | Links | Core | Write links (absolute, fragment, `mailto:`, `download`); know `target="_blank"` now implies `noopener`. | — | `live-editor` | FB, BUG | 5 | done |
 | H3.2 | `html.urls-paths` | URLs and relative paths | Core | Resolve relative URLs (`./`, `../`, `/`) against a base. | ↑ | `url-resolver`: file tree + base URL + href → resolved URL | PO | 6 | done |
-| H3.3 | `html.images` | Images | Core | Use `alt` correctly (incl. empty alt) and `width`/`height` to prevent layout shift; `loading="lazy"`. | ↑ | `image-lab`: images-off toggle, layout-shift replay | BUG, LC | 6 | todo |
+| H3.3 | `html.images` | Images | Core | Use `alt` correctly (incl. empty alt) and `width`/`height` to prevent layout shift; `loading="lazy"`. | ↑ | `image-lab`: images-off toggle, layout-shift replay | BUG, LC | 6 | done |
 | H3.4 | `html.responsive-images` | Responsive images | Ext | Use `srcset`/`sizes` and `picture`; predict which file the browser downloads. | ↑ | `srcset-picker`: viewport + DPR sliders highlight the chosen candidate | PO | 7 | todo |
 | H3.5 | `html.media-embeds` | Video, audio, iframes | Ext | Embed media with controls and captions (`track`); give iframes a `title`. | ↑ | `live-editor` | FB | 5 | todo |
 

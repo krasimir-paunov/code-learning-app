@@ -1,0 +1,153 @@
+id: html.images
+version: 1
+title: Images
+summary: Give every image the right alt text and a reserved size, and load it at the right time.
+minutes: 6
+tags: [img, alt, width, height, layout shift, loading]
+
+concept:
+  title: Words for the image, a size for its box
+  body: |
+    `alt` is the image in words: screen readers read it, and browsers show it when the image
+    fails. Write what the image tells the reader. A purely decorative image gets `alt=""`, so
+    it is skipped. An image that is the only content of a link names the link: say where it goes.
+
+    `width` and `height` give the image's real pixel size. With CSS `height: auto`, the browser
+    keeps that ratio and reserves the box before a single byte arrives, so nothing jumps when
+    the image loads.
+
+    `loading="lazy"` delays images far down the page until the reader scrolls near them.
+  code:
+    caption: Three kinds of image
+    tabs:
+      - lang: html
+        file: snippets/images.html
+
+playground:
+  visualizer: image-lab
+  props:
+    images:
+      - id: product
+        file: shoe-4302.jpg
+        purpose: informative
+        shows: A red trail shoe, side view
+      - id: divider
+        file: swoosh.svg
+        purpose: decorative
+        shows: A blue swoosh between sections
+      - id: logo
+        file: logo.svg
+        purpose: link
+        linkTo: /
+        shows: The Trailhead logo, linking home
+    layout:
+      image: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22%3E%3Cdefs%3E%3ClinearGradient id=%22g%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23f2a65a%22/%3E%3Cstop offset=%221%22 stop-color=%22%233b6e8f%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22640%22 height=%22360%22 fill=%22url(%23g)%22/%3E%3Cpath d=%22M0 300 L160 170 L260 240 L400 110 L640 290 V360 H0Z%22 fill=%22%231f3b4d%22/%3E%3C/svg%3E'
+      width: 640
+      height: 360
+      heading: Ridge Loop
+      text: A 12 km loop with views over the lake.
+      button: Book a guide
+  prompt: |
+    Open **Layout shift**: when the photo arrives, the text and button jump. Turn on **width and
+    height attributes** and compare again. Then go back to **Alt text** and give each image the
+    alt it needs.
+  explore:
+    - Turn **Images off**. What do people see for each of your alt choices?
+    - Give the decorative swoosh a description. What does the screen reader line say now?
+
+challenges:
+  - id: reserve-space
+    type: find-bug
+    prompt: |
+      The text below the photo jumps down when the photo loads. The photo is 1600 × 900 pixels.
+      Click the buggy line, then choose the fix.
+    code: { lang: html, file: snippets/ridge.bug.html }
+    bugLines: [3]
+    fix:
+      choices:
+        - text: '<img src="ridge.jpg" alt="The ridge trail above the lake at sunrise" width="1600" height="900">'
+          correct: true
+        - text: '<img src="ridge.jpg" alt="The ridge trail above the lake at sunrise" loading="lazy">'
+        - text: '<img src="ridge.jpg" alt="The ridge trail above the lake at sunrise" width="100%" height="auto">'
+        - text: '<img src="ridge.jpg" alt="The ridge trail above the lake at sunrise" style="width: 100%">'
+    tests: { file: snippets/ridge.test.js }
+    hints:
+      - The browser can only reserve space if the HTML tells it the image's size.
+    explanation: |
+      `width="1600" height="900"` gives the browser the ratio up front, so it reserves the
+      box. The attributes take whole pixel numbers; CSS still decides how big the image is shown.
+
+  - id: write-alts
+    type: live-code
+    prompt: |
+      Add alt text to all three images. The logo links to the home page, the divider is pure
+      decoration, and the product photo shows a red trail shoe from the side.
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/alts.starter.html }
+    solution:
+      index.html: { file: snippets/alts.solution.html }
+    tests: { file: snippets/alts.test.js }
+    hints:
+      - Decorative images still need the attribute, just empty.
+      - A link that contains only an image gets its name from the image's alt.
+    explanation: |
+      The logo's alt names the link's destination, the divider's empty alt hides it from
+      screen readers, and the photo's alt says what it shows, without "image of".
+
+  - id: chart-alt
+    type: choice
+    prompt: |
+      An image shows a bar chart: sales grew 40% from January to June. Which alt text is best?
+    options:
+      - text: '"Sales grew 40% from January to June."'
+        correct: true
+        why: It gives the reader what the chart is there to say.
+      - text: '"Bar chart"'
+        why: It names the format, not the information.
+      - text: '""'
+        why: The chart carries information, so hiding it loses the point of the image.
+      - text: '"sales-chart-q2.png"'
+        why: A file name describes nothing.
+    explanation: Write the alt that would replace the image if it were gone. For complex charts, put the data in a table nearby too.
+
+production:
+  - title: Load the important image first, the rest later
+    body: |
+      `loading="lazy"` saves data for images below the fold. Never put it on the main image at
+      the top: that delays the page's largest paint. `fetchpriority="high"` does the opposite and
+      fetches the main image early.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/priority.html
+  - title: The CSS that goes with the attributes
+    body: |
+      Most stylesheets let images shrink with their container. `height: auto` keeps the
+      `width`/`height` ratio, so the reserved box always matches the image.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/responsive-img.css
+
+mistake:
+  title: '"image of" and file names as alt text'
+  body: |
+    A screen reader already announces "image", so "image of" is noise, and a file name says
+    nothing at all.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/alt.bad.html
+  fix: Describe what the image shows, as you would to someone on the phone.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/alt.good.html
+
+recap:
+  - '`alt` says what the image tells the reader; decorative images get `alt=""`; a linked image names the link.'
+  - '`width` and `height` let the browser reserve space, so nothing jumps when the image loads.'
+  - '`loading="lazy"` for images far down the page, never for the main image.'
+
+related: [html.urls-paths, html.responsive-images]
