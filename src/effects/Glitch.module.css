@@ -1,0 +1,77 @@
+.glitch {
+  position: relative;
+  display: inline-block;
+
+  &::before,
+  &::after {
+    content: attr(data-text);
+    /* Empty alt text: the duplicated layers must not be announced. */
+    content: attr(data-text) / '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  &::before {
+    color: var(--neon-cyan);
+    animation: slice-a var(--dur-reward) steps(6, end) 1;
+  }
+
+  &::after {
+    color: var(--neon-magenta);
+    animation: slice-b var(--dur-reward) steps(6, end) 1;
+  }
+}
+
+.fade {
+  display: inline-block;
+  opacity: 1;
+  transition: opacity var(--dur-fast) var(--ease-out);
+
+  @starting-style {
+    opacity: 0;
+  }
+}
+
+@keyframes slice-a {
+  0% {
+    opacity: 1;
+    clip-path: inset(10% 0 70% 0);
+    translate: -3px 0;
+  }
+  33% {
+    clip-path: inset(55% 0 20% 0);
+    translate: 3px 0;
+  }
+  66% {
+    clip-path: inset(30% 0 45% 0);
+    translate: -2px 0;
+  }
+  100% {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    translate: 0;
+  }
+}
+
+@keyframes slice-b {
+  0% {
+    opacity: 1;
+    clip-path: inset(65% 0 10% 0);
+    translate: 3px 0;
+  }
+  33% {
+    clip-path: inset(15% 0 60% 0);
+    translate: -3px 0;
+  }
+  66% {
+    clip-path: inset(45% 0 30% 0);
+    translate: 2px 0;
+  }
+  100% {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    translate: 0;
+  }
+}

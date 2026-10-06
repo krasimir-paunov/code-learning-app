@@ -1,0 +1,21 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.bubble {
+  position: absolute;
+  inset-block-start: calc(100% + var(--space-1));
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  z-index: var(--z-popover);
+  padding: var(--space-1) var(--space-2);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-3);
+  color: var(--text-1);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-xs);
+  white-space: nowrap;
+  pointer-events: none;
+}

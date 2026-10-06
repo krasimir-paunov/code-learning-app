@@ -1,0 +1,84 @@
+.block {
+  min-inline-size: 0;
+  margin: 0;
+  overflow: hidden;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--code-bg);
+}
+
+.caption {
+  padding: var(--space-2) var(--space-3);
+  border-block-end: var(--border-width) solid var(--border);
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-block-size: 40px;
+  padding-inline: var(--space-3) var(--space-1);
+  border-block-end: var(--border-width) solid var(--border);
+}
+
+.lang {
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.code {
+  overflow-x: auto;
+  /* Visible scroll affordance: fades at the edges only when content overflows. */
+  background:
+    linear-gradient(to right, var(--code-bg) 30%, transparent) left / 24px 100% no-repeat local,
+    linear-gradient(to left, var(--code-bg) 30%, transparent) right / 24px 100% no-repeat local,
+    linear-gradient(to right, var(--border-strong), transparent) left / 8px 100% no-repeat scroll,
+    linear-gradient(to left, var(--border-strong), transparent) right / 8px 100% no-repeat scroll;
+
+  & pre {
+    margin: 0;
+    padding: var(--space-3) var(--space-4);
+    background: transparent;
+    font-size: var(--fs-code);
+    line-height: var(--lh-code);
+    tab-size: 2;
+  }
+
+  & code {
+    display: block;
+    inline-size: max-content;
+    min-inline-size: 100%;
+  }
+
+  &:focus-visible {
+    outline-offset: -2px;
+  }
+}
+
+.output {
+  border-block-start: var(--border-width) solid var(--border);
+  background: var(--bg-1);
+
+  & pre {
+    margin: 0;
+    padding: var(--space-2) var(--space-4) var(--space-3);
+    color: var(--text-1);
+    font-size: var(--fs-code);
+    line-height: var(--lh-code);
+    white-space: pre-wrap;
+  }
+}
+
+.outputLabel {
+  padding: var(--space-2) var(--space-4) 0;
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

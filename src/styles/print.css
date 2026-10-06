@@ -1,0 +1,63 @@
+/*
+ * Print: redefine semantic tokens (black on white, no glow), the same way a light theme will.
+ * Navigation, controls and effects are hidden; content avoids page breaks inside entries.
+ */
+@media print {
+  :root[data-theme] {
+    color-scheme: light;
+    --bg-0: var(--white);
+    --bg-1: var(--white);
+    --bg-2: var(--white);
+    --bg-3: var(--white);
+    --border: var(--print-muted);
+    --border-strong: var(--print-muted);
+    --text-1: var(--print-ink);
+    --text-2: var(--print-muted);
+    --text-3: var(--print-muted);
+    --accent: var(--print-ink);
+    --neon-cyan: var(--print-ink);
+    --neon-green: var(--print-ink);
+    --neon-magenta: var(--print-ink);
+    --neon-amber: var(--print-ink);
+    --neon-red: var(--print-ink);
+    --neon-violet: var(--print-ink);
+    --glow-cyan: none;
+    --glow-green: none;
+    --glow-magenta: none;
+    --shadow-raised: none;
+    --code-bg: var(--white);
+    --code-fg: var(--print-ink);
+    --code-keyword: var(--print-ink);
+    --code-string: var(--print-ink);
+    --code-number: var(--print-ink);
+    --code-function: var(--print-ink);
+    --code-property: var(--print-ink);
+    --code-tag: var(--print-ink);
+    --code-attribute: var(--print-ink);
+    --code-comment: var(--print-muted);
+    --code-punctuation: var(--print-ink);
+    --code-type: var(--print-ink);
+  }
+
+  body {
+    background: var(--white);
+  }
+
+  [data-print='hide'],
+  nav,
+  button,
+  canvas,
+  iframe {
+    display: none !important;
+  }
+
+  pre,
+  figure,
+  [data-print='keep'] {
+    break-inside: avoid;
+  }
+
+  a {
+    color: var(--print-ink);
+  }
+}

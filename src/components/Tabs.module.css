@@ -1,0 +1,65 @@
+.tabs {
+  min-inline-size: 0;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  border-block-end: var(--border-width) solid var(--border);
+}
+
+.list {
+  display: flex;
+  min-inline-size: 0;
+  overflow-x: auto;
+}
+
+.tab {
+  position: relative;
+  min-block-size: var(--touch-target);
+  padding-inline: var(--space-3);
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--text-1);
+  }
+
+  &[aria-selected='true'] {
+    color: var(--text-1);
+  }
+
+  &[aria-selected='true']::after {
+    content: '';
+    position: absolute;
+    inset-inline: var(--space-2);
+    inset-block-end: -1px;
+    block-size: 2px;
+    background: var(--accent);
+  }
+
+  &:focus-visible {
+    outline-offset: -2px;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex: none;
+}
+
+.panel {
+  min-inline-size: 0;
+
+  &:focus-visible {
+    outline-offset: -2px;
+  }
+}

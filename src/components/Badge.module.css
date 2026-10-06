@@ -1,0 +1,39 @@
+.badge {
+  --tone: var(--text-2);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.1em 0.55em;
+  border: var(--border-width) solid color-mix(in oklch, var(--tone) 55%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in oklch, var(--tone) 10%, transparent);
+  color: var(--tone);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: var(--lh-xs);
+  white-space: nowrap;
+
+  & svg {
+    inline-size: 1em;
+    block-size: 1em;
+  }
+}
+
+.accent {
+  --tone: var(--accent);
+}
+.success {
+  --tone: var(--success);
+}
+.warning {
+  --tone: var(--warning);
+}
+.danger {
+  --tone: var(--danger);
+}
+.info {
+  --tone: var(--info);
+}
+.reward {
+  --tone: var(--reward);
+}

@@ -31,7 +31,15 @@ export default tseslint.config(
     },
   },
   reactHooks.configs.flat['recommended-latest'],
-  { files: ['src/**/*.tsx'], ...jsxA11y.flatConfigs.recommended },
+  {
+    files: ['src/**/*.tsx'],
+    ...jsxA11y.flatConfigs.recommended,
+    rules: {
+      ...jsxA11y.flatConfigs.recommended.rules,
+      // Scrollable code regions must be focusable so keyboard users can scroll them.
+      'jsx-a11y/no-noninteractive-tabindex': ['error', { tags: [], roles: ['tabpanel', 'region'] }],
+    },
+  },
   {
     files: ['tools/**/*.ts', 'vite.config.ts', 'playwright.config.ts', 'tests/**/*.ts'],
     languageOptions: { globals: globals.node },

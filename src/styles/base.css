@@ -1,0 +1,162 @@
+/* Reset and element defaults. Semantic tokens only. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-block-start: calc(var(--topbar-height) + var(--space-4));
+}
+
+body {
+  min-block-size: 100dvh;
+  background: var(--bg-0);
+  color: var(--text-1);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  overflow-wrap: break-word;
+}
+
+img,
+svg,
+canvas,
+video,
+iframe {
+  display: block;
+  max-inline-size: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: var(--lh-lg);
+  text-wrap: balance;
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+}
+
+::selection {
+  background: color-mix(in oklch, var(--neon-cyan) 35%, transparent);
+  color: var(--text-1);
+}
+
+/* One focus style everywhere: 2px cyan outline + 2px offset (≥ 3:1 on every surface). */
+:focus-visible {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Effects off/reduced: no ambient or decorative animation anywhere. */
+:root:is([data-effects='reduced'], [data-effects='off']) *,
+:root:is([data-effects='reduced'], [data-effects='off']) *::before,
+:root:is([data-effects='reduced'], [data-effects='off']) *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}
+
+.visually-hidden:not(:focus, :active) {
+  position: absolute !important;
+  inline-size: 1px !important;
+  block-size: 1px !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+}
+
+/* Rendered Markdown (restricted subset: emphasis, inline code, links, lists, fenced code). */
+.prose {
+  max-inline-size: var(--measure);
+  color: var(--text-1);
+
+  & > * + * {
+    margin-block-start: var(--space-3);
+  }
+
+  & ul,
+  & ol {
+    padding-inline-start: var(--space-5);
+  }
+
+  & li + li {
+    margin-block-start: var(--space-1);
+  }
+
+  & strong {
+    font-weight: 650;
+  }
+
+  & :not(pre) > code {
+    padding: 0.1em 0.35em;
+    border-radius: var(--radius-sm);
+    background: var(--bg-3);
+    color: var(--text-1);
+    font-size: 0.9em;
+  }
+
+  & pre {
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--code-bg);
+    font-size: var(--fs-code);
+    line-height: var(--lh-code);
+    overflow-x: auto;
+  }
+}
+
+/* Shiki output */
+.shiki {
+  background: transparent !important;
+}

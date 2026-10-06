@@ -1,0 +1,51 @@
+.loader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-inline-size: 100%;
+  padding: var(--space-5) var(--gutter);
+  color: var(--neon-green);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.prompt {
+  color: var(--text-3);
+}
+
+.line {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  /* Typed effect: reveals one character per step; the base reduced/off rule skips it. */
+  animation: type calc(var(--chars) * 25ms) steps(var(--chars), end) both;
+}
+
+.cursor {
+  flex: none;
+  inline-size: 0.6em;
+  block-size: 1.1em;
+  background: var(--neon-green);
+  /* 1 Hz blink: well under the 3 flashes per second limit (WCAG 2.3.1). */
+  animation: blink 1s steps(2, start) infinite;
+}
+
+.percent {
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes type {
+  from {
+    max-inline-size: 0;
+  }
+  to {
+    max-inline-size: calc(var(--chars) * 1ch);
+  }
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}

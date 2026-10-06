@@ -1,0 +1,15 @@
+.ring {
+  flex: none;
+}
+
+.track {
+  fill: none;
+  stroke: var(--border);
+}
+
+.value {
+  fill: none;
+  stroke: var(--ring-color);
+  stroke-linecap: round;
+  transition: stroke-dashoffset var(--dur-slow) var(--ease-out);
+}

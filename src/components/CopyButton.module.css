@@ -1,0 +1,33 @@
+.copy {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-block-size: 36px;
+  padding-inline: var(--space-2);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+
+  & > span {
+    display: inline-flex;
+  }
+
+  & svg {
+    inline-size: 15px;
+    block-size: 15px;
+  }
+
+  &:hover {
+    border-color: var(--border-strong);
+    color: var(--text-1);
+  }
+}
+
+@media (pointer: coarse) {
+  .copy {
+    min-block-size: var(--touch-target);
+  }
+}
