@@ -36,3 +36,20 @@ test('map pages have no axe violations', async ({ page }) => {
     expect(results.violations, url).toEqual([]);
   }
 });
+
+test('the overview draws lines between tracks only for the hovered or focused module', async ({
+  page,
+}, info) => {
+  test.skip(info.project.name === 'mobile', 'the overview is the desktop default');
+  await page.goto('/map');
+  const lines = page.locator('main svg path');
+  const resting = await lines.count();
+  // The C# track's first module recommends the JavaScript fundamentals.
+  const card = page.getByRole('link', { name: /The C# toolchain/ });
+  await card.hover();
+  await expect.poll(() => lines.count()).toBeGreaterThan(resting);
+  await page.mouse.move(0, 0);
+  await expect.poll(() => lines.count()).toBe(resting);
+  await card.focus();
+  await expect.poll(() => lines.count()).toBeGreaterThan(resting);
+});

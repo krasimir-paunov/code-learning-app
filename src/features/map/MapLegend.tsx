@@ -50,7 +50,10 @@ export function MapLegend() {
         </div>
         <div className={styles.item}>
           <dt>Lines</dt>
-          <dd>Solid: required. Dotted: recommended. Dashed: related.</dd>
+          <dd>
+            Solid: required. Dotted: recommended. Dashed: related. On the overview, lines between
+            tracks appear for the module you point at or focus.
+          </dd>
         </div>
       </dl>
     </details>

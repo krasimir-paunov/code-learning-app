@@ -43,8 +43,9 @@
   stroke-width: 2;
 }
 
+/* Shown only for the hovered or focused module, so it can stand out. */
 .crossEdge {
-  stroke: var(--border-strong);
+  stroke: var(--accent);
   stroke-width: 1.5;
 }
 
