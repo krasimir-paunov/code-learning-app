@@ -1,5 +1,11 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
+import { freeRoamProgress, seedProgress } from './fixtures.ts';
+
+// Their prerequisites (the first HTML lessons) are published now, so open them with Free roam.
+test.beforeEach(async ({ page }) => {
+  await seedProgress(page, freeRoamProgress());
+});
 
 test('binary search: trace the probes by hand', async ({ page }) => {
   await page.goto('/learn/algo.binary-search');
@@ -69,9 +75,9 @@ test('box model: the fill-blank and visual-match challenges accept the right CSS
   await expect(match).toContainText('Passed');
 });
 
-test('both reference lessons are open on the map and have no axe violations', async ({ page }) => {
+test('both reference lessons are on the map and have no axe violations', async ({ page }) => {
   await page.goto('/map/algo.searching?view=map');
-  await expect(page.getByRole('button', { name: /Binary search.*Available/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Binary search/ })).toBeVisible();
   for (const url of ['/learn/css.box-model', '/learn/algo.binary-search']) {
     await page.goto(url);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();

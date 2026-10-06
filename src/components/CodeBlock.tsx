@@ -22,6 +22,7 @@ function CodePane({ html, output, label }: { html: string; output?: string; labe
         dangerouslySetInnerHTML={{ __html: html }}
         // The scroll container must be keyboard-scrollable when it overflows. A named group, not
         // a region: a lesson has many code blocks, and they are not page landmarks.
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- scrollable content
         tabIndex={0}
         role="group"
         aria-label={label}
