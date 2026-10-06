@@ -20,27 +20,31 @@ export function ConsolePanel({
       <div className={styles.title} aria-hidden="true">
         Console
       </div>
-      <ol className={styles.lines} role="log" aria-live="polite">
-        {entries.length === 0 && diagnostics.length === 0 && (
-          <li className={styles.empty}>{empty}</li>
-        )}
-        {entries.map((entry, i) => (
-          <li key={i} className={styles[entry.level]}>
-            {entry.level === 'warn' && <TriangleAlert aria-hidden="true" />}
-            {entry.level === 'error' && <CircleAlert aria-hidden="true" />}
-            <span>{entry.text}</span>
-          </li>
-        ))}
-        {diagnostics.map((d, i) => (
-          <li key={`d${i}`} className={styles.error}>
-            <CircleAlert aria-hidden="true" />
-            <span>
-              {d.line !== undefined && !d.message.includes(`:${d.line}`) ? `Line ${d.line}: ` : ''}
-              {d.message}
-            </span>
-          </li>
-        ))}
-      </ol>
+      <div role="log" aria-live="polite" className={styles.lines}>
+        <ol>
+          {entries.length === 0 && diagnostics.length === 0 && (
+            <li className={styles.empty}>{empty}</li>
+          )}
+          {entries.map((entry, i) => (
+            <li key={i} className={styles[entry.level]}>
+              {entry.level === 'warn' && <TriangleAlert aria-hidden="true" />}
+              {entry.level === 'error' && <CircleAlert aria-hidden="true" />}
+              <span>{entry.text}</span>
+            </li>
+          ))}
+          {diagnostics.map((d, i) => (
+            <li key={`d${i}`} className={styles.error}>
+              <CircleAlert aria-hidden="true" />
+              <span>
+                {d.line !== undefined && !d.message.includes(`:${d.line}`)
+                  ? `Line ${d.line}: `
+                  : ''}
+                {d.message}
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
     </section>
   );
 }

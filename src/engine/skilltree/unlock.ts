@@ -132,3 +132,15 @@ export function frontier(
     statuses[id]?.state === 'in-progress' || statuses[id]?.state === 'available';
   return manifest.order.find(open);
 }
+
+/** Where "Next" goes after a lesson: the next open lesson in teaching order, if any. */
+export function nextLesson(
+  manifest: Pick<SkillManifest, 'order'>,
+  statuses: Record<NodeId, NodeStatus>,
+  current: NodeId,
+): NodeId | undefined {
+  const start = manifest.order.indexOf(current);
+  const open = (id: NodeId) =>
+    statuses[id]?.state === 'available' || statuses[id]?.state === 'in-progress';
+  return manifest.order.slice(start + 1).find(open) ?? manifest.order.slice(0, start).find(open);
+}

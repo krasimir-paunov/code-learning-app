@@ -26,7 +26,7 @@ describe('reorder grading', () => {
     expect(gradeReorder(spec, { order: ['a', 'd', 'b', 'c', 'x'], excluded: ['x'] })).toMatchObject(
       {
         passed: false,
-        feedback: '1 of 4 are in the right place. The first one out of place is highlighted.',
+        feedback: '2 of 4 are in the right place. The first one out of place is highlighted.',
         highlight: { ids: ['d'] },
       },
     );

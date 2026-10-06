@@ -5,7 +5,7 @@ import { parse } from 'yaml';
 import { CurriculumSchema, type Curriculum } from '../content/curriculum-schema.ts';
 import { buildSkillGraph } from './graph.ts';
 import type { PublishedInfo } from './types.ts';
-import { deriveStatuses, frontier, resolveGraph, type ProgressView } from './unlock.ts';
+import { deriveStatuses, frontier, nextLesson, resolveGraph, type ProgressView } from './unlock.ts';
 import { validateSkillGraph } from './validate.ts';
 
 /** Two tracks; C# recommends a JS lesson; one Extended lesson in the middle of a module. */
@@ -228,5 +228,18 @@ describe('module dependencies', () => {
     expect(graph.modules['js.data']?.dependsOn).toEqual(['js.values']);
     expect(graph.modules['cs.toolchain']?.dependsOn).toEqual(['js.values']);
     expect(graph.modules['cs.toolchain']?.recommendsModules).toEqual(['js.data']);
+  });
+});
+
+describe('nextLesson', () => {
+  it('picks the next open lesson in teaching order, wrapping around', () => {
+    const graph = buildSkillGraph(fixture, pub('js.a', 'js.c', 'cs.x'));
+    const statuses = deriveStatuses(
+      graph,
+      resolveGraph(graph),
+      view({ completed: new Set(['js.a']) }),
+    );
+    expect(nextLesson(graph, statuses, 'js.a')).toBe('js.c');
+    expect(nextLesson(graph, statuses, 'cs.x')).toBe('js.c');
   });
 });

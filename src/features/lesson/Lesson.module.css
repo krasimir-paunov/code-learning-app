@@ -1,0 +1,452 @@
+/* Lesson surfaces are reading surfaces: calm, high contrast, no effects (DESIGN §5). */
+.layout {
+  display: grid;
+  inline-size: min(100%, var(--wide));
+  margin-inline: auto;
+  padding: var(--space-5) var(--gutter) var(--space-8);
+  background: var(--bg-1);
+
+  @media (min-width: 1024px) {
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+}
+
+.main {
+  display: grid;
+  gap: var(--space-7);
+  min-inline-size: 0;
+}
+
+/* Section rail (lg+) */
+.rail {
+  display: none;
+
+  @media (min-width: 1024px) {
+    display: block;
+    position: sticky;
+    inset-block-start: calc(var(--topbar-height) + var(--space-5));
+    align-self: start;
+  }
+
+  & ol {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+.railLink {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-inline-start: 2px solid var(--border);
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--text-1);
+    text-decoration: none;
+  }
+}
+
+.railActive {
+  border-inline-start-color: var(--accent);
+  color: var(--text-1);
+  font-weight: 600;
+}
+
+.railCount {
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Challenge progress bar on smaller screens */
+.progressBar {
+  position: sticky;
+  inset-block-start: var(--topbar-height);
+  z-index: var(--z-sticky);
+  block-size: 3px;
+  margin-inline: calc(-1 * var(--gutter));
+  background: var(--bg-3);
+
+  & span {
+    display: block;
+    block-size: 100%;
+    background: var(--success);
+    transition: inline-size var(--dur-base) var(--ease-out);
+  }
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
+}
+
+.header {
+  display: grid;
+  gap: var(--space-2);
+  max-inline-size: var(--measure);
+}
+
+.breadcrumb {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  line-height: var(--lh-xl);
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.summary {
+  color: var(--text-2);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.banner,
+.lockedBanner {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2) var(--space-3);
+  align-items: start;
+  max-inline-size: var(--measure);
+  padding: var(--space-3) var(--space-4);
+  border-inline-start: 4px solid var(--info);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+
+  & > svg {
+    inline-size: 20px;
+    block-size: 20px;
+    margin-block-start: 3px;
+    color: var(--info);
+  }
+}
+
+.lockedBanner {
+  border-inline-start-color: var(--warning);
+
+  & > svg {
+    color: var(--warning);
+  }
+}
+
+.bannerIcon {
+  color: var(--info);
+}
+
+.bannerActions {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.section {
+  display: grid;
+  gap: var(--space-4);
+  max-inline-size: var(--measure);
+  scroll-margin-block-start: calc(var(--topbar-height) + var(--space-4));
+}
+
+.wide {
+  max-inline-size: none;
+}
+
+.sectionTitle {
+  display: grid;
+  gap: var(--space-1);
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-lg);
+}
+
+.sectionKicker {
+  color: var(--accent);
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Playground */
+.playground {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-2);
+
+  &:fullscreen {
+    overflow: auto;
+    padding: var(--space-6);
+    background: var(--bg-1);
+  }
+}
+
+.playgroundBar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.playgroundPrompt {
+  padding-inline-start: var(--space-3);
+  border-inline-start: 3px solid var(--accent);
+}
+
+.playgroundActions {
+  display: flex;
+  flex: none;
+}
+
+.explore {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+
+  & ul {
+    margin: var(--space-1) 0 0;
+    padding-inline-start: var(--space-5);
+  }
+
+  & :not(pre) > code {
+    padding: 0.1em 0.3em;
+    border-radius: var(--radius-sm);
+    background: var(--bg-3);
+  }
+}
+
+/* Challenges */
+.challenge {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-2);
+  scroll-margin-block-start: calc(var(--topbar-height) + var(--space-4));
+
+  &[data-passed] {
+    border-color: var(--success);
+  }
+
+  @media (min-width: 768px) {
+    padding: var(--space-5);
+  }
+}
+
+.challengeHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.challengeTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: var(--fs-md);
+}
+
+.challengeType {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.prompt {
+  max-inline-size: var(--measure);
+}
+
+.lockedNote {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--warning);
+  font-size: var(--fs-sm);
+
+  & svg {
+    inline-size: 16px;
+    block-size: 16px;
+  }
+}
+
+.feedback {
+  display: grid;
+  gap: var(--space-3);
+
+  &:empty {
+    display: none;
+  }
+}
+
+.feedbackBody {
+  --tone: var(--danger);
+  padding: var(--space-3) var(--space-4);
+  border-inline-start: 4px solid var(--tone);
+  border-radius: var(--radius-md);
+  background: color-mix(in oklch, var(--tone) 8%, var(--bg-1));
+
+  &[data-tone='success'] {
+    --tone: var(--success);
+  }
+
+  &[data-tone='info'] {
+    --tone: var(--info);
+  }
+
+  & code {
+    padding: 0.1em 0.3em;
+    border-radius: var(--radius-sm);
+    background: var(--bg-3);
+    font-size: 0.9em;
+  }
+}
+
+.xpGain {
+  color: var(--reward);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.explanation,
+.solution {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--bg-1);
+}
+
+.explanationLabel {
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.help {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.helpActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.hints {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-7);
+  border-inline-start: 3px solid var(--warning);
+  border-radius: var(--radius-md);
+  background: var(--bg-1);
+}
+
+/* Production / mistake */
+.callout {
+  display: grid;
+  gap: var(--space-3);
+  min-inline-size: 0;
+  padding: var(--space-4);
+  border-inline-start: 4px solid var(--info);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+
+  &[data-kind='bad'] {
+    border-inline-start-color: var(--danger);
+  }
+
+  &[data-kind='fix'] {
+    border-inline-start-color: var(--success);
+  }
+}
+
+.calloutTitle {
+  font-size: var(--fs-md);
+}
+
+.mistakeGrid {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-3);
+}
+
+@container (min-width: 640px) {
+  .mistakeGrid:has(> :nth-child(2)) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.recap {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  & li {
+    padding: var(--space-3) var(--space-4);
+    border-inline-start: 3px solid var(--success);
+    border-radius: var(--radius-sm);
+    background: var(--bg-2);
+  }
+
+  & code {
+    padding: 0.1em 0.3em;
+    border-radius: var(--radius-sm);
+    background: var(--bg-3);
+    font-size: 0.9em;
+  }
+}
+
+.complete {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3) var(--space-4);
+  align-items: center;
+  padding: var(--space-5);
+  border: 2px solid var(--success);
+  border-radius: var(--radius-lg);
+  background: var(--bg-2);
+}
+
+.completeIcon {
+  inline-size: 40px;
+  block-size: 40px;
+  color: var(--success);
+}
+
+.completeTitle {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+}
+
+.completeActions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}

@@ -1,4 +1,5 @@
-import type { ChallengeRuntime } from './contract.ts';
+import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
+import type { ChallengeRuntime, ChallengeViewProps } from './contract.ts';
 
 /**
  * Discovered, not listed: adding challenges/types/<type>/index.ts registers a type.
@@ -11,3 +12,8 @@ const modules = import.meta.glob<{ default: ChallengeRuntime<unknown, unknown> }
 
 export const challengeTypes: Readonly<Record<string, ChallengeRuntime<unknown, unknown>>> =
   Object.fromEntries(Object.values(modules).map((m) => [m.default.type, m.default]));
+
+/** Lazy views created once at load (never during render). */
+export const challengeViews: Readonly<
+  Record<string, LazyExoticComponent<ComponentType<ChallengeViewProps<unknown, unknown>>>>
+> = Object.fromEntries(Object.entries(challengeTypes).map(([type, t]) => [type, lazy(t.View)]));

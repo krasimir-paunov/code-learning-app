@@ -1,0 +1,79 @@
+# Test fixture (e2e builds only): exercises every non-trace challenge type end to end.
+id: js.first-script
+version: 1
+title: Running JavaScript
+summary: Fixture lesson covering the challenge types.
+minutes: 4
+concept:
+  title: Fixture
+  body: A fixture lesson used by end-to-end tests.
+  code:
+    tabs:
+      - lang: js
+        file: snippets/predict.js
+        output: 3 3
+        verify: node
+playground:
+  visualizer: live-editor
+  props:
+    files:
+      index.html: '<h1 id="t">Hi</h1>'
+      style.css: 'h1 { color: rebeccapurple; }'
+      main.js: "console.log(document.getElementById('t').textContent);"
+  prompt: Edit the files and watch the preview.
+challenges:
+  - id: predict
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: js, file: snippets/predict.js }
+    answer: 3 3
+    verify: node
+    hints:
+      - '`at(-1)` reads the last item.'
+    explanation: Three items; the last one is 3.
+  - id: blank
+    type: fill-blank
+    prompt: Make it print `Hello, world`.
+    code: { lang: js, inline: "const greeting = [[word]] + ', world';\nconsole.log(greeting);" }
+    blanks:
+      word: { accept: ["'Hello'", '"Hello"'], label: the first word }
+    explanation: String concatenation joins the two parts.
+  - id: bug
+    type: find-bug
+    prompt: '`sum([1, 2, 3])` returns 5. Find the bug.'
+    code: { lang: js, file: snippets/bug.js }
+    bugLines: [3]
+    fix:
+      choices:
+        - { text: 'for (let i = 0; i < xs.length; i++) {', correct: true }
+        - { text: 'for (let i = 1; i <= xs.length; i++) {' }
+    tests: { file: snippets/sum.test.js }
+    explanation: Indexes start at 0.
+  - id: order
+    type: reorder
+    prompt: Put the steps in order.
+    items:
+      - Declare a variable
+      - Assign a value
+      - Log it
+    explanation: Declare, assign, use.
+  - id: write
+    type: live-code
+    prompt: Write `double(n)`.
+    runner: web-sandbox
+    files:
+      main.js: { file: snippets/double.starter.js }
+    solution:
+      main.js: { file: snippets/double.solution.js }
+    tests: { file: snippets/double.test.js }
+    explanation: Multiply by two.
+production:
+  - title: Fixture
+    body: Fixture.
+mistake:
+  title: Fixture
+  body: Fixture.
+  fix: Fixture.
+recap:
+  - Fixture one.
+  - Fixture two.

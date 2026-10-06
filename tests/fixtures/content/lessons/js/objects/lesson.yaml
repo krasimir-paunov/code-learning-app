@@ -1,0 +1,33 @@
+# Test fixture (e2e builds only): a published stand-in so cs.hello-dotnet has a live recommendation.
+id: js.objects
+version: 1
+title: Objects
+summary: Fixture lesson.
+minutes: 6
+concept:
+  title: Fixture
+  body: A fixture lesson used by end-to-end tests.
+playground:
+  visualizer: live-editor
+  props:
+    files:
+      main.js: 'console.log({ a: 1 });'
+  prompt: Press **Run**.
+challenges:
+  - id: pick
+    type: choice
+    prompt: Pick the object literal.
+    options:
+      - { text: '`{ a: 1 }`', correct: true, why: Curly braces with key-value pairs. }
+      - { text: '`[1]`', why: That is an array. }
+    explanation: Object literals use curly braces.
+production:
+  - title: Fixture
+    body: Fixture.
+mistake:
+  title: Fixture
+  body: Fixture.
+  fix: Fixture.
+recap:
+  - Fixture one.
+  - Fixture two.

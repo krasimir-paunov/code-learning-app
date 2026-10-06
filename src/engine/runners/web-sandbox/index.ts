@@ -7,7 +7,6 @@ import type {
   Runner,
   TestResult,
 } from '../contract.ts';
-import { buildSandboxDocument, locateError } from './document.ts';
 
 const DEFAULT_TIMEOUT_MS = 3000;
 const SANDBOX_URL = `${import.meta.env.BASE_URL}sandbox.html`;
@@ -77,7 +76,6 @@ export function mountSandbox(
   };
 
   const channel = new MessageChannel();
-  const built = buildSandboxDocument(request, harness);
   const watchdog = setTimeout(() => {
     frame.remove();
     diagnostics.push({
@@ -87,10 +85,16 @@ export function mountSandbox(
     finish('timeout');
   }, request.timeoutMs ?? DEFAULT_TIMEOUT_MS);
 
-  if (!built.ok) {
-    diagnostics.push(...built.diagnostics);
-    finish('compile-error');
-  } else {
+  // The document builder (with the acorn-based loop guard) is its own lazy chunk, so views
+  // that embed a sandbox stay small until code actually runs.
+  void import('./document.ts').then(({ buildSandboxDocument, locateError }) => {
+    if (done) return;
+    const built = buildSandboxDocument(request, harness);
+    if (!built.ok) {
+      diagnostics.push(...built.diagnostics);
+      finish('compile-error');
+      return;
+    }
     channel.port1.onmessage = (event: MessageEvent<SandboxMessage>) => {
       const message = event.data;
       if (message.type === 'console') {
@@ -122,7 +126,7 @@ export function mountSandbox(
     );
     frame.src = SANDBOX_URL;
     host.append(frame);
-  }
+  });
 
   const dispose = () => {
     finish('timeout');

@@ -36,8 +36,9 @@ const BOOTSTRAP = `(function () {
   window.__send = send;
 })();`;
 
+// Runs last, so the learner's DOM is parsed; measuring forces layout synchronously. No timers:
+// background tabs throttle them, which would trip the watchdog.
 const FINISH = `(async function () {
-  await new Promise(function (resolve) { setTimeout(resolve, 0); });
   var config = JSON.parse(document.getElementById('__config').textContent);
   var tests = config.tests ? await window.__harness.run() : [];
   var measurements = config.measure

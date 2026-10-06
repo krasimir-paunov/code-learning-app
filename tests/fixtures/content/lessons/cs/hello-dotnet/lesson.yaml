@@ -1,0 +1,33 @@
+# Test fixture (e2e builds only): a C# lesson whose module recommends js.objects.
+id: cs.hello-dotnet
+version: 1
+title: From C# to running code
+summary: Fixture lesson with a soft prerequisite.
+minutes: 6
+concept:
+  title: Fixture
+  body: A fixture lesson used by end-to-end tests.
+playground:
+  visualizer: live-editor
+  props:
+    files:
+      main.js: "console.log('hi');"
+  prompt: Press **Run**.
+challenges:
+  - id: pick
+    type: choice
+    prompt: Which command runs a file-based C# app?
+    options:
+      - { text: '`dotnet run app.cs`', correct: true, why: .NET 10 runs single files directly. }
+      - { text: '`node app.cs`', why: Node runs JavaScript. }
+    explanation: '`dotnet run` compiles and runs it.'
+production:
+  - title: Fixture
+    body: Fixture.
+mistake:
+  title: Fixture
+  body: Fixture.
+  fix: Fixture.
+recap:
+  - Fixture one.
+  - Fixture two.

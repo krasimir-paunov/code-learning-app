@@ -29,11 +29,13 @@ export function useStepPlayer(length: number, initialStepsPerSecond = 2): StepPl
     indexRef.current = index;
   }, [index]);
 
-  // A new trace (other input) restarts from the beginning.
-  useEffect(() => {
+  // A new trace (other input) restarts from the beginning (state adjusted during render).
+  const [trackedLength, setTrackedLength] = useState(length);
+  if (trackedLength !== length) {
+    setTrackedLength(length);
     setIndex(0);
     setPlaying(false);
-  }, [length]);
+  }
 
   useEffect(() => {
     if (!playing) return;
