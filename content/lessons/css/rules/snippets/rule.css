@@ -1,0 +1,5 @@
+/* selector      declaration block */
+.price {
+  color: #ff8c00;   /* property: value; */
+  font-weight: 700;
+}

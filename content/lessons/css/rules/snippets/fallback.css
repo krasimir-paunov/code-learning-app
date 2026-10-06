@@ -1,0 +1,4 @@
+.badge {
+  background: #ff8c00;                 /* every browser */
+  background: oklch(0.75 0.17 60);     /* newer browsers; older ones ignore it */
+}

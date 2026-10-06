@@ -1,0 +1,162 @@
+id: css.rules
+version: 1
+title: Rules and declarations
+summary: Write a CSS rule, attach a stylesheet, and know what the browser silently ignores.
+minutes: 5
+tags: [selectors, declarations, stylesheets, error handling]
+
+concept:
+  title: A selector, then what to change
+  body: |
+    A CSS **rule** is a **selector** followed by a block of **declarations**. The selector
+    picks elements; each declaration sets one **property** to a **value**, ending with `;`.
+
+    Pages load a stylesheet with `<link rel="stylesheet" href="…">` in the `<head>`. One
+    file styles every page of a site.
+
+    CSS never stops on an error. A declaration the browser doesn't understand (an unknown
+    property, a bad value, a missing `;`) is skipped. A selector it can't parse drops the whole
+    rule. Nothing warns you, except DevTools, which crosses those declarations out.
+  code:
+    caption: One rule, two declarations
+    tabs:
+      - lang: css
+        file: snippets/rule.css
+
+playground:
+  visualizer: rule-anatomy
+  props:
+    html: |
+      <h2>Trail Shoes</h2>
+      <p class="price">€89</p>
+      <p>Light, grippy and waterproof.</p>
+      <h2>Day Pack</h2>
+      <p class="price">€59</p>
+      <p>Twenty litres, two pockets.</p>
+    baseCss: 'h2 { margin: 0; } p { margin: 4px 0 16px; }'
+    presets:
+      - label: A rule
+        rule:
+          selector: .price
+          declarations:
+            - { property: color, value: '#ff8c00' }
+            - { property: font-weight, value: '700' }
+      - label: Typo
+        rule:
+          selector: .price
+          declarations:
+            - { property: colour, value: '#ff8c00' }
+            - { property: font-weight, value: '700' }
+      - label: Bad value
+        rule:
+          selector: .price
+          declarations:
+            - { property: font-size, value: 20 px }
+            - { property: color, value: '#ff8c00' }
+      - label: Bad selector
+        rule:
+          selector: '.price,'
+          declarations:
+            - { property: color, value: '#ff8c00' }
+  prompt: |
+    Change the selector `.price` to `p` and watch what gets outlined. Then open **Typo**: one
+    declaration is ignored, and nothing on the page tells you.
+  explore:
+    - Open **Bad selector**. One stray comma, and the whole rule is gone.
+    - In **Bad value**, delete the space in `20 px`.
+
+challenges:
+  - id: style-prices
+    type: live-code
+    prompt: Make every price orange (`#ff8c00`) and bold, without touching the other text.
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/page.html, editable: false }
+      style.css: { file: snippets/price.starter.css }
+    solution:
+      index.html: { file: snippets/page.html }
+      style.css: { file: snippets/price.solution.css }
+    tests: { file: snippets/price.test.js }
+    hints:
+      - 'The prices share a class. Class selectors start with a dot: `.price`.'
+      - '`color` sets the text colour; `font-weight: 700` makes it bold.'
+    explanation: One rule, one selector for every price, two declarations.
+
+  - id: missing-semicolon
+    type: find-bug
+    prompt: The price is neither orange nor bold. Click the buggy line, then choose the fix.
+    code: { lang: css, file: snippets/semicolon.bug.css }
+    page: { file: snippets/page.html }
+    bugLines: [2]
+    fix:
+      choices:
+        - { text: '  color: #ff8c00;', correct: true }
+        - { text: '  color: #ff8c00,' }
+        - { text: '  color: "#ff8c00"' }
+        - { text: '  colour: #ff8c00;' }
+    tests: { file: snippets/semicolon.test.js }
+    hints:
+      - Where does the first declaration end?
+    explanation: |
+      Without the `;`, the value of `color` runs on to `#ff8c00 font-weight: 700`, which is not a
+      colour. The browser drops that one invalid declaration, and with it the font-weight that was
+      swallowed into it.
+
+  - id: where-css-lives
+    type: choice
+    prompt: A site has 40 pages that all share the same styles. Where should the CSS live?
+    options:
+      - text: 'In one file, linked from every page with `<link rel="stylesheet" href="/css/site.css">`'
+        correct: true
+        why: The browser downloads and caches it once, and one change restyles the whole site.
+      - text: In a `<style>` element at the top of every page
+        why: Forty copies to keep in sync, downloaded again with every page.
+      - text: In `style="…"` attributes on each element
+        why: Inline styles can't be reused and are the hardest to override later.
+      - text: In a `<style>` element at the end of the `<body>`
+        why: The page would first render without styles, then jump.
+    explanation: A linked stylesheet in the `<head>` is the default for real sites.
+
+production:
+  - title: Fallbacks rely on "ignore what you don't understand"
+    body: |
+      Write a widely supported value first and a newer one after it. Older browsers skip the
+      declaration they can't parse and keep the first.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/fallback.css
+  - title: Linters catch what browsers ignore
+    body: |
+      Stylelint's `property-no-unknown` rule flags `colour` before it ships, and editors
+      underline invalid values. In the browser, DevTools strikes them through with a warning icon.
+  - title: The link tag
+    body: '`rel="stylesheet"` is what makes it a stylesheet; put it in the `<head>` so the page renders styled from the start.'
+    code:
+      tabs:
+        - lang: html
+          file: snippets/link.html
+
+mistake:
+  title: A space between number and unit
+  body: '`20 px` is two tokens, not a length, so the whole declaration is ignored and the text stays at the default size.'
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/unit.bad.html
+        output: 16px
+        verify: browser
+  fix: Write numbers and units together. The only unitless lengths are zero values like `0`.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/unit.good.html
+        output: 20px
+        verify: browser
+
+recap:
+  - 'A rule is a selector plus declarations; each declaration is `property: value;`.'
+  - Link one stylesheet from the `<head>` of every page.
+  - Invalid declarations are skipped silently and a bad selector drops the whole rule; DevTools shows them crossed out.
+
+related: [css.selectors, html.devtools-elements]
