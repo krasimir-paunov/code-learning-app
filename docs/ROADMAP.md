@@ -38,7 +38,7 @@ Phase 7 (optional C# runner): any time after Phase 5 Core; independent of conten
 
 ## Phase 1 · Foundation, engine and two reference lessons
 
-**Status: built locally; CI and deploy pending.** All nine milestones are implemented and both reference lessons are `done`. The exit criteria that can be checked locally pass (see the checklist under the exit criteria). The CI workflow exists but has not run yet because nothing is pushed, so the phase closes once CI is green and the Pages deploy is checked from a deep link.
+**Status: done (2026-10-06).** All nine milestones are implemented, both reference lessons are `done`, CI is green and the site is live at https://krasimir-paunov.github.io/code-learning-app/. Every exit criterion below is met; the manual screen-reader pass from the lesson DoD carries over to Phase 2's sampled pass.
 
 Goal: every engine piece exists and is proven by two complete lessons in two very different tracks.
 
@@ -57,14 +57,14 @@ Milestones:
 
 Exit criteria: both lessons pass the lesson DoD; Lighthouse ≥ 90 (mobile) on map and both lessons; bundle budgets enforced; export → clear storage → import restores progress exactly (e2e); the deployed site works from a deep link; a C# lesson with an unmet recommendation shows the banner and the skip persists (e2e, using a stub lesson in test fixtures).
 
-Exit-criteria status (local, end of Phase 1):
+Exit-criteria status (end of Phase 1):
 - [x] Both lessons pass the lesson DoD: `content:check` and `verify:snippets` green; keyboard, 360 px, reduced motion and axe covered by e2e. A manual screen-reader pass is still to do.
-- [x] Lighthouse ≥ 90 (mobile, Lighthouse 12 against `npm run preview`): map 93, `css.box-model` 93, `algo.binary-search` 93 (landing 94, cheat sheets 94, profile 94; accessibility, best practices and SEO 100).
+- [x] Lighthouse ≥ 90 (mobile, Lighthouse 12). Live site: map 98, `css.box-model` 93–99 over three runs, `algo.binary-search` 99 (landing 99, cheat sheets 95, profile 96); accessibility, best practices and SEO 100 on every route. Local preview: 93–94.
 - [x] Bundle budgets enforced: `npm run build` fails when `tools/check-budgets.ts` finds a chunk over budget.
 - [x] Export → clear storage → import restores progress exactly (e2e).
 - [x] C# stub lesson with an unmet recommendation shows the banner and the skip persists (e2e, fixture lesson `cs.hello-dotnet`).
-- [ ] Deployed site works from a deep link: route shells are generated and deep links pass locally; needs the first push and Pages deploy.
-- [ ] CI green on GitHub (`.github/workflows/ci.yml`; not run yet).
+- [x] Deployed site works from a deep link: `/learn/css.box-model` opened in a fresh browser context returns 200 and renders the lesson; a hard refresh on `/map/` returns 200; landing, cheat sheet and `robots.txt` load; no 4xx/5xx responses, failed requests or console errors, and all three web fonts load.
+- [x] CI green on GitHub: lint, typecheck, unit, `content:check`, `verify:snippets`, build with budgets, e2e + axe, then Pages deploy ([run 37500871361](https://github.com/krasimir-paunov/code-learning-app/actions/runs/37500871361)).
 
 ---
 
