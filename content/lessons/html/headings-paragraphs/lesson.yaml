@@ -1,0 +1,155 @@
+id: html.headings-paragraphs
+version: 1
+title: Headings and the outline
+summary: Give every page a logical outline that people and machines can navigate.
+minutes: 5
+tags: [headings, outline, paragraphs, screen readers]
+
+concept:
+  title: Headings are the page's table of contents
+  body: |
+    Headings `<h1>` to `<h6>` form an outline. The `<h1>` names the page, `<h2>`s are its
+    sections, `<h3>`s are subsections of the `<h2>` above them, and so on. Going down, never
+    skip a level; going back up to any level is fine.
+
+    The level describes **structure**, not size. CSS decides how big a heading looks.
+
+    Screen reader users skim a page by jumping from heading to heading, and search engines read
+    the outline too. Bold text in a paragraph looks like a heading but isn't in the outline at all.
+  code:
+    caption: A page outline (indented here only to show the structure)
+    tabs:
+      - lang: html
+        file: snippets/outline.html
+
+playground:
+  visualizer: outline-view
+  props:
+    examples:
+      - label: Product page
+        source: |
+          <h1>Trail Shoes</h1>
+          <p>Light, grippy and waterproof.</p>
+          <h3>Sizes</h3>
+          <p>EU 36 to 47.</p>
+          <h2>Reviews</h2>
+          <h3>Great on wet rock</h3>
+          <p>They held on every slab.</p>
+      - label: Bold text
+        source: |
+          <div class="page-title">Trail Shoes</div>
+          <p><b>Sizes</b></p>
+          <p>EU 36 to 47.</p>
+          <p><b>Reviews</b></p>
+          <p>They held on every slab.</p>
+      - label: Two h1s
+        source: |
+          <h1>Outdoor Blog</h1>
+          <h1>Trail Shoes, reviewed</h1>
+          <h2>Fit</h2>
+          <p>True to size.</p>
+  prompt: |
+    Press **Next heading (H)** a few times: that is how screen reader users skim. Then fix the
+    warning: change `<h3>Sizes</h3>` to an `<h2>`.
+  explore:
+    - Open **Bold text**. With some CSS it could look identical, but the headings list is empty.
+    - Open **Two h1s**. Which heading should stay the `<h1>`?
+
+challenges:
+  - id: skipped-level
+    type: find-bug
+    prompt: The recipe's outline skips a level. Click the buggy line, then choose the fix.
+    code: { lang: html, file: snippets/recipe.bug.html }
+    bugLines: [4]
+    fix:
+      choices:
+        - { text: '<h2>Ingredients</h2>', correct: true }
+        - { text: '<h3 class="h2">Ingredients</h3>' }
+        - { text: '<p><strong>Ingredients</strong></p>' }
+        - { text: '<h1>Ingredients</h1>' }
+    tests: { file: snippets/recipe.test.js }
+    hints:
+      - Ingredients and Method are both sections of the recipe. Which level do they need?
+    explanation: |
+      Ingredients is a section of the recipe, like Method, so both are `<h2>`. A class doesn't
+      change the level, bold text isn't a heading, and a second `<h1>` would compete with the
+      page title.
+
+  - id: recipe-outline
+    type: reorder
+    prompt: |
+      Build the outline of a recipe page that lists the ingredients first, then the method. The
+      ingredients come in two groups.
+    lang: html
+    items:
+      - '<h1>Pancakes</h1>'
+      - '<h2>Ingredients</h2>'
+      - '<h3>For the batter</h3>'
+      - '<h3>For the topping</h3>'
+      - '<h2>Method</h2>'
+    alternatives:
+      - - '<h1>Pancakes</h1>'
+        - '<h2>Ingredients</h2>'
+        - '<h3>For the topping</h3>'
+        - '<h3>For the batter</h3>'
+        - '<h2>Method</h2>'
+    hints:
+      - A subsection (`<h3>`) belongs to the `<h2>` right above it.
+    explanation: |
+      Each `<h3>` belongs to the closest `<h2>` above it. Put the two ingredient groups under
+      Ingredients, before Method, and the outline reads like a table of contents.
+
+  - id: small-heading
+    type: choice
+    prompt: |
+      The design shows a small, grey, uppercase "Related products" title below the main content.
+      Which markup do you write?
+    options:
+      - text: '`<h2 class="section-label">Related products</h2>`, sized with CSS'
+        correct: true
+        why: It starts a new section of the page, so it is an `<h2>`. The look comes from CSS.
+      - text: '`<h6>Related products</h6>`, because it is the smallest'
+        why: The level describes structure. An `<h6>` here skips four levels.
+      - text: '`<p class="small">Related products</p>`'
+        why: Then it isn't a heading at all, and nobody can jump to the section.
+      - text: '`<h1>Related products</h1>` with a smaller font size'
+        why: The `<h1>` names the whole page; this is one section of it.
+    explanation: Choose the level from where the section sits in the outline, then style it freely.
+
+production:
+  - title: Headings are how people skim
+    body: |
+      WebAIM's surveys of screen reader users keep finding that most of them navigate long pages
+      by headings first. A sighted reader skims the same structure visually. A good outline
+      serves both.
+  - title: Paragraphs, not line breaks
+    body: |
+      Wrap each paragraph in its own `<p>` and let CSS margins space them. Stacked `<br>`s are
+      not paragraphs: assistive technology announces them as one block of text.
+  - title: Design systems separate level and look
+    body: |
+      Component libraries often accept a heading level and a visual size separately (for
+      example a `Heading` component with an `as="h2"` prop and a `size="sm"` prop), because a
+      card can be an `<h3>` on one page and an `<h2>` on another.
+
+mistake:
+  title: Picking a level for its size
+  body: |
+    `<h2>` looked too big, so someone used `<h4>`. The page now jumps from level 1 to level 4,
+    and screen reader users wonder what they missed.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/level-by-size.bad.html
+  fix: Use the level the structure needs, and change the size with CSS.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/level-by-size.good.html
+
+recap:
+  - One `<h1>` names the page; `<h2>` marks sections, `<h3>` their subsections. Don't skip levels going down.
+  - Levels describe structure; CSS decides size.
+  - Bold text is not a heading. Nobody can jump to it.
+
+related: [html.text-semantics, html.landmarks]

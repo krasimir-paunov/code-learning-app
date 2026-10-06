@@ -99,7 +99,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| H2.1 | `html.headings-paragraphs` | Headings and the outline | Core | Build a logical heading hierarchy (one `h1`, no skipped levels). | — | `outline-view` (screen-reader headings list beside the editor) | BUG, RO | 5 | todo |
+| H2.1 | `html.headings-paragraphs` | Headings and the outline | Core | Build a logical heading hierarchy (one `h1`, no skipped levels). | — | `outline-view` (screen-reader headings list beside the editor) | BUG, RO | 5 | done |
 | H2.2 | `html.text-semantics` | Meaningful inline text | Core | Choose `strong`/`em`/`code`/`time`/`abbr`/`mark` by meaning, not looks. | ↑ | `sr-preview` (what a screen reader announces) | FB, CH | 5 | todo |
 | H2.3 | `html.lists` | Lists | Core | Use `ul`, `ol`, `dl` and nesting correctly (menus are lists). | ↑ | `live-editor` | LC | 4 | todo |
 | H2.4 | `html.landmarks` | Page landmarks | Core | Structure a page with `header`/`nav`/`main`/`aside`/`footer`/`section`/`article`. | ↑ | `landmark-map`: drag semantic tags onto regions of a page mockup | CH, LC | 7 | todo |
