@@ -1,0 +1,4 @@
+/* DevTools showed .card .price winning; match it instead of overruling it. */
+.card .price {
+  color: orange;
+}

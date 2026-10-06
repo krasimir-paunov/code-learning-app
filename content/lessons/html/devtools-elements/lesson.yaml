@@ -1,0 +1,143 @@
+id: html.devtools-elements
+version: 1
+title: Inspecting with DevTools
+summary: Use the Elements panel to see the live page, find which CSS wins, and try fixes instantly.
+minutes: 4
+tags: [devtools, debugging, elements panel, styles]
+
+concept:
+  title: A live view of the page, not the file
+  body: |
+    Press **F12** (or right-click → **Inspect**) in any browser. The **Elements** panel shows
+    the live DOM: the tree the browser built, including everything it repaired or scripts
+    changed.
+
+    Select an element and the **Styles** pane lists every rule that matches it, the strongest
+    first. A crossed-out declaration lost to a stronger rule. You can edit text, values and
+    rules in place and see the result immediately.
+
+    Those edits live only in this tab. Reload, and the page is what the server sent again.
+
+playground:
+  visualizer: devtools-sim
+  props:
+    url: https://shop.example/trail-shoes
+    html: |
+      <article class="card">
+        <h2 class="title">Trail Shoes</h2>
+        <p class="price">€89</p>
+        <button class="buy">Add to cart</button>
+      </article>
+    css: |
+      .card { max-width: 240px; padding: 16px; border: 1px solid #3a4558; border-radius: 12px; }
+      .title { margin: 0 0 4px; font-size: 20px; }
+      .price { color: #9aa6b8; font-weight: 700; }
+      p { margin: 0 0 12px; }
+      .card .price { color: #ffb454; }
+      button { font: inherit; padding: 8px 14px; border: 0; border-radius: 8px; }
+      .buy { background: #2fd27c; color: #0b1b12; }
+  prompt: |
+    Select the `<p class="price">` in **Elements**. In **Styles**, `color` in `.price` is crossed
+    out: `.card .price` wins. Change that winning value to `tomato`, then press **Reload page**.
+  explore:
+    - Press **Select an element in the page** and click the button. The highlight shows its padding in green.
+    - Untick `color` in `.card .price`. Which rule's color takes over?
+    - Select the price and edit its **Text**. The page changes; the source file never would.
+
+challenges:
+  - id: after-reload
+    type: choice
+    prompt: |
+      You fix a colour in DevTools' Styles pane and the page looks perfect. You reload. What do
+      you see?
+    options:
+      - text: The old colour. DevTools edited the browser's copy, not your files.
+        correct: true
+        why: The browser downloads the original CSS again. Copy the working value into your source.
+      - text: The new colour. DevTools saved it to the stylesheet.
+        why: The Styles pane edits the page in memory. Only special setups (Workspaces) write to disk.
+      - text: The new colour until you clear the cache.
+        why: The cache holds the server's file, which never changed.
+    explanation: |
+      DevTools is a place to experiment. Once a fix works, copy it into your source file; Chrome's
+      **Changes** panel lists everything you edited.
+
+  - id: crossed-out
+    type: choice
+    prompt: |
+      In the Styles pane, `color: gray` inside `.price` is crossed out, with no warning icon.
+      What does that tell you?
+    options:
+      - text: The rule matches the element, but another matching rule sets `color` and wins.
+        correct: true
+        why: DevTools lists losers too and strikes them through, so you can see who won.
+      - text: The rule does not match the element.
+        why: Rules that don't match aren't listed at all.
+      - text: '`gray` is not a valid colour.'
+        why: Invalid declarations are struck through too, but DevTools marks them with a warning icon. `gray` is valid.
+      - text: The style is disabled for this page only.
+        why: A disabled declaration shows an unticked checkbox; you would have unticked it yourself.
+    explanation: |
+      A crossed-out declaration is the first clue when CSS "doesn't work": your rule applies, but
+      something stronger overrides it. Look up the list for the winner.
+
+  - id: missing-rule
+    type: find-bug
+    prompt: |
+      The price should be orange, but when you select it in DevTools, the Styles pane shows no
+      rule setting its colour. Click the buggy line, then choose the fix.
+    code: { lang: css, file: snippets/card.bug.css }
+    page: { file: snippets/card.html }
+    bugLines: [4]
+    fix:
+      choices:
+        - { text: '.card .price {', correct: true }
+        - { text: '.card.price {' }
+        - { text: 'card .price {' }
+        - { text: '.card > .prices {' }
+    tests: { file: snippets/card.test.js }
+    hints:
+      - A rule that never appears in the Styles pane doesn't match the element. Compare its selector with the HTML.
+    explanation: |
+      `.prices` matches nothing: the class is `price`. When a rule is missing from the Styles pane
+      entirely, the selector is the problem; when it is crossed out, another rule wins.
+
+production:
+  - title: Every browser has it
+    body: |
+      **F12** or **Ctrl+Shift+I** (**Cmd+Option+I** on a Mac) opens DevTools in Chrome, Edge and
+      Firefox. In Safari, turn on the Develop menu in its settings first.
+  - title: Small tools you will use daily
+    body: |
+      Force `:hover` or `:focus` from the Styles pane's state toggle to inspect hover styles.
+      Select a node and press **H** to hide it. The **Changes** panel collects every CSS edit, ready
+      to copy back into your code.
+  - title: The Computed pane answers "what is it really?"
+    body: |
+      Styles shows the fight; **Computed** shows the final value of every property and which
+      rule set it. Together with the box diagram from the box model lesson, it explains most
+      layout surprises.
+
+mistake:
+  title: Winning with `!important` instead of reading the Styles pane
+  body: |
+    Your rule loses, so you add `!important`. It works, until the next fix needs another
+    `!important`. DevTools already showed you *why* it lost: a more specific rule.
+  bad:
+    tabs:
+      - lang: css
+        file: snippets/important.bad.css
+  fix: |
+    Find the winning rule in the Styles pane and change it, or write a selector at least as
+    specific. The specificity lesson explains how rules are ranked.
+  good:
+    tabs:
+      - lang: css
+        file: snippets/important.good.css
+
+recap:
+  - The Elements panel shows the live DOM; Styles lists matching rules, strongest first.
+  - Crossed out means "applies but loses"; missing means "doesn't match".
+  - DevTools edits vanish on reload. Copy what works into your source.
+
+related: [html.browser-pipeline, css.specificity]

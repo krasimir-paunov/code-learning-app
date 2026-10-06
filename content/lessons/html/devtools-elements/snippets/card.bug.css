@@ -1,0 +1,6 @@
+.card {
+  padding: 16px;
+}
+.card .prices {
+  color: rgb(255, 180, 84);
+}
