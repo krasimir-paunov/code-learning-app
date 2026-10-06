@@ -98,6 +98,11 @@ pre {
   outline: none;
 }
 
+/* Focus moved to a page heading on navigation: announced to everyone, ringed for keyboard users. */
+:root:not([data-modality='keyboard']) [data-route-focus]:focus {
+  outline: none;
+}
+
 /* Effects off/reduced: no ambient or decorative animation anywhere. */
 :root:is([data-effects='reduced'], [data-effects='off']) *,
 :root:is([data-effects='reduced'], [data-effects='off']) *::before,

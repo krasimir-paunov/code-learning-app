@@ -5,11 +5,22 @@ import { LevelUpOverlay } from '../features/progress/LevelUpOverlay.tsx';
 import { StorageNotice } from '../features/progress/StorageNotice.tsx';
 import styles from './AppShell.module.css';
 import { ErrorBoundary } from './ErrorBoundary.tsx';
+import { trackInputModality } from './input-modality.ts';
 import { TopBar } from './TopBar.tsx';
+
+/** How long route focus waits for a lazily loaded page to render its heading. */
+const HEADING_WAIT_MS = 3000;
+
+function focusForRoute(target: HTMLElement) {
+  if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+  target.setAttribute('data-route-focus', '');
+  target.focus({ preventScroll: true });
+}
 
 /**
  * After client-side navigation, move focus to the new page's heading (or main) so
  * screen-reader and keyboard users start at the new content, as on a full page load.
+ * `data-route-focus` lets the stylesheet show that focus ring to keyboard users only.
  */
 function useRouteFocus() {
   const { pathname } = useLocation();
@@ -19,17 +30,38 @@ function useRouteFocus() {
       first.current = false;
       return;
     }
-    const main = document.getElementById('main');
-    const target = main?.querySelector<HTMLElement>('h1') ?? main;
-    if (!target) return;
-    if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
-    target.focus({ preventScroll: true });
     window.scrollTo({ top: 0 });
+    const main = document.getElementById('main');
+    if (!main) return;
+    const heading = main.querySelector<HTMLElement>('h1');
+    if (heading) {
+      focusForRoute(heading);
+      return;
+    }
+    // The page's chunk is still loading (its fallback has no heading): wait for the heading
+    // rather than focusing main and then moving focus again.
+    const observer = new MutationObserver(() => {
+      const found = main.querySelector<HTMLElement>('h1');
+      if (!found) return;
+      stop();
+      focusForRoute(found);
+    });
+    const timer = setTimeout(() => {
+      stop();
+      focusForRoute(main);
+    }, HEADING_WAIT_MS);
+    function stop() {
+      observer.disconnect();
+      clearTimeout(timer);
+    }
+    observer.observe(main, { childList: true, subtree: true });
+    return stop;
   }, [pathname]);
 }
 
 export function AppShell() {
   useRouteFocus();
+  useEffect(() => trackInputModality(), []);
   const { pathname } = useLocation();
   return (
     <div className={styles.shell}>
