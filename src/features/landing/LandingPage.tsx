@@ -1,5 +1,6 @@
 import { BookOpen, Pause, Play, Rocket } from 'lucide-react';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
+import { lazyNamed } from '../../app/lazy-named.ts';
 import { useDocumentTitle } from '../../app/use-document-title.ts';
 import { Button, LinkButton } from '../../components/Button.tsx';
 import { REPO_URL } from '../../config/app.ts';
@@ -7,6 +8,9 @@ import { DigitalRain } from '../../effects/DigitalRain.tsx';
 import { useMotionPreference } from '../../effects/motion.ts';
 import { FlexDemo } from './FlexDemo.tsx';
 import styles from './LandingPage.module.css';
+
+// Loaded only when the landing page renders below the fold; it is not part of the hero.
+const SortRaceDemo = lazyNamed(() => import('./SortRaceDemo.tsx'), 'SortRaceDemo');
 
 const ANATOMY = [
   ['Concept', 'One mental model, readable in under a minute.'],
@@ -76,6 +80,19 @@ export function LandingPage() {
           This is how lessons feel. Change the value and watch the layout answer.
         </p>
         <FlexDemo />
+      </section>
+
+      <section className={styles.section} aria-labelledby="race-title">
+        <h2 id="race-title" className={styles.sectionTitle}>
+          Watch algorithms race
+        </h2>
+        <p className={styles.sectionLead}>
+          Three sorts on the same bars, counting every comparison and swap. In the Algorithms track
+          you choose the algorithms, the size and the speed, and step through every move.
+        </p>
+        <Suspense fallback={null}>
+          <SortRaceDemo />
+        </Suspense>
       </section>
 
       <section className={styles.section} aria-labelledby="anatomy-title">
