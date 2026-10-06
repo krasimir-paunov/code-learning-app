@@ -13,7 +13,11 @@ const schema = z.strictObject({
 
 type Authored = z.infer<typeof schema>;
 
-function stepsFor(c: Authored, ctx: Parameters<ChallengeBuild['compile']>[1]): unknown[] {
+/** The visualizer's own steps for these props, and the props with their defaults applied. */
+function traceFor(
+  c: Authored,
+  ctx: Parameters<ChallengeBuild['compile']>[1],
+): { props: unknown; steps: unknown[] } {
   const visualizer = ctx.visualizer(c.visualizer);
   if (!visualizer) throw new Error(`unknown visualizer "${c.visualizer}"`);
   if (!visualizer.trace) throw new Error(`visualizer "${c.visualizer}" has no trace mode`);
@@ -22,7 +26,7 @@ function stepsFor(c: Authored, ctx: Parameters<ChallengeBuild['compile']>[1]): u
     throw new Error(
       `props: ${props.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ')}`,
     );
-  return visualizer.trace.steps(props.data);
+  return { props: props.data, steps: visualizer.trace.steps(props.data) };
 }
 
 export default {
@@ -30,7 +34,7 @@ export default {
   defaultXp: 10,
   schema,
   compile(c, ctx) {
-    const steps = stepsFor(c, ctx);
+    const { props, steps } = traceFor(c, ctx);
     if (steps.length === 0) throw new Error('the trace has no steps');
     // Cross-check: what the author wrote must be what the algorithm actually does.
     if (c.expect && JSON.stringify(c.expect) !== JSON.stringify(steps)) {
@@ -38,10 +42,11 @@ export default {
         `expect ${JSON.stringify(c.expect)} differs from the visualizer's trace ${JSON.stringify(steps)}`,
       );
     }
-    return { visualizer: c.visualizer, props: c.props, steps } satisfies TraceSpec;
+    // Parsed props: the trace view gets the same defaults the steps were computed with.
+    return { visualizer: c.visualizer, props, steps } satisfies TraceSpec;
   },
   solution: (c, ctx) =>
-    `<ol>${stepsFor(c, ctx)
-      .map((s) => `<li><code>${escapeHtml(JSON.stringify(s))}</code></li>`)
+    `<ol>${traceFor(c, ctx)
+      .steps.map((s) => `<li><code>${escapeHtml(JSON.stringify(s))}</code></li>`)
       .join('')}</ol>`,
 } satisfies ChallengeBuild<Authored, TraceSpec>;
