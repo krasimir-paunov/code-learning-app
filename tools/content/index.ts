@@ -13,6 +13,8 @@ import {
 import { createMarkdown } from './markdown.ts';
 import { loadPlugins } from './plugins.ts';
 
+const CONCEPT_WORD_LIMIT = 120;
+
 export interface ContentBundle {
   manifest: SkillManifest;
   lessons: LessonBuild[];
@@ -73,6 +75,17 @@ export async function loadContent(options: ContentOptions = {}): Promise<Content
     }
     for (const id of lesson.compiled.related) {
       if (!manifest.nodes[id]) issues.push({ file, message: `related: unknown lesson "${id}"` });
+    }
+    // The concept card is a 30-60 second read (CLAUDE.md content style).
+    const words = lesson.compiled.concept.html
+      .replace(/<[^>]+>/g, ' ')
+      .split(/\s+/)
+      .filter((w) => /\w/.test(w)).length;
+    if (words > CONCEPT_WORD_LIMIT) {
+      issues.push({
+        file,
+        message: `concept: ${words} words (limit ${CONCEPT_WORD_LIMIT})`,
+      });
     }
   }
   const sheets = compileSheets(manifest, { highlighter, markdown }, issues);
