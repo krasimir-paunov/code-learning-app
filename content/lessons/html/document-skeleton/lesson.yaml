@@ -1,0 +1,171 @@
+id: html.document-skeleton
+version: 1
+title: The document skeleton
+summary: Know what each line of the HTML boilerplate does by watching what breaks without it.
+minutes: 5
+tags: [doctype, lang, charset, viewport, title, boilerplate]
+
+concept:
+  title: Five lines that set up every page
+  body: |
+    Every page starts with the same skeleton. Each line answers a question the browser would
+    otherwise guess:
+
+    - `<!doctype html>`: which rules? Today's, not 1990s **quirks mode**.
+    - `lang`: which language? It sets screen reader voices, translation and hyphenation.
+    - `<meta charset="utf-8">`: which encoding? Without it, `é` can arrive as `Ã©`.
+    - `<meta name="viewport">`: how wide is the screen? Without it, phones lay the page out
+      980px wide and shrink it.
+    - `<title>`: what is the page called? The tab, bookmarks and search results show it.
+
+    `<head>` holds information *about* the page; `<body>` holds what people see.
+  code:
+    caption: The boilerplate every HTML page starts from
+    tabs:
+      - lang: html
+        file: snippets/boilerplate.html
+
+playground:
+  visualizer: skeleton-toggles
+  props:
+    page:
+      title: Café Menu
+      heading: Café Menu
+      body:
+        - 'Crème brûlée — €4'
+        - 'Today’s soup: velouté'
+      lang: en
+      fileName: menu.html
+  prompt: |
+    Untick the **viewport** line and watch the phone: the page is laid out like a desktop and
+    shrunk until the text is tiny. Tick it again, then untick **charset**.
+  explore:
+    - Untick the **doctype**. The parser switches the page to quirks mode (`BackCompat`).
+    - Untick the **title**. What does the browser tab fall back to?
+
+challenges:
+  - id: missing-line
+    type: choice
+    prompt: |
+      On phones, your page looks like a tiny desktop page that people have to pinch to zoom. On
+      a laptop it looks fine. Which line is missing?
+    options:
+      - text: '`<meta name="viewport" content="width=device-width, initial-scale=1">`'
+        correct: true
+        why: Without it, mobile browsers lay the page out 980px wide and scale it down to the screen.
+      - text: '`<meta charset="utf-8">`'
+        why: A missing charset garbles characters such as `é` and `€`; it doesn't change the size.
+      - text: '`<!doctype html>`'
+        why: The doctype selects standards mode on every device, laptops included.
+      - text: '`<html lang="en">`'
+        why: '`lang` affects voices, translation and hyphenation, not layout width.'
+    explanation: |
+      Only phones (and tablets) apply the 980px fallback, so a page can look perfect on a laptop
+      and broken on a phone. The viewport line opts into "lay out at the device's own width".
+
+  - id: skeleton-order
+    type: reorder
+    prompt: Put the boilerplate in order.
+    lang: html
+    items:
+      - '<!doctype html>'
+      - '<html lang="en">'
+      - '<head>'
+      - '<meta charset="utf-8">'
+      - '<meta name="viewport" content="width=device-width, initial-scale=1">'
+      - '<title>Café Menu</title>'
+      - '</head>'
+      - '<body>'
+    alternatives:
+      - - '<!doctype html>'
+        - '<html lang="en">'
+        - '<head>'
+        - '<meta charset="utf-8">'
+        - '<title>Café Menu</title>'
+        - '<meta name="viewport" content="width=device-width, initial-scale=1">'
+        - '</head>'
+        - '<body>'
+    hints:
+      - The doctype comes before everything, even `<html>`.
+      - The encoding must be known before the browser reads any text, so `charset` comes first in `<head>`.
+    explanation: |
+      Doctype first, then `<html>` with its language. Inside `<head>`, `charset` goes first
+      because the browser must know the encoding before it reads text such as the title. The
+      viewport and title can come in either order.
+
+  - id: which-mode
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: html, file: snippets/compat-mode.html }
+    answer: |
+      CSS1Compat
+      BackCompat
+    choices:
+      - |
+        CSS1Compat
+        CSS1Compat
+      - |
+        CSS1Compat
+        BackCompat
+      - |
+        BackCompat
+        CSS1Compat
+      - |
+        BackCompat
+        BackCompat
+    verify: browser
+    hints:
+      - '`compatMode` is `CSS1Compat` in standards mode and `BackCompat` in quirks mode.'
+    explanation: |
+      The parser decides the mode from the doctype alone. The second document has none, so it
+      gets quirks mode (`BackCompat`), the same as a real page that forgets the first line.
+
+production:
+  - title: Your starter template writes this for you
+    body: |
+      Framework starters such as Vite, Next.js and Astro ship a page with these lines. You will
+      rarely type them, but when a page looks tiny on phones or shows `Ã©`, check them first.
+  - title: The server's header wins over the meta tag
+    body: |
+      Servers usually send the encoding in the `Content-Type` header, and it takes priority over
+      `<meta charset>`. Keep the meta tag anyway: it covers pages opened from disk or served by a
+      misconfigured server.
+    code:
+      tabs:
+        - lang: text
+          file: snippets/content-type.txt
+  - title: '`lang` works on any element'
+    body: |
+      Mark a phrase in another language with its own `lang`, so a screen reader switches voice
+      for it.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/lang-parts.html
+          output: |
+            en
+            fr
+          verify: browser
+
+mistake:
+  title: Turning off zoom in the viewport tag
+  body: |
+    Some templates add `maximum-scale=1` and `user-scalable=no` to stop accidental zooming.
+    Where browsers honour it, people with low vision can no longer zoom in, which fails WCAG's
+    "resize text" requirement.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/viewport.bad.html
+  fix: Keep the standard viewport line and let people zoom.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/viewport.good.html
+
+recap:
+  - '`<!doctype html>` keeps standards mode; `lang` names the language; `charset` comes first in `<head>`.'
+  - The viewport line makes phones lay the page out at their own width.
+  - '`<title>` names the tab, bookmarks and search results.'
+
+related: [html.what-is-html, html.meta-seo]
