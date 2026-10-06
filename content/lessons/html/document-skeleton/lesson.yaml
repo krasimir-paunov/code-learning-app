@@ -95,30 +95,39 @@ challenges:
 
   - id: which-mode
     type: predict-output
-    prompt: What does this print?
+    prompt: |
+      `compatMode` is `CSS1Compat` in standards mode and `BackCompat` in quirks mode. Each line
+      parses a different document. What does this print?
     code: { lang: html, file: snippets/compat-mode.html }
     answer: |
+      CSS1Compat
       CSS1Compat
       BackCompat
     choices:
       - |
         CSS1Compat
         CSS1Compat
+        CSS1Compat
       - |
+        CSS1Compat
         CSS1Compat
         BackCompat
       - |
         BackCompat
         CSS1Compat
+        BackCompat
       - |
+        CSS1Compat
         BackCompat
         BackCompat
     verify: browser
     hints:
-      - '`compatMode` is `CSS1Compat` in standards mode and `BackCompat` in quirks mode.'
+      - Does the parser care about upper or lower case in `<!DOCTYPE HTML>`?
+      - A comment isn't content. A word is.
     explanation: |
-      The parser decides the mode from the doctype alone. The second document has none, so it
-      gets quirks mode (`BackCompat`), the same as a real page that forgets the first line.
+      The doctype is case-insensitive, and comments may come before it. But any content before
+      it, even one word, means the page has no doctype where the parser looks for one, so it
+      renders in quirks mode.
 
 production:
   - title: Your starter template writes this for you

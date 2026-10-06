@@ -1,7 +1,6 @@
 <script>
-  const parser = new DOMParser();
-  const modern = parser.parseFromString('<!doctype html><title>A</title>', 'text/html');
-  const legacy = parser.parseFromString('<title>B</title>', 'text/html');
-  console.log(modern.compatMode);
-  console.log(legacy.compatMode);
+  const mode = (html) => new DOMParser().parseFromString(html, 'text/html').compatMode;
+  console.log(mode('<!DOCTYPE HTML><title>A</title>'));
+  console.log(mode('<!-- intro --><!doctype html><title>B</title>'));
+  console.log(mode('Hello<!doctype html><title>C</title>'));
 </script>
