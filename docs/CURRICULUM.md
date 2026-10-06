@@ -417,7 +417,7 @@ Core, but scheduled after Phase 6 and before the v1.0 release gate (see ROADMAP)
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
 | A2.1 | `algo.linear-search` | Linear search | Core | Scan until found; best/worst/average cases. | — | `search-race` | TR | 4 | todo |
-| A2.2 | `algo.binary-search` | Binary search | Core | Halve a sorted range each step: O(log n). | ↑ | `search-race` | TR, PO, BUG, LC | 8 | todo |
+| A2.2 | `algo.binary-search` | Binary search | Core | Halve a sorted range each step: O(log n). | ↑ | `search-race` | TR, PO, BUG, LC | 8 | done |
 | A2.3 | `algo.binary-search-variants` | Boundaries and variants | Ext | Lower bound / insertion point; search "the answer" (first true). | ↑ | `step-tracer` (lo/hi/mid pointers) | BUG, LC | 7 | todo |
 
 ### A3 · Sorting — Entry: A2.2

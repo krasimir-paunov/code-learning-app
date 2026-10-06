@@ -70,7 +70,7 @@ for (const [key, chunk] of Object.entries(manifest)) {
   } else if (/^src\/visualizers\/[^/]+\/View\.tsx$/.test(chunk.src)) {
     check(`visualizer ${chunk.src}`, total(own), BUDGETS.visualizer);
   } else if (chunk.src.includes('virtual:content/lesson/')) {
-    check(`lesson ${chunk.src.split('/').pop()}`, gzipSize(chunk.file), BUDGETS.lessonJson);
+    check(`lesson ${chunk.src.split('/').at(-2)}`, gzipSize(chunk.file), BUDGETS.lessonJson);
   }
 }
 

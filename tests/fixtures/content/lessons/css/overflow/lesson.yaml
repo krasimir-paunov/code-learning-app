@@ -1,9 +1,9 @@
 # Test fixture (e2e builds only): exercises visual-match end to end.
-id: css.rules
+id: css.overflow
 version: 1
-title: Rules and declarations
+title: Overflow
 summary: Fixture lesson for visual-match.
-minutes: 5
+minutes: 4
 concept:
   title: Fixture
   body: A fixture lesson used by end-to-end tests.

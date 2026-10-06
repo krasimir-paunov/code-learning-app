@@ -4,7 +4,8 @@
   grid-template-columns: repeat(var(--count), minmax(0, 1fr));
   gap: 3px;
   min-inline-size: 0;
-  padding-block-end: 1.6rem;
+  /* Room for pointer labels above and index labels below. */
+  padding-block: 1.1rem 1.4rem;
 }
 
 .cells {
@@ -17,8 +18,9 @@
   padding-block-end: 0;
 }
 
+/* Hundreds of columns: any gap would eat the whole width. */
 .dense {
-  gap: 1px;
+  gap: 0;
 }
 
 .cell {
@@ -26,8 +28,7 @@
   display: grid;
   place-items: center;
   min-inline-size: 0;
-  aspect-ratio: 1;
-  max-block-size: 3.25rem;
+  block-size: clamp(2rem, 7cqi, 3.25rem);
   padding: 0;
   border: var(--border-width) solid var(--border-strong);
   border-radius: var(--radius-sm);
@@ -67,8 +68,6 @@
 }
 
 .bars .cell {
-  aspect-ratio: auto;
-  max-block-size: none;
   block-size: 100%;
   align-items: end;
   border: 0;
@@ -82,7 +81,7 @@
   background: var(--text-3);
 }
 
-.bars .cell[data-mark='sorted'] .bar {
+.bars .cell:is([data-mark='sorted'], [data-mark='found']) .bar {
   background: var(--success);
 }
 

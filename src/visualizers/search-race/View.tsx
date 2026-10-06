@@ -37,15 +37,18 @@ export default function SearchRaceView({ props }: VisualizerViewProps<SearchRace
   const controls = new Set(props.controls);
   const binaryLane = props.algorithms.indexOf('binary');
 
-  const narration = props.algorithms
-    .map((algorithm, i) => {
-      const lane = race.lanes[i];
-      const frame = frames[i];
-      if (!lane || !frame) return '';
-      const finished = player.index >= lane.length;
-      return `${SEARCH_TITLES[algorithm]}: ${finished && player.index > lane.length ? 'finished.' : frame.note}`;
-    })
-    .join(' ');
+  const narration =
+    player.index === 0
+      ? 'Press Play to start the race, or step forward one check at a time.'
+      : props.algorithms
+          .map((algorithm, i) => {
+            const lane = race.lanes[i];
+            const frame = frames[i];
+            if (!lane || !frame) return '';
+            const finished = player.index >= lane.length;
+            return `${SEARCH_TITLES[algorithm]}: ${finished && player.index > lane.length ? 'finished.' : frame.note}`;
+          })
+          .join(' ');
 
   return (
     <div className={styles.race}>

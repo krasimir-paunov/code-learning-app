@@ -1,0 +1,146 @@
+id: algo.binary-search
+version: 1
+title: Binary search
+summary: Find a value in a sorted array by halving the search range every step.
+minutes: 8
+tags: [searching, divide-and-conquer, logarithmic]
+
+concept:
+  title: Halve the haystack
+  body: |
+    Binary search only works on **sorted** data. Look at the middle element.
+    Too small? The target can only be in the right half. Too big? Only in the left half.
+    Throw the other half away and repeat.
+
+    Every check halves what is left, so 1,000,000 items need at most **20** checks.
+    That is **O(log n)**: doubling the data adds one check.
+  code:
+    caption: The whole algorithm
+    tabs:
+      - lang: js
+        file: snippets/binary-search.js
+        output: |
+          5
+          -1
+        verify: node
+      - lang: cs
+        file: snippets/BinarySearch.cs
+        output: |
+          5
+          -1
+        verify: dotnet
+
+playground:
+  visualizer: search-race
+  props:
+    algorithms: [linear, binary]
+    size: { min: 8, max: 1024, default: 32 }
+    target: random-present
+    controls: [size, target, speed, step]
+    showComplexity: true
+  prompt: |
+    Press **Play**. Then drag **Array size** to 1,024 items and play again.
+    Linear search may need all 1,024 checks; binary search never needs more than 11.
+  explore:
+    - Choose a **Missing** target. How many checks does each algorithm need now?
+    - Turn on **step mode** and step forward to watch `lo`, `mid` and `hi` move.
+
+challenges:
+  - id: trace-probes
+    type: trace
+    prompt: Binary search is looking for **23**. Click the elements it checks, in order.
+    visualizer: search-race
+    props:
+      algorithm: binary
+      array: [2, 5, 8, 12, 16, 23, 38, 56, 72, 91]
+      target: 23
+    expect: [4, 7, 5]
+    hints:
+      - 'The first check is the middle: index ⌊(0 + 9) / 2⌋ = 4.'
+    explanation: |
+      16 < 23, so the left half is gone (`lo = 5`). The middle of 5..9 is index 7 (56): too big, so `hi = 6`.
+      The middle of 5..6 is index 5: found in 3 checks. Linear search would have needed 6.
+
+  - id: where-it-stops
+    type: predict-output
+    prompt: The value **4** is not in the array. What does this print?
+    code: { lang: js, file: snippets/predict-missing.js }
+    answer: '3 2 1'
+    verify: node
+    hints:
+      - Track `lo`, `hi` and `mid` on paper. The loop ends when `lo > hi`.
+    explanation: |
+      Checks: index 2 (5, too big) → index 0 (1, too small) → index 1 (3, too small).
+      `lo` ends at 2, exactly where 4 would be inserted. That is why library versions can report an insertion point.
+
+  - id: off-by-one
+    type: find-bug
+    prompt: '`binarySearch([4, 8], 8)` returns `-1`. Click the buggy line, then choose the fix.'
+    code: { lang: js, file: snippets/bug-off-by-one.js }
+    bugLines: [4]
+    fix:
+      choices:
+        - { text: 'while (lo <= hi) {', correct: true }
+        - { text: 'while (lo < hi - 1) {' }
+        - { text: 'while (lo + 1 < hi) {' }
+    tests: { file: snippets/binary-search.test.js }
+    explanation: |
+      With `lo < hi` the loop stops while one candidate (`lo === hi`) is still unchecked.
+      `lo <= hi` keeps going until the range is truly empty.
+
+  - id: implement
+    type: live-code
+    prompt: Implement `binarySearch(xs, target)`. Return the index of `target` in the sorted array, or `-1`.
+    runner: web-sandbox
+    files:
+      main.js: { file: snippets/implement.starter.js }
+    solution:
+      main.js: { file: snippets/binary-search.solution.js }
+    tests: { file: snippets/binary-search.test.js }
+    hints:
+      - Keep two indices, `lo` and `hi`, and loop while `lo <= hi`.
+      - '`const mid = Math.floor((lo + hi) / 2);`'
+    explanation: Same loop as the concept card. If you passed, you can write binary search from memory.
+
+production:
+  - title: Call the library
+    body: |
+      .NET has `Array.BinarySearch` and `List<T>.BinarySearch`. When the value is missing they return a
+      negative number: the bitwise complement (`~`) of the index where it would be inserted.
+      JavaScript has no built-in binary search on arrays; you write it (as above) or use a utility library.
+    code:
+      tabs:
+        - lang: cs
+          file: snippets/ArrayBinarySearch.cs
+          output: |
+            -4
+            3
+          verify: dotnet
+  - title: git bisect
+    body: '`git bisect` binary-searches your commit history for the commit that introduced a bug: about 10 test runs for 1,000 commits.'
+  - title: Database indexes
+    body: B-tree indexes use the same "discard what can't contain it" idea, which is why an indexed lookup stays fast as a table grows from thousands to millions of rows.
+
+mistake:
+  title: Binary-searching unsorted data
+  body: Binary search assumes sorted input and never checks. On unsorted data it does not crash; it silently misses values that are there.
+  bad:
+    tabs:
+      - lang: js
+        file: snippets/mistake-unsorted.js
+        output: '-1'
+        verify: node
+  fix: Sort first if you will search many times (sorting is O(n log n) once, each search O(log n)). For a single lookup, a linear scan (O(n)) is cheaper than sorting.
+  good:
+    tabs:
+      - lang: js
+        file: snippets/mistake-sorted.js
+        output: '4'
+        verify: node
+
+recap:
+  - Binary search needs sorted data and halves the range each step, so it is O(log n).
+  - Loop while `lo <= hi`; move `lo` to `mid + 1` or `hi` to `mid - 1`.
+  - In real code, call the library and know what it returns for a missing value.
+
+related: [algo.binary-search-variants, cs.list]

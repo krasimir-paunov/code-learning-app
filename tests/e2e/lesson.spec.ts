@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { freeRoamProgress, seedProgress } from './fixtures.ts';
 
 function challenge(page: Page, n: number): Locator {
   return page
@@ -20,8 +21,9 @@ async function reorder(list: Locator, wanted: string[]) {
 }
 
 test('completes a lesson across five challenge types', async ({ page }) => {
-  await page.goto('/learn/js.first-script');
-  await expect(page.getByRole('heading', { level: 1, name: 'Running JavaScript' })).toBeVisible();
+  await seedProgress(page, freeRoamProgress());
+  await page.goto('/learn/js.json');
+  await expect(page.getByRole('heading', { level: 1, name: 'JSON' })).toBeVisible();
 
   // predict-output: a wrong answer first, with specific feedback.
   const predict = challenge(page, 1);
@@ -75,7 +77,8 @@ test('completes a lesson across five challenge types', async ({ page }) => {
 });
 
 test('hints are progressive and the solution can be revealed after a try', async ({ page }) => {
-  await page.goto('/learn/js.first-script');
+  await seedProgress(page, freeRoamProgress());
+  await page.goto('/learn/js.json');
   const predict = challenge(page, 1);
   await predict.getByRole('button', { name: /Hint 1 of 1/ }).click();
   await expect(predict.getByRole('list', { name: 'Hints' })).toContainText('reads the last item');
@@ -87,7 +90,8 @@ test('hints are progressive and the solution can be revealed after a try', async
 });
 
 test('visual-match compares the rendered layout with the target', async ({ page }) => {
-  await page.goto('/learn/css.rules');
+  await seedProgress(page, freeRoamProgress());
+  await page.goto('/learn/css.overflow');
   const match = challenge(page, 1);
   await match.getByRole('button', { name: 'Compare with target' }).click();
   await expect(match).toContainText('0 of 1 elements match. .box: width is 100px, target 220px');
@@ -122,7 +126,8 @@ test('a planned lesson says it is coming soon', async ({ page }) => {
 });
 
 test('lesson page has no axe violations', async ({ page }) => {
-  await page.goto('/learn/js.first-script');
+  await seedProgress(page, freeRoamProgress());
+  await page.goto('/learn/js.json');
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(page.getByText('Ran in')).toBeVisible();
   const results = await new AxeBuilder({ page })

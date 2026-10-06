@@ -1,9 +1,9 @@
 # Test fixture (e2e builds only): exercises every non-trace challenge type end to end.
-id: js.first-script
+id: js.json
 version: 1
-title: Running JavaScript
+title: JSON
 summary: Fixture lesson covering the challenge types.
-minutes: 4
+minutes: 5
 concept:
   title: Fixture
   body: A fixture lesson used by end-to-end tests.

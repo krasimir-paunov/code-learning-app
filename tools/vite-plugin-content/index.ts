@@ -2,7 +2,8 @@
  * Serves validated content as virtual modules:
  * - virtual:content/manifest     → the skill graph with build-time layout (small, shared)
  * - virtual:content/lessons      → { [lessonId]: () => import(lesson chunk) }
- * - virtual:content/lesson/<id>  → one compiled lesson (lazy JSON chunk)
+ * - virtual:content/lesson/<id>/data → one compiled lesson (lazy JSON chunk). The /data suffix
+ *   keeps ids like `js.json` from looking like a .json file to Vite.
  * The content tooling is loaded through tsx so it shares the app's TypeScript schemas.
  * Any content error fails the build (and shows the dev overlay) with file and path.
  */
@@ -66,12 +67,13 @@ export function contentPlugin({ fixtures = false }: { fixtures?: boolean } = {})
         // One lazy chunk per lesson, keyed by id.
         const entries = bundle.lessons.map(
           (l) =>
-            `${JSON.stringify(l.id)}: () => import(${JSON.stringify(`${PREFIX}lesson/${l.id}`)})`,
+            `${JSON.stringify(l.id)}: () => import(${JSON.stringify(`${PREFIX}lesson/${l.id}/data`)})`,
         );
         return `export const lessonLoaders = {${entries.join(',')}};`;
       }
-      if (name.startsWith('lesson/')) {
-        const lesson = bundle.lessons.find((l) => l.id === name.slice('lesson/'.length));
+      const lessonId = /^lesson\/(.+)\/data$/.exec(name)?.[1];
+      if (lessonId) {
+        const lesson = bundle.lessons.find((l) => l.id === lessonId);
         if (lesson) return `export default ${JSON.stringify(lesson.compiled)};`;
       }
       this.error(`Unknown content module "${name}"`);

@@ -50,3 +50,14 @@ export async function seedProgress(page: Page, progress: unknown) {
     [PROGRESS_KEY, JSON.stringify(progress)] as const,
   );
 }
+
+/** Empty progress with Free roam on: opens fixture lessons regardless of their prerequisites. */
+export function freeRoamProgress() {
+  return {
+    ...sampleProgress(),
+    lessons: {},
+    activity: {},
+    skippedRecommendations: [],
+    settings: { ...sampleProgress().settings, freeRoam: true },
+  };
+}
