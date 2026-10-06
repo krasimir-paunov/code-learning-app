@@ -50,6 +50,8 @@ export function ShadowStage({
     const base = document.createElement('style');
     base.textContent = BASE_CSS;
     const authored = document.createElement('style');
+    // Views that edit rules live (DevTools-style) find the author's sheet by this attribute.
+    authored.setAttribute('data-authored', '');
     const content = document.createElement('div');
     content.setAttribute('part', 'content');
     shadow.replaceChildren(base, authored, content);
