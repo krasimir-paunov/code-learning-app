@@ -8,12 +8,25 @@ sections:
       - id: algo.sheet.structures
         kind: table
         title: Operations by structure
-        columns: [Structure, Access by index, Search, Insert / remove at end, Insert / remove in the middle]
+        columns:
+          [
+            Structure,
+            Access by index,
+            Search,
+            Insert / remove at end,
+            Insert / remove in the middle,
+          ]
         rows:
           - ['Array / `List<T>` / JS array', 'O(1)', 'O(n)', 'O(1) amortized', 'O(n)']
           - ['Sorted array (binary search)', 'O(1)', 'O(log n)', 'O(n) to keep order', 'O(n)']
           - [Linked list, 'O(n)', 'O(n)', 'O(1)', 'O(1) at a known node']
-          - ['Hash map / set (`Dictionary`, `Map`, `Set`)', '-', 'O(1) average, O(n) worst', 'O(1) average', 'O(1) average']
+          - [
+              'Hash map / set (`Dictionary`, `Map`, `Set`)',
+              '-',
+              'O(1) average, O(n) worst',
+              'O(1) average',
+              'O(1) average',
+            ]
           - ['Balanced search tree (`SortedDictionary`)', '-', 'O(log n)', 'O(log n)', 'O(log n)']
           - ['Binary heap (`PriorityQueue`)', '-', 'O(n)', 'O(log n) push / pop', '-']
         notes:
@@ -41,7 +54,14 @@ sections:
         title: Sorting algorithms compared
         columns: [Algorithm, Best, Average, Worst, Extra space, Stable]
         rows:
-          - [Bubble / selection, 'O(n) / O(n²)', 'O(n²)', 'O(n²)', 'O(1)', 'Bubble yes, selection no']
+          - [
+              Bubble / selection,
+              'O(n) / O(n²)',
+              'O(n²)',
+              'O(n²)',
+              'O(1)',
+              'Bubble yes, selection no',
+            ]
           - [Insertion, 'O(n)', 'O(n²)', 'O(n²)', 'O(1)', 'Yes']
           - [Merge sort, 'O(n log n)', 'O(n log n)', 'O(n log n)', 'O(n)', 'Yes']
           - [Quicksort, 'O(n log n)', 'O(n log n)', 'O(n²)', 'O(log n)', 'No']
@@ -57,7 +77,11 @@ sections:
     entries:
       - id: algo.sheet.binary-search
         title: Binary search
-        code: { lang: js, inline: "function binarySearch(xs, target) {\n  let lo = 0;\n  let hi = xs.length - 1;\n  while (lo <= hi) {\n    const mid = Math.floor((lo + hi) / 2);\n    if (xs[mid] === target) return mid;\n    if (xs[mid] < target) lo = mid + 1;\n    else hi = mid - 1;\n  }\n  return -1;\n}" }
+        code:
+          {
+            lang: js,
+            inline: "function binarySearch(xs, target) {\n  let lo = 0;\n  let hi = xs.length - 1;\n  while (lo <= hi) {\n    const mid = Math.floor((lo + hi) / 2);\n    if (xs[mid] === target) return mid;\n    if (xs[mid] < target) lo = mid + 1;\n    else hi = mid - 1;\n  }\n  return -1;\n}",
+          }
         check: console.log(binarySearch([2, 5, 8, 12, 16, 23], 16), binarySearch([2, 5, 8], 4));
         output: '4 -1'
         verify: node
@@ -66,7 +90,11 @@ sections:
         learn: algo.binary-search
       - id: algo.sheet.two-sum
         title: Seen-set pattern (two sum)
-        code: { lang: js, inline: "function hasPairWithSum(xs, target) {\n  const seen = new Set();\n  for (const x of xs) {\n    if (seen.has(target - x)) return true;\n    seen.add(x);\n  }\n  return false;\n}" }
+        code:
+          {
+            lang: js,
+            inline: "function hasPairWithSum(xs, target) {\n  const seen = new Set();\n  for (const x of xs) {\n    if (seen.has(target - x)) return true;\n    seen.add(x);\n  }\n  return false;\n}",
+          }
         check: console.log(hasPairWithSum([3, 9, 4, 1], 13), hasPairWithSum([3, 9], 5));
         output: 'true false'
         verify: node

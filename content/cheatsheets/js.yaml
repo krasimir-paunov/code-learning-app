@@ -7,7 +7,11 @@ sections:
     entries:
       - id: js.sheet.const-let
         title: Declare variables
-        code: { lang: js, inline: "const max = 10; // never reassigned\nlet count = 0; // reassigned below\ncount += 1;" }
+        code:
+          {
+            lang: js,
+            inline: "const max = 10; // never reassigned\nlet count = 0; // reassigned below\ncount += 1;",
+          }
         check: console.log(max, count);
         output: '10 1'
         verify: node
@@ -16,7 +20,11 @@ sections:
         learn: js.variables
       - id: js.sheet.template-literal
         title: Build strings
-        code: { lang: js, inline: "const name = 'Ada';\nconst greeting = `Hello, ${name}! You have ${2 + 3} messages.`;" }
+        code:
+          {
+            lang: js,
+            inline: "const name = 'Ada';\nconst greeting = `Hello, ${name}! You have ${2 + 3} messages.`;",
+          }
         check: console.log(greeting);
         output: 'Hello, Ada! You have 5 messages.'
         verify: node
@@ -25,7 +33,11 @@ sections:
         learn: js.strings
       - id: js.sheet.nullish
         title: Defaults for missing values
-        code: { lang: js, inline: "const user = { name: 'Ada', settings: null };\nconst theme = user.settings?.theme ?? 'dark';\nconst count = 0 || 10; // 10: || also replaces 0\nconst kept = 0 ?? 10; // 0: ?? only replaces null/undefined" }
+        code:
+          {
+            lang: js,
+            inline: "const user = { name: 'Ada', settings: null };\nconst theme = user.settings?.theme ?? 'dark';\nconst count = 0 || 10; // 10: || also replaces 0\nconst kept = 0 ?? 10; // 0: ?? only replaces null/undefined",
+          }
         check: console.log(theme, count, kept);
         output: 'dark 10 0'
         verify: node
@@ -34,7 +46,11 @@ sections:
         learn: js.equality-truthiness
       - id: js.sheet.strict-equality
         title: Compare values
-        code: { lang: js, inline: "const results = [1 === 1, 1 === '1', 1 == '1', NaN === NaN, Number.isNaN(NaN)];" }
+        code:
+          {
+            lang: js,
+            inline: "const results = [1 === 1, 1 === '1', 1 == '1', NaN === NaN, Number.isNaN(NaN)];",
+          }
         check: console.log(results.join(' '));
         output: 'true false true false true'
         verify: node
@@ -46,7 +62,11 @@ sections:
     entries:
       - id: js.sheet.array-map-filter
         title: Transform and filter
-        code: { lang: js, inline: "const prices = [5, 12, 30];\nconst doubled = prices.map((p) => p * 2);\nconst cheap = prices.filter((p) => p < 20);" }
+        code:
+          {
+            lang: js,
+            inline: "const prices = [5, 12, 30];\nconst doubled = prices.map((p) => p * 2);\nconst cheap = prices.filter((p) => p < 20);",
+          }
         check: console.log(JSON.stringify(doubled), JSON.stringify(cheap));
         output: '[10,24,60] [5,12]'
         verify: node
@@ -55,7 +75,7 @@ sections:
         learn: js.array-iteration
       - id: js.sheet.array-reduce
         title: Combine into one value
-        code: { lang: js, inline: "const total = [5, 12, 30].reduce((sum, p) => sum + p, 0);" }
+        code: { lang: js, inline: 'const total = [5, 12, 30].reduce((sum, p) => sum + p, 0);' }
         check: console.log(total);
         output: '47'
         verify: node
@@ -64,7 +84,11 @@ sections:
         learn: js.array-iteration
       - id: js.sheet.array-find
         title: Find one item
-        code: { lang: js, inline: "const users = [{ id: 1, name: 'Ada' }, { id: 2, name: 'Linus' }];\nconst linus = users.find((u) => u.id === 2);\nconst missing = users.find((u) => u.id === 9);" }
+        code:
+          {
+            lang: js,
+            inline: "const users = [{ id: 1, name: 'Ada' }, { id: 2, name: 'Linus' }];\nconst linus = users.find((u) => u.id === 2);\nconst missing = users.find((u) => u.id === 9);",
+          }
         check: console.log(linus.name, missing);
         output: 'Linus undefined'
         verify: node
@@ -73,7 +97,11 @@ sections:
         learn: js.array-iteration
       - id: js.sheet.to-sorted
         title: Sort numbers without mutating
-        code: { lang: js, inline: "const xs = [10, 1, 5];\nconst sorted = xs.toSorted((a, b) => a - b);\nconst wrong = [10, 1, 5].sort(); // compares as strings!" }
+        code:
+          {
+            lang: js,
+            inline: "const xs = [10, 1, 5];\nconst sorted = xs.toSorted((a, b) => a - b);\nconst wrong = [10, 1, 5].sort(); // compares as strings!",
+          }
         check: console.log(JSON.stringify(sorted), JSON.stringify(xs), JSON.stringify(wrong));
         output: '[1,5,10] [10,1,5] [1,10,5]'
         verify: node
@@ -94,7 +122,11 @@ sections:
     entries:
       - id: js.sheet.destructuring
         title: Unpack with defaults
-        code: { lang: js, inline: "const { name, role = 'reader', ...rest } = { name: 'Ada', id: 7, team: 'core' };" }
+        code:
+          {
+            lang: js,
+            inline: "const { name, role = 'reader', ...rest } = { name: 'Ada', id: 7, team: 'core' };",
+          }
         check: console.log(name, role, JSON.stringify(rest));
         output: 'Ada reader {"id":7,"team":"core"}'
         verify: node
@@ -103,7 +135,11 @@ sections:
         learn: js.destructuring-spread
       - id: js.sheet.spread-merge
         title: Copy and override
-        code: { lang: js, inline: "const defaults = { theme: 'dark', size: 'md' };\nconst settings = { ...defaults, size: 'lg' };" }
+        code:
+          {
+            lang: js,
+            inline: "const defaults = { theme: 'dark', size: 'md' };\nconst settings = { ...defaults, size: 'lg' };",
+          }
         check: console.log(JSON.stringify(settings), defaults.size);
         output: '{"theme":"dark","size":"lg"} md'
         verify: node
@@ -112,7 +148,11 @@ sections:
         learn: js.destructuring-spread
       - id: js.sheet.group-by
         title: Group items
-        code: { lang: js, inline: "const tasks = [{ t: 'a', done: true }, { t: 'b', done: false }, { t: 'c', done: true }];\nconst byStatus = Object.groupBy(tasks, (x) => (x.done ? 'done' : 'open'));" }
+        code:
+          {
+            lang: js,
+            inline: "const tasks = [{ t: 'a', done: true }, { t: 'b', done: false }, { t: 'c', done: true }];\nconst byStatus = Object.groupBy(tasks, (x) => (x.done ? 'done' : 'open'));",
+          }
         check: console.log(byStatus.done.length, byStatus.open.length);
         output: '2 1'
         verify: node
@@ -133,13 +173,21 @@ sections:
     entries:
       - id: js.sheet.fetch-json
         title: Fetch JSON safely
-        code: { lang: js, inline: "async function getUser(id) {\n  const response = await fetch(`/api/users/${id}`);\n  if (!response.ok) throw new Error(`HTTP ${response.status}`);\n  return response.json();\n}" }
+        code:
+          {
+            lang: js,
+            inline: "async function getUser(id) {\n  const response = await fetch(`/api/users/${id}`);\n  if (!response.ok) throw new Error(`HTTP ${response.status}`);\n  return response.json();\n}",
+          }
         explain: '`fetch` only rejects on network failure; a 404 resolves. Check `response.ok` yourself.'
         usage: daily
         learn: js.fetch
       - id: js.sheet.promise-all
         title: Run in parallel
-        code: { lang: js, inline: "const wait = (ms, value) => new Promise((resolve) => setTimeout(() => resolve(value), ms));\nconst [a, b] = await Promise.all([wait(30, 'a'), wait(10, 'b')]);" }
+        code:
+          {
+            lang: js,
+            inline: "const wait = (ms, value) => new Promise((resolve) => setTimeout(() => resolve(value), ms));\nconst [a, b] = await Promise.all([wait(30, 'a'), wait(10, 'b')]);",
+          }
         check: console.log(a, b);
         output: 'a b'
         verify: node

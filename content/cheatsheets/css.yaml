@@ -13,13 +13,21 @@ sections:
         learn: css.box-sizing
       - id: css.sheet.spacing-shorthand
         title: Padding and margin shorthand
-        code: { lang: css, inline: ".card {\n  padding: 16px 24px; /* top-bottom, left-right */\n  margin: 0 auto 24px; /* top, left-right, bottom */\n}" }
+        code:
+          {
+            lang: css,
+            inline: ".card {\n  padding: 16px 24px; /* top-bottom, left-right */\n  margin: 0 auto 24px; /* top, left-right, bottom */\n}",
+          }
         explain: 'One value: all sides. Two: vertical, horizontal. Three: top, horizontal, bottom. Four: clockwise from top.'
         usage: daily
         learn: css.box-model
       - id: css.sheet.visible-width
         title: How wide is it on screen?
-        code: { lang: css, inline: "/* content-box (the default): */\n/* visible width = width + padding-left + padding-right\n                 + border-left + border-right */" }
+        code:
+          {
+            lang: css,
+            inline: "/* content-box (the default): */\n/* visible width = width + padding-left + padding-right\n                 + border-left + border-right */",
+          }
         explain: Margin is outside the box and never part of its size.
         usage: common
         learn: css.box-model
@@ -34,25 +42,38 @@ sections:
     entries:
       - id: css.sheet.flex-center
         title: Center anything
-        code: { lang: css, inline: ".center {\n  display: flex;\n  justify-content: center; /* main axis */\n  align-items: center; /* cross axis */\n}" }
+        code:
+          {
+            lang: css,
+            inline: ".center {\n  display: flex;\n  justify-content: center; /* main axis */\n  align-items: center; /* cross axis */\n}",
+          }
         explain: 'Or, with Grid, `display: grid; place-items: center;`.'
         usage: daily
         learn: css.flex-alignment
       - id: css.sheet.flex-row
         title: A row that wraps
-        code: { lang: css, inline: ".toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 8px;\n}" }
+        code:
+          { lang: css, inline: ".toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 8px;\n}" }
         explain: '`gap` spaces items without margins on the outer edges.'
         usage: daily
         learn: css.flex-wrap-patterns
       - id: css.sheet.grid-auto-fit
         title: Responsive card grid, no media queries
-        code: { lang: css, inline: ".cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));\n  gap: 1rem;\n}" }
+        code:
+          {
+            lang: css,
+            inline: ".cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));\n  gap: 1rem;\n}",
+          }
         explain: As many 16rem-or-wider columns as fit; they stretch to fill the row.
         usage: common
         learn: css.grid-auto
       - id: css.sheet.media-min-width
         title: Mobile-first breakpoint
-        code: { lang: css, inline: ".sidebar {\n  display: none;\n}\n\n@media (min-width: 768px) {\n  .sidebar {\n    display: block;\n  }\n}" }
+        code:
+          {
+            lang: css,
+            inline: ".sidebar {\n  display: none;\n}\n\n@media (min-width: 768px) {\n  .sidebar {\n    display: block;\n  }\n}",
+          }
         explain: Write the small-screen style first, then add to it for wider screens.
         usage: daily
         learn: css.media-queries
@@ -61,13 +82,21 @@ sections:
     entries:
       - id: css.sheet.custom-properties
         title: Theme with variables
-        code: { lang: css, inline: ":root {\n  --accent: #0b6bcb;\n}\n\n.button {\n  background: var(--accent, blue); /* fallback if undefined */\n}" }
+        code:
+          {
+            lang: css,
+            inline: ":root {\n  --accent: #0b6bcb;\n}\n\n.button {\n  background: var(--accent, blue); /* fallback if undefined */\n}",
+          }
         explain: Custom properties inherit and can be redefined in any selector, which makes themes cheap.
         usage: daily
         learn: css.custom-properties
       - id: css.sheet.focus-visible
         title: Visible keyboard focus
-        code: { lang: css, inline: "button:focus-visible {\n  outline: 2px solid #0b6bcb;\n  outline-offset: 2px;\n}" }
+        code:
+          {
+            lang: css,
+            inline: "button:focus-visible {\n  outline: 2px solid #0b6bcb;\n  outline-offset: 2px;\n}",
+          }
         explain: Shows the ring for keyboard users without flashing it on every mouse click. Never remove focus styles.
         usage: daily
         learn: css.pseudo-classes
@@ -79,7 +108,11 @@ sections:
         learn: css.modern-selectors
       - id: css.sheet.reduced-motion
         title: Respect reduced motion
-        code: { lang: css, inline: "@media (prefers-reduced-motion: reduce) {\n  * {\n    animation-duration: 0.01ms !important;\n    transition-duration: 0.01ms !important;\n  }\n}" }
+        code:
+          {
+            lang: css,
+            inline: "@media (prefers-reduced-motion: reduce) {\n  * {\n    animation-duration: 0.01ms !important;\n    transition-duration: 0.01ms !important;\n  }\n}",
+          }
         explain: Some people get motion sickness from animation; the OS setting tells you.
         usage: common
         learn: css.user-preferences
