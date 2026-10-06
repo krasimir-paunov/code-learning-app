@@ -1,0 +1,142 @@
+.explorer {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.example {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.code {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--code-bg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: 2;
+  /* Long URLs wrap anywhere, so the whole element is visible at phone width. */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+
+  @container (min-width: 640px) {
+    font-size: var(--fs-md);
+  }
+}
+
+.segment {
+  padding-block: 0.15em;
+  border-radius: var(--radius-sm);
+  color: var(--code-punctuation);
+  cursor: pointer;
+
+  &[data-kind='tag-name'] {
+    color: var(--code-tag);
+  }
+
+  &[data-kind='attribute-name'] {
+    color: var(--code-attribute);
+  }
+
+  &[data-kind='attribute'] {
+    color: var(--code-attribute);
+  }
+
+  &[data-kind='attribute-value'] {
+    color: var(--code-string);
+  }
+
+  &[data-kind='content'],
+  &[data-kind='element'] {
+    color: var(--code-fg);
+  }
+
+  &:hover {
+    background: color-mix(in oklch, var(--accent) 16%, transparent);
+  }
+
+  &[data-selected] {
+    background: color-mix(in oklch, var(--accent) 30%, transparent);
+    box-shadow: 0 2px 0 var(--accent);
+  }
+
+  &:focus-visible {
+    outline-offset: 0;
+  }
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-2);
+  min-block-size: 7.5rem;
+  align-content: start;
+  padding: var(--space-3) var(--space-4);
+  border-inline-start: 3px solid var(--accent);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+}
+
+.chain {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  & li:not(:last-child)::after {
+    content: '›';
+    margin-inline-start: var(--space-1);
+    color: var(--text-3);
+  }
+}
+
+.crumb {
+  min-block-size: var(--touch-target);
+  padding-inline: var(--space-2);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--bg-1);
+  font-size: var(--fs-sm);
+
+  &[aria-pressed='true'] {
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+}
+
+.kind {
+  font-weight: 600;
+
+  & code {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    word-break: break-all;
+  }
+}
+
+.hint {
+  color: var(--text-2);
+}
+
+.rendered {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.label {
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.stage {
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-width) dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-1);
+}
