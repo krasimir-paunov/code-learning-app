@@ -14,6 +14,11 @@ export type ArrayEvent =
   | { type: 'compare'; i: number; j: number }
   | { type: 'swap'; i: number; j: number }
   | { type: 'write'; i: number; value: number }
+  /**
+   * One write that lands element `from` at `to`, shifting the elements between them by one. Lets a
+   * buffered algorithm (merge sort) be shown in place: every value still waiting stays on screen.
+   */
+  | { type: 'move'; from: number; to: number }
   /** A search check of one element against the target. */
   | { type: 'probe'; i: number }
   | { type: 'mark'; indices: readonly number[]; as: Mark }
@@ -79,6 +84,9 @@ function snapshot(state: MutableState, index: number, step?: TraceStep): Frame {
     } else if (event.type === 'write' || event.type === 'probe') {
       active = [event.i];
       activeKind = event.type;
+    } else if (event.type === 'move') {
+      active = [event.to];
+      activeKind = 'write';
     }
   }
   return {
@@ -93,6 +101,10 @@ function snapshot(state: MutableState, index: number, step?: TraceStep): Frame {
     line: step?.line,
     vars: step?.vars,
   };
+}
+
+function moveItem<T>(list: T[], from: number, to: number) {
+  list.splice(to, 0, ...list.splice(from, 1));
 }
 
 function apply(state: MutableState, step: TraceStep) {
@@ -115,6 +127,11 @@ function apply(state: MutableState, step: TraceStep) {
       }
       case 'write':
         state.array[event.i] = event.value;
+        state.counters.writes++;
+        break;
+      case 'move':
+        moveItem(state.array, event.from, event.to);
+        moveItem(state.marks, event.from, event.to);
         state.counters.writes++;
         break;
       case 'mark':

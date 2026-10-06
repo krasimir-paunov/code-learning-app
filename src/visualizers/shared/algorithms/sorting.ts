@@ -1,11 +1,11 @@
 /**
- * Sorting step generators for the Phase 4 sort race (side-by-side algorithms, live counters).
+ * Sorting step generators for the sort race (side-by-side algorithms, live counters).
  * Each sorts its own copy in place and narrates every comparison, swap and write, so the
  * race's counters are the algorithm's real operation counts.
  */
 import type { Complexity, StepGenerator } from '../trace.ts';
 
-export type SortAlgorithm = 'bubble' | 'selection' | 'insertion' | 'merge' | 'quick';
+export type SortAlgorithm = 'bubble' | 'selection' | 'insertion' | 'merge' | 'quick' | 'heap';
 
 export const SORT_COMPLEXITY: Record<SortAlgorithm, Complexity> = {
   bubble: { best: 'O(n)', average: 'O(n²)', worst: 'O(n²)', space: 'O(1)', stable: true },
@@ -25,6 +25,26 @@ export const SORT_COMPLEXITY: Record<SortAlgorithm, Complexity> = {
     space: 'O(log n)',
     stable: false,
   },
+  heap: {
+    best: 'O(n log n)',
+    average: 'O(n log n)',
+    worst: 'O(n log n)',
+    space: 'O(1)',
+    stable: false,
+  },
+};
+
+/**
+ * The data-movement counter that describes each algorithm: exchanges for the swap-based sorts,
+ * element writes for merge sort, which never swaps.
+ */
+export const SORT_METRIC: Record<SortAlgorithm, 'swaps' | 'writes'> = {
+  bubble: 'swaps',
+  selection: 'swaps',
+  insertion: 'swaps',
+  merge: 'writes',
+  quick: 'swaps',
+  heap: 'swaps',
 };
 
 const range = (from: number, to: number) => Array.from({ length: to - from }, (_, k) => from + k);
@@ -99,36 +119,48 @@ export function* insertionSort(a: number[]): StepGenerator<number[]> {
   return a;
 }
 
+/**
+ * Top-down merge sort. A real merge copies the runs to a buffer and writes each element back once
+ * per level; the race shows that in place instead: the merged prefix, then what is left of the left
+ * run, then what is left of the right run. Taking from the left is a write where the value already
+ * stands; taking from the right is a `move` into the next slot. Either way it is one write, so the
+ * counter matches the buffered algorithm and every compared value is on screen.
+ */
 export function* mergeSort(a: number[]): StepGenerator<number[]> {
   function* sort(lo: number, hi: number): StepGenerator<void> {
     if (hi - lo < 2) return;
     const mid = Math.floor((lo + hi) / 2);
     yield* sort(lo, mid);
     yield* sort(mid, hi);
-    const left = a.slice(lo, mid);
-    const right = a.slice(mid, hi);
-    let i = 0;
-    let j = 0;
-    for (let k = lo; k < hi; k++) {
-      let take: number;
-      if (i < left.length && j < right.length) {
-        yield {
-          events: [{ type: 'compare', i: lo + i, j: mid + j }],
-          note: `Merge: compare ${left[i]} and ${right[j]}.`,
-        };
+    // k: next slot to fill (and the head of the left run); r: head of the right run.
+    let k = lo;
+    let r = mid;
+    while (k < hi) {
+      const hasLeft = k < r;
+      const hasRight = r < hi;
+      let fromRight = !hasLeft;
+      if (hasLeft && hasRight) {
+        const [x, y] = [a[k] as number, a[r] as number];
+        yield { events: [{ type: 'compare', i: k, j: r }], note: `Merge: compare ${x} and ${y}.` };
         // `<=` keeps equal values in their original order: merge sort is stable.
-        take =
-          (left[i] as number) <= (right[j] as number)
-            ? (left[i++] as number)
-            : (right[j++] as number);
-      } else {
-        take = i < left.length ? (left[i++] as number) : (right[j++] as number);
+        fromRight = y < x;
       }
-      a[k] = take;
-      yield {
-        events: [{ type: 'write', i: k, value: take }],
-        note: `Write ${take} to index ${k}.`,
-      };
+      if (fromRight) {
+        const value = a[r] as number;
+        a.splice(k, 0, ...a.splice(r, 1));
+        yield {
+          events: [{ type: 'move', from: r, to: k }],
+          note: `Take ${value} from the right run into index ${k}.`,
+        };
+        r++;
+      } else {
+        const value = a[k] as number;
+        yield {
+          events: [{ type: 'write', i: k, value }],
+          note: `Take ${value} from the left run into index ${k}.`,
+        };
+      }
+      k++;
     }
   }
   yield* sort(0, a.length);
@@ -190,10 +222,56 @@ export function* quickSort(a: number[]): StepGenerator<number[]> {
   return a;
 }
 
+/** In-place heap sort: build a max-heap, then repeatedly swap the max to the end and re-heapify. */
+export function* heapSort(a: number[]): StepGenerator<number[]> {
+  function* siftDown(root: number, end: number): StepGenerator<void> {
+    for (;;) {
+      const left = 2 * root + 1;
+      if (left >= end) return;
+      let child = left;
+      const right = left + 1;
+      if (right < end) {
+        yield {
+          events: [{ type: 'compare', i: left, j: right }],
+          note: `Which child is larger, ${a[left]} or ${a[right]}?`,
+        };
+        if ((a[right] as number) > (a[left] as number)) child = right;
+      }
+      const [x, y] = [a[root] as number, a[child] as number];
+      yield {
+        events: [{ type: 'compare', i: root, j: child }],
+        note: `Is ${x} smaller than its child ${y}?`,
+      };
+      if (x >= y) return;
+      a[root] = y;
+      a[child] = x;
+      yield { events: [{ type: 'swap', i: root, j: child }], note: `Sift ${x} down below ${y}.` };
+      root = child;
+    }
+  }
+  for (let i = Math.floor(a.length / 2) - 1; i >= 0; i--) yield* siftDown(i, a.length);
+  for (let end = a.length - 1; end > 0; end--) {
+    const max = a[0] as number;
+    a[0] = a[end] as number;
+    a[end] = max;
+    yield {
+      events: [
+        { type: 'swap', i: 0, j: end },
+        { type: 'mark', indices: [end], as: 'sorted' },
+      ],
+      note: `Move the largest, ${max}, to index ${end}.`,
+    };
+    yield* siftDown(0, end);
+  }
+  if (a.length) yield { events: [{ type: 'mark', indices: [0], as: 'sorted' }], note: 'Sorted.' };
+  return a;
+}
+
 export const SORTS: Record<SortAlgorithm, (a: number[]) => StepGenerator<number[]>> = {
   bubble: bubbleSort,
   selection: selectionSort,
   insertion: insertionSort,
   merge: mergeSort,
   quick: quickSort,
+  heap: heapSort,
 };

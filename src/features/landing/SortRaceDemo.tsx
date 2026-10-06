@@ -21,6 +21,7 @@ const TITLES: Record<SortAlgorithm, string> = {
   insertion: 'Insertion sort',
   merge: 'Merge sort',
   quick: 'Quicksort',
+  heap: 'Heap sort',
 };
 const SIZE = 28;
 const STEPS_PER_SECOND = 24;

@@ -77,6 +77,11 @@
   --info: var(--neon-violet);
   --focus-ring: var(--neon-cyan);
 
+  /* Array operations in visualizers (always paired with a labelled counter or narration) */
+  --op-compare: var(--accent);
+  --op-swap: var(--warning);
+  --op-write: var(--info);
+
   /* Tracks */
   --track-html: var(--orange-400);
   --track-css: var(--sky-400);
@@ -86,9 +91,10 @@
   --track-net: var(--indigo-300);
 
   /* Glow: only for focus/active states, completed nodes and rewards (never text). */
-  --glow-cyan: 0 0 12px color-mix(in oklch, var(--neon-cyan) 45%, transparent);
-  --glow-green: 0 0 12px color-mix(in oklch, var(--neon-green) 45%, transparent);
-  --glow-magenta: 0 0 12px color-mix(in oklch, var(--neon-magenta) 45%, transparent);
+  --glow-blur: 12px;
+  --glow-cyan: 0 0 var(--glow-blur) color-mix(in oklch, var(--neon-cyan) 45%, transparent);
+  --glow-green: 0 0 var(--glow-blur) color-mix(in oklch, var(--neon-green) 45%, transparent);
+  --glow-magenta: 0 0 var(--glow-blur) color-mix(in oklch, var(--neon-magenta) 45%, transparent);
   --shadow-raised: 0 8px 24px color-mix(in oklch, black 45%, transparent);
 
   /* Code (Shiki css-variables theme + CodeMirror). Each ≥ 4.5:1 on --bg-3. */

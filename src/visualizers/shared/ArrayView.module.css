@@ -90,12 +90,22 @@
 }
 
 .active {
-  border-color: var(--accent);
-  box-shadow: var(--glow-cyan);
+  --op: var(--op-compare);
+
+  border-color: var(--op);
+  box-shadow: 0 0 var(--glow-blur) color-mix(in oklch, var(--op) 45%, transparent);
+
+  &[data-kind='swap'] {
+    --op: var(--op-swap);
+  }
+
+  &[data-kind='write'] {
+    --op: var(--op-write);
+  }
 }
 
 .bars .active .bar {
-  background: var(--accent);
+  background: var(--op);
 }
 
 .value {
