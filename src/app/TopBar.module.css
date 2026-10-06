@@ -1,0 +1,107 @@
+.bar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-topbar);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  block-size: var(--topbar-height);
+  padding-inline: var(--gutter);
+  border-block-end: var(--border-width) solid var(--border);
+  background: color-mix(in oklch, var(--bg-0) 92%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--touch-target);
+  color: var(--text-1);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.mark {
+  inline-size: 26px;
+  block-size: 26px;
+  fill: none;
+  stroke: var(--neon-green);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.nav {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--touch-target);
+  min-inline-size: var(--touch-target);
+  justify-content: center;
+  padding-inline: var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-decoration: none;
+
+  & > span {
+    display: inline-flex;
+  }
+
+  & svg {
+    inline-size: 20px;
+    block-size: 20px;
+  }
+
+  &:hover {
+    background: var(--bg-2);
+    color: var(--text-1);
+    text-decoration: none;
+  }
+}
+
+.active {
+  color: var(--text-1);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+/* Phones: icon-only nav with the label kept for screen readers; the name hides first. */
+@media (max-width: 767px) {
+  .navLabel {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 479px) {
+  .name {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

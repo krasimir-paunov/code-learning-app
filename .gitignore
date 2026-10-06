@@ -10,3 +10,4 @@ playwright-report/
 bin/
 obj/
 dist-e2e/
+.claude/launch.json
