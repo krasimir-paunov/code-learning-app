@@ -1,0 +1,167 @@
+id: css.box-model
+version: 1
+title: The box model
+summary: See the four layers of every element and size them precisely.
+minutes: 8
+tags: [layout, sizing, padding, margin, border]
+
+concept:
+  title: Every element is four boxes
+  body: |
+    Every element is a rectangle made of four layers, from the inside out:
+    **content**, **padding**, **border** and **margin**.
+
+    - Padding is space *inside* the border. The element's background fills it.
+    - The border is drawn around the padding.
+    - Margin is transparent space *outside* the border that pushes neighbours away.
+
+    By default, `width` sets the **content** only. Padding and border are added on top,
+    so the card below is 250px wide on screen: 200 + 2 × 20 + 2 × 5.
+    The margin adds space around it but is not part of its size.
+  code:
+    caption: What the browser reports (offsetWidth is the visible width)
+    tabs:
+      - lang: html
+        file: snippets/card.html
+        output: '250'
+        verify: browser
+
+playground:
+  visualizer: box-inspector
+  props:
+    width: { min: 60, max: 320, default: 200 }
+    padding: { min: 0, max: 48, default: 20 }
+    border: { min: 0, max: 20, default: 5 }
+    margin: { min: 0, max: 48, default: 10 }
+  prompt: |
+    Drag **padding** from 20 to 40. The visible width grows by 40px while `width` stays at 200px.
+  explore:
+    - Set padding, border and margin to 0. Now the box is exactly as wide as `width`.
+    - Drag **margin**. The box keeps its size; only the space around it changes.
+
+challenges:
+  - id: which-layer
+    type: choice
+    prompt: |
+      You want more space between a card's text and its border, and the card's background
+      colour should fill that space. Which property do you change?
+    options:
+      - text: '`padding`'
+        correct: true
+        why: Padding is inside the border, so the background fills it.
+      - text: '`margin`'
+        why: Margin is outside the border and transparent. It moves the card away from its neighbours.
+      - text: '`border-width`'
+        why: That makes the border line thicker; the gap inside stays the same.
+      - text: '`width`'
+        why: That widens the content area, not the gap between text and border.
+    explanation: |
+      Padding belongs to the element: it sits between the content and the border and shows the
+      background. Margin belongs to the space around the element.
+
+  - id: content-width
+    type: fill-blank
+    prompt: |
+      The design says this card must be exactly **300px** wide on screen, including its 24px
+      padding and 2px border. What must `width` be?
+    code: { lang: css, file: snippets/content-width.css }
+    blanks:
+      width:
+        accept: ['248px']
+        caseSensitive: false
+        label: the content width
+    check:
+      file: snippets/content-width.check.html
+      output: '300'
+      verify: browser
+    hints:
+      - 'Visible width = `width` + 2 × padding + 2 × border.'
+      - '300 − 2 × 24 − 2 × 2 = ?'
+    explanation: |
+      With the default box model, `width` is only the content: 248 + 2 × 24 + 2 × 2 = 300px.
+
+  - id: layers-inside-out
+    type: reorder
+    prompt: Put the four layers in order, from the inside out.
+    items:
+      - '**Content**: the text or image itself'
+      - '**Padding**: space inside the border'
+      - '**Border**: the line around the padding'
+      - '**Margin**: transparent space outside the border'
+    hints:
+      - Margin is the only layer outside the border.
+    explanation: |
+      Content in the middle, padding around it, then the border, then margin outside everything.
+
+  - id: match-card
+    type: visual-match
+    prompt: |
+      Match the target card. On screen it is **260px** wide, with a **2px** border and **16px** of
+      padding, and it sits **24px** away from everything around it. Use the ghost overlay to compare.
+    html: { file: snippets/match.html }
+    starterCss: { file: snippets/match.starter.css }
+    targetCss: { file: snippets/match.target.css }
+    compare:
+      selectors: [.card, .title]
+      tolerancePx: 1
+    viewport: { width: 320, height: 240 }
+    hints:
+      - 'The content width is 260 − 2 × 16 − 2 × 2.'
+      - '"24px away from everything" is the card''s `margin`.'
+    explanation: |
+      Content 224 + padding 2 × 16 + border 2 × 2 = 260px on screen. The 24px margin sits outside
+      the border, so it moves the card without changing its size.
+
+production:
+  - title: DevTools draws this diagram for you
+    body: |
+      Open DevTools (F12), select an element and look at the **Computed** panel: the same four
+      nested boxes, with the real numbers. When spacing surprises you, check it there first.
+  - title: Spacing comes from a scale
+    body: |
+      Teams rarely pick padding and margin values ad hoc. A design system defines a spacing scale as
+      custom properties, and components use only those values.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/spacing-tokens.css
+  - title: Most stylesheets switch the model
+    body: |
+      Nearly every production stylesheet starts with this reset, so `width` means the visible
+      width, padding and border included. That is the next lesson.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/reset.css
+
+mistake:
+  title: '`width: 100%` plus padding sticks out'
+  body: |
+    A child with `width: 100%` and padding is wider than its parent: the padding is added on top
+    of the full parent width, so the child overflows by 40px.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/overflow.bad.html
+        output: |
+          300
+          340
+        verify: browser
+  fix: |
+    Remove the fixed width: a block element already fills its parent, padding included.
+    (Or switch to `box-sizing: border-box`, coming next.)
+  good:
+    tabs:
+      - lang: html
+        file: snippets/overflow.good.html
+        output: |
+          300
+          300
+        verify: browser
+
+recap:
+  - 'On-screen width = `width` + left and right padding + left and right border.'
+  - Padding is inside the border and shows the background; margin is outside and transparent.
+  - When spacing surprises you, read the box diagram in DevTools.
+
+related: [css.box-sizing, css.margin-collapse]

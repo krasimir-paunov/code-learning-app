@@ -8,7 +8,7 @@ import styles from './View.module.css';
 
 const CONTENT_HEIGHT = 24;
 
-/** Scale the diagram down to fit narrow screens (px numbers stay exact in the labels). */
+/** Fit the diagram to the space available (the legend states the exact px values). */
 function useFitScale(width: number) {
   const ref = useRef<HTMLDivElement>(null);
   const [available, setAvailable] = useState(width);
@@ -21,7 +21,8 @@ function useFitScale(width: number) {
     observer.observe(element);
     return () => observer.disconnect();
   }, [width]);
-  return { ref, scale: Math.min(1, available / width) };
+  // Not to scale beyond 2×: it is a diagram; the labels carry the exact numbers.
+  return { ref, scale: Math.min(2, available / width) };
 }
 
 export default function BoxInspectorView({ props }: VisualizerViewProps<BoxInspectorProps>) {
@@ -39,84 +40,92 @@ export default function BoxInspectorView({ props }: VisualizerViewProps<BoxInspe
 
   return (
     <div className={styles.inspector}>
-      <div className={styles.controls}>
-        <Slider
-          label="width"
-          min={props.width.min}
-          max={props.width.max}
-          value={input.width}
-          onChange={set('width')}
-          format={(v) => `${v}px`}
-        />
-        <Slider
-          label="padding"
-          min={props.padding.min}
-          max={props.padding.max}
-          value={input.padding}
-          onChange={set('padding')}
-          format={(v) => `${v}px`}
-        />
-        <Slider
-          label="border"
-          min={props.border.min}
-          max={props.border.max}
-          value={input.border}
-          onChange={set('border')}
-          format={(v) => `${v}px`}
-        />
-        <Slider
-          label="margin"
-          min={props.margin.min}
-          max={props.margin.max}
-          value={input.margin}
-          onChange={set('margin')}
-          format={(v) => `${v}px`}
-        />
-        {props.allowBoxSizing && (
-          <SegmentedControl<BoxSizing>
-            label="box-sizing"
-            size="sm"
-            options={[
-              { value: 'content-box', label: 'content-box' },
-              { value: 'border-box', label: 'border-box' },
-            ]}
-            value={input.boxSizing}
-            onChange={(boxSizing) => setInput((i) => ({ ...i, boxSizing }))}
+      <div className={styles.layout}>
+        <div className={styles.controls}>
+          <Slider
+            label="width"
+            min={props.width.min}
+            max={props.width.max}
+            value={input.width}
+            onChange={set('width')}
+            format={(v) => `${v}px`}
           />
-        )}
-      </div>
+          <Slider
+            label="padding"
+            min={props.padding.min}
+            max={props.padding.max}
+            value={input.padding}
+            onChange={set('padding')}
+            format={(v) => `${v}px`}
+          />
+          <Slider
+            label="border"
+            min={props.border.min}
+            max={props.border.max}
+            value={input.border}
+            onChange={set('border')}
+            format={(v) => `${v}px`}
+          />
+          <Slider
+            label="margin"
+            min={props.margin.min}
+            max={props.margin.max}
+            value={input.margin}
+            onChange={set('margin')}
+            format={(v) => `${v}px`}
+          />
+          {props.allowBoxSizing && (
+            <SegmentedControl<BoxSizing>
+              label="box-sizing"
+              size="sm"
+              options={[
+                { value: 'content-box', label: 'content-box' },
+                { value: 'border-box', label: 'border-box' },
+              ]}
+              value={input.boxSizing}
+              onChange={(boxSizing) => setInput((i) => ({ ...i, boxSizing }))}
+            />
+          )}
+        </div>
 
-      <div className={styles.stage} ref={ref}>
-        <div
-          className={styles.diagram}
-          role="img"
-          aria-label={`Margin ${input.margin}px, border ${input.border}px, padding ${input.padding}px, content ${box.content.width} by ${box.content.height}px.`}
-          style={{
-            inlineSize: box.marginBox.width * scale,
-            blockSize: box.marginBox.height * scale,
-          }}
-        >
-          <div className={styles.scaled} style={{ transform: `scale(${scale})` }}>
-            <div
-              className={styles.margin}
-              style={{ padding: input.margin, inlineSize: box.marginBox.width }}
-            >
-              <span className={styles.tag}>margin {input.margin}</span>
-              <div className={styles.border} style={{ padding: input.border }}>
-                <span className={styles.tag}>border {input.border}</span>
-                <div className={styles.padding} style={{ padding: input.padding }}>
-                  <span className={styles.tag}>padding {input.padding}</span>
-                  <div
-                    className={styles.content}
-                    style={{ inlineSize: box.content.width, blockSize: box.content.height }}
-                  >
-                    {box.content.width} × {box.content.height}
+        <div className={styles.stage} ref={ref}>
+          <div
+            className={styles.diagram}
+            role="img"
+            aria-label={`Margin ${input.margin}px, border ${input.border}px, padding ${input.padding}px, content ${box.content.width} by ${box.content.height}px.`}
+            style={{
+              inlineSize: box.marginBox.width * scale,
+              blockSize: box.marginBox.height * scale,
+            }}
+          >
+            <div className={styles.scaled} style={{ transform: `scale(${scale})` }}>
+              <div
+                className={styles.margin}
+                style={{ padding: input.margin, inlineSize: box.marginBox.width }}
+              >
+                <div className={styles.border} style={{ padding: input.border }}>
+                  <div className={styles.padding} style={{ padding: input.padding }}>
+                    <div
+                      className={styles.content}
+                      style={{ inlineSize: box.content.width, blockSize: box.content.height }}
+                    >
+                      {box.content.width} × {box.content.height}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <ul className={styles.legend} aria-label="Layers">
+          <li data-layer="margin">Margin {input.margin}px</li>
+          <li data-layer="border">Border {input.border}px</li>
+          <li data-layer="padding">Padding {input.padding}px</li>
+          <li data-layer="content">
+            Content {box.content.width} × {box.content.height}px
+          </li>
+        </ul>
       </div>
 
       <div className={styles.readout}>

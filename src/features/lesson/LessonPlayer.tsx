@@ -163,7 +163,9 @@ export function LessonPlayer({ lesson, node }: LessonPlayerProps) {
         <section id="concept" aria-labelledby="concept-title" className={styles.section}>
           <h2 id="concept-title" className={styles.sectionTitle}>
             <span className={styles.sectionKicker}>Concept</span>
-            <InlineCode text={lesson.concept.title} />
+            <span>
+              <InlineCode text={lesson.concept.title} />
+            </span>
           </h2>
           <div className="prose" dangerouslySetInnerHTML={{ __html: lesson.concept.html }} />
           {lesson.concept.code && (
@@ -224,7 +226,9 @@ export function LessonPlayer({ lesson, node }: LessonPlayerProps) {
         <section id="mistake" aria-labelledby="mistake-title" className={styles.section}>
           <h2 id="mistake-title" className={styles.sectionTitle}>
             <span className={styles.sectionKicker}>Common mistake</span>
-            <InlineCode text={lesson.mistake.title} />
+            <span>
+              <InlineCode text={lesson.mistake.title} />
+            </span>
           </h2>
           <div className="prose" dangerouslySetInnerHTML={{ __html: lesson.mistake.html }} />
           <div className={styles.mistakeGrid}>

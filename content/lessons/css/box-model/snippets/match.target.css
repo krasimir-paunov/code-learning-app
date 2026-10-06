@@ -1,0 +1,11 @@
+.card {
+  width: 224px;
+  padding: 16px;
+  border: 2px solid #5d6e87;
+  margin: 24px;
+  background: #e8f1ff;
+}
+
+.title {
+  margin: 0;
+}

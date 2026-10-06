@@ -1,0 +1,9 @@
+:root {
+  --space-2: 8px;
+  --space-4: 16px;
+}
+
+.card {
+  padding: var(--space-4);
+  margin-bottom: var(--space-2);
+}
