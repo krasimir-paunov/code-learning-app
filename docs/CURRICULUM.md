@@ -165,7 +165,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 |---|---|---|---|---|---|---|---|---|---|
 | C1.1 | `css.rules` | Rules and declarations | Core | Write a rule; link a stylesheet; know selector, property, value. | — | `selector-lab`: matched elements glow as you type | LC | 5 | done |
 | C1.2 | `css.selectors` | Selectors and combinators | Core | Target by class, attribute, descendant, child and sibling. | ↑ | `selector-lab` | PO, LC | 6 | done |
-| C1.3 | `css.pseudo-classes` | Pseudo-classes and elements | Core | Use `:hover`, `:focus-visible`, `:nth-child`, `:not`, `::before`/`::after`. | ↑ | `selector-lab` with state toggles | PO, FB | 7 | todo |
+| C1.3 | `css.pseudo-classes` | Pseudo-classes and elements | Core | Use `:hover`, `:focus-visible`, `:nth-child`, `:not`, `::before`/`::after`. | ↑ | `selector-lab` with state toggles | PO, FB | 7 | done |
 | C1.4 | `css.specificity` | Specificity | Core | Predict which rule wins; why `!important` and IDs cause wars. | ↑ | `specificity-duel`: two rules fight, scores shown as (a,b,c) | PO | 7 | todo |
 | C1.5 | `css.inheritance` | Inheritance and defaults | Core | Know which properties inherit; `inherit`, `initial`, `unset`, `revert`. | ↑ | `cascade-trace`: computed value with its origin chain | PO | 5 | todo |
 | C1.6 | `css.cascade-layers` | Cascade layers | Ext | Order whole stylesheets with `@layer` (resets, libraries, components, utilities). | ↑ | `specificity-duel` (layer mode) | PO | 6 | todo |

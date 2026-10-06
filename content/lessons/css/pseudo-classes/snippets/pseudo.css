@@ -1,0 +1,5 @@
+a:hover { text-decoration: underline; }          /* state: pointer over it */
+button:focus-visible { outline: 3px solid; }     /* state: keyboard focus */
+tr:nth-child(even) { background: #f3f5f8; }      /* position: 2nd, 4th, 6th… */
+li:not(.sold-out) { font-weight: 600; }          /* everything except */
+.new::after { content: " New"; }                 /* a generated part */

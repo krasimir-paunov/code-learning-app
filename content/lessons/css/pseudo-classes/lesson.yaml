@@ -1,0 +1,153 @@
+id: css.pseudo-classes
+version: 1
+title: Pseudo-classes and elements
+summary: Select by state and position with pseudo-classes, and style parts with pseudo-elements.
+minutes: 7
+tags: [hover, focus-visible, nth-child, not, before, after]
+
+concept:
+  title: Select by state, by position, or a part
+  body: |
+    A **pseudo-class** (one colon) matches an element in a certain state or position:
+
+    - State: `:hover`, `:active`, `:checked`, and `:focus-visible`, which matches keyboard focus
+      but not the focus a mouse click gives a button.
+    - Position: `:nth-child(An+B)` counts siblings from 1. `2n` picks every second one, `odd`
+      the 1st, 3rd, 5th, `-n+3` the first three.
+    - Logic: `:not(.sold-out)` matches everything except.
+
+    A **pseudo-element** (two colons) styles a part of an element. `::before` and `::after` add
+    generated content as its first and last child, and need a `content` property to appear.
+  code:
+    caption: One of each kind
+    tabs:
+      - lang: css
+        file: snippets/pseudo.css
+
+playground:
+  visualizer: nth-lab
+  props:
+    items:
+      - { label: Tent }
+      - { label: Stove }
+      - { label: Lantern, soldOut: true }
+      - { label: Sleeping bag }
+      - { label: Mat }
+      - { label: Water filter, soldOut: true }
+      - { label: Headlamp }
+      - { label: Compass }
+      - { label: First aid kit }
+      - { label: Map case }
+    picks: [odd, even, 3n, 2n+1, n+4, -n+3, '4']
+  prompt: |
+    Pick `odd` to stripe the list, then type `3n`. The table shows how n = 0, 1, 2… fills in the
+    formula. Then try `-n+3`: a negative step counts backwards to select the first three.
+  explore:
+    - Turn on `:not(.sold-out)` with `odd`. Sold-out items still count as positions.
+    - Hover, click and Tab to the button at the bottom. When does `:focus-visible` match?
+
+challenges:
+  - id: positions
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: html, file: snippets/pick.html }
+    answer: |
+      Stove, Mat
+      Tent, Lantern
+    choices:
+      - |
+        Stove, Mat
+        Tent, Lantern
+      - |
+        Tent, Lantern, Compass
+        Tent, Lantern
+      - |
+        Stove, Mat
+        Tent, Lantern, Compass
+      - |
+        Stove, Mat
+        Tent, Stove, Lantern
+    verify: browser
+    hints:
+      - '`2n` is 2, 4, 6… counting every `li` from 1.'
+      - '`-n+3` is 3, 2, 1. Of those three, which are not sold out?'
+    explanation: |
+      `2n` selects positions 2 and 4: Stove and Mat. `-n+3` selects positions 1 to 3, and
+      `:not(.sold-out)` then drops Stove. Positions count every sibling, sold out or not.
+
+  - id: required-star
+    type: fill-blank
+    prompt: Add a generated " *" after every label with the class `required`.
+    code: { lang: html, file: snippets/required.html }
+    blanks:
+      pseudo:
+        accept: ['after']
+        caseSensitive: false
+        label: the pseudo-element
+      prop:
+        accept: ['content']
+        caseSensitive: false
+        label: the property
+    check:
+      file: snippets/required.check.html
+      output: '" *"'
+      verify: browser
+    hints:
+      - '"After the label''s text" is `::after`.'
+      - Generated content needs a property that holds the text.
+    explanation: "`::after` adds a last child to the label, and `content` gives it its text. Without `content`, the pseudo-element doesn't exist."
+
+  - id: why-focus-visible
+    type: choice
+    prompt: Why do design systems style `:focus-visible` instead of `:focus`?
+    options:
+      - text: It shows the ring to keyboard users, without a ring around a button someone just clicked with a mouse.
+        correct: true
+        why: Browsers apply `:focus-visible` when focus should be visible, mostly after keyboard navigation.
+      - text: "`:focus` doesn't work on buttons."
+        why: '`:focus` matches any focused element, mouse-clicked buttons included. That is the problem.'
+      - text: '`:focus-visible` only matches links.'
+        why: It matches any focusable element.
+      - text: It hides focus from screen readers.
+        why: It only affects styling; focus itself is unchanged.
+    explanation: "`:focus-visible` keeps keyboard users oriented while mouse users don't see rings they didn't ask for."
+
+production:
+  - title: A focus style is not optional
+    body: Keyboard users need to see where they are. Style `:focus-visible` to match your design instead of removing it.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/focus.css
+  - title: Zebra rows with one selector
+    body: '`:nth-child(even)` stripes a table and keeps working when rows are added, removed or sorted.'
+    code:
+      tabs:
+        - lang: css
+          file: snippets/zebra.css
+  - title: Generated content is decoration
+    body: |
+      Text from `::before` and `::after` can't be selected or copied and vanishes if the CSS
+      fails to load. Keep information in the HTML; use pseudo-elements for icons, quotes and markers.
+
+mistake:
+  title: Removing the focus outline
+  body: |
+    The default ring looked out of place, so it was turned off. Keyboard users now can't see
+    which element has focus, and that fails WCAG's "focus visible" requirement.
+  bad:
+    tabs:
+      - lang: css
+        file: snippets/outline.bad.css
+  fix: Replace the default with your own visible style on `:focus-visible`.
+  good:
+    tabs:
+      - lang: css
+        file: snippets/outline.good.css
+
+recap:
+  - 'Pseudo-classes select by state (`:hover`, `:focus-visible`) or position (`:nth-child(An+B)`); `:not()` excludes.'
+  - '`::before` and `::after` add generated parts and need `content`.'
+  - Never remove focus styles; style `:focus-visible` instead.
+
+related: [css.selectors, css.specificity, css.accessible-styling]

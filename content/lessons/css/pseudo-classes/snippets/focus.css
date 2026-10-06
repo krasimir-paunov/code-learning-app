@@ -1,0 +1,5 @@
+/* Keep a visible ring for keyboard users, in your own style */
+:focus-visible {
+  outline: 3px solid #4da3ff;
+  outline-offset: 2px;
+}

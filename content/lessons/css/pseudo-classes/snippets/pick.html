@@ -1,0 +1,12 @@
+<ul>
+  <li>Tent</li>
+  <li class="sold-out">Stove</li>
+  <li>Lantern</li>
+  <li class="sold-out">Mat</li>
+  <li>Compass</li>
+</ul>
+<script>
+  const pick = (s) => [...document.querySelectorAll(s)].map((li) => li.textContent).join(', ');
+  console.log(pick('li:nth-child(2n)'));
+  console.log(pick('li:not(.sold-out):nth-child(-n+3)'));
+</script>
