@@ -1,0 +1,12 @@
+dist
+dist-e2e
+coverage
+playwright-report
+test-results
+.cache
+package-lock.json
+# Prose and tables are formatted by hand.
+*.md
+# Snippets are verified byte-for-byte (line numbers are referenced by challenges).
+content/**/snippets/**
+tests/fixtures/**/snippets/**
