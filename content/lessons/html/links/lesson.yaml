@@ -1,0 +1,168 @@
+id: html.links
+version: 1
+title: Links
+summary: Write links that go exactly where you mean, and say where they go.
+minutes: 5
+tags: [a, href, fragment, mailto, download, target]
+
+concept:
+  title: The href decides everything
+  body: |
+    A link is `<a href="…">` with text that says where it goes. The `href` decides what
+    happens on click:
+
+    - `https://…`: a page on any site. Without the scheme, it is a relative path on *your* site.
+    - `/sale` or `bags.html`: a page on the same site (the next lesson resolves these).
+    - `#reviews`: the element with `id="reviews"` on this page.
+    - `mailto:` and `tel:`: open the email app or offer a call.
+    - `download`: save the file instead of opening it (same-site files only).
+
+    `target="_blank"` opens a new tab. Browsers now treat it as `rel="noopener"`: the new page
+    can't control yours.
+  code:
+    caption: One href for each kind of destination
+    tabs:
+      - lang: html
+        file: snippets/kinds.html
+
+playground:
+  visualizer: link-lab
+  props:
+    pageUrl: https://shop.example/products/shoes.html
+    sections:
+      - { id: details, title: Details }
+      - { id: sizes, title: Sizes }
+      - { id: reviews, title: Reviews }
+    presets:
+      - label: Another site
+        link: { href: 'https://developer.mozilla.org/', text: MDN Web Docs }
+      - label: Same site
+        link: { href: bags.html, text: Trail bags }
+      - label: This page
+        link: { href: '#reviews', text: Jump to reviews }
+      - label: Email
+        link: { href: 'mailto:help@shop.example?subject=Order%2042', text: Email support }
+      - label: Download
+        link: { href: /files/size-guide.pdf, text: 'Size guide (PDF, 120 KB)', download: true }
+      - label: Missing https
+        link: { href: www.example.com, text: click here }
+  prompt: |
+    Click the link in the page for each starting point and read what happens. Then open
+    **Missing https**: the link looks fine but goes somewhere else.
+  explore:
+    - In **This page**, change `#reviews` to `#sizes`, then to `#prices`. What happens when no element has that id?
+    - Tick `target="_blank"` on **Another site**. What does the new tab no longer get?
+
+challenges:
+  - id: jump-link
+    type: fill-blank
+    prompt: Make the link jump to the Reviews heading on the same page.
+    code: { lang: html, file: snippets/fragment.html }
+    blanks:
+      target:
+        accept: ['#reviews']
+        label: the destination
+    check:
+      file: snippets/fragment.check.html
+      output: |
+        #reviews
+        Reviews
+      verify: browser
+    hints:
+      - A link to a place on the same page starts with `#`.
+      - After the `#` comes the target element's `id`.
+    explanation: '`href="#reviews"` scrolls to the element whose `id` is `reviews`, and adds `#reviews` to the address so the spot can be shared.'
+
+  - id: missing-scheme
+    type: find-bug
+    prompt: |
+      The partner link opens a "page not found" on your own site instead of Parcel Post. Click
+      the buggy line, then choose the fix.
+    code: { lang: html, file: snippets/partner.bug.html }
+    bugLines: [3]
+    fix:
+      choices:
+        - { text: '<a href="https://www.parcelpost.example">Parcel Post</a>.', correct: true }
+        - { text: '<a href="www.parcelpost.example/">Parcel Post</a>.' }
+        - { text: '<a href="/www.parcelpost.example">Parcel Post</a>.' }
+        - { text: '<a href="parcelpost.example">Parcel Post</a>.' }
+    tests: { file: snippets/partner.test.js }
+    hints:
+      - How does the browser know that `www.parcelpost.example` is another site and not a file?
+    explanation: |
+      Without a scheme, `www.parcelpost.example` is a relative path, resolved inside your own
+      site. Links to other sites start with `https://`.
+
+  - id: noopener
+    type: choice
+    prompt: |
+      A link to a partner site uses `target="_blank"`. A reviewer asks you to add
+      `rel="noopener"` for security. What is true today?
+    options:
+      - text: Browsers already apply noopener to `target="_blank"`; add `rel="noreferrer"` only to hide where the visitor came from.
+        correct: true
+        why: Since 2021 all major browsers imply `rel="noopener"` for `target="_blank"`.
+      - text: Without `rel="noopener"`, the partner page can redirect your tab.
+        why: That was the old risk. Browsers now cut `window.opener` unless you ask for it with `rel="opener"`.
+      - text: '`rel="noopener"` stops the link opening in a new tab.'
+        why: It only cuts the connection between the two tabs.
+      - text: Use `target="_new"` instead, it is safer.
+        why: '`_new` is just a named window, not a keyword; it adds no protection.'
+    explanation: Adding `rel="noopener"` does no harm (older code has it everywhere), but it is no longer required.
+
+  - id: link-text
+    type: choice
+    prompt: |
+      Screen reader users often pull up a list of every link on the page, with no surrounding
+      text. Which link text works there?
+    options:
+      - text: '"Size guide (PDF, 120 KB)"'
+        correct: true
+        why: It says where it goes and what you get, even out of context.
+      - text: '"Click here"'
+        why: Ten "click here" links in a list are indistinguishable.
+      - text: '"Read more"'
+        why: More of what? Out of context it says nothing.
+      - text: '"https://shop.example/files/size-guide.pdf"'
+        why: A URL is read out character by character and says little about the content.
+    explanation: Write link text that would make sense on its own. It also helps everyone who skims.
+
+production:
+  - title: Say when a link opens a new tab
+    body: |
+      Open a new tab only when leaving would lose something, such as a half-filled form. Tell
+      people it will happen, visually and in text a screen reader reads.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/new-tab.html
+  - title: '`rel` tells search engines about a link'
+    body: |
+      Sites mark links that users posted with `rel="ugc"`, paid links with `rel="sponsored"`,
+      and links they don't vouch for with `rel="nofollow"`.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/rel-ugc.html
+
+mistake:
+  title: Opening every link in a new tab
+  body: |
+    The Back button stops working, tabs pile up, and screen reader users suddenly find
+    themselves in a new window. For links within your own site it is almost never what people want.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/new-tabs.bad.html
+  fix: Let links open in the same tab. People who want a new tab can open one themselves.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/new-tabs.good.html
+
+recap:
+  - '`href` decides the destination: `https://` for other sites, a path for yours, `#id` for this page.'
+  - '`target="_blank"` already implies `noopener`; use new tabs sparingly and say so.'
+  - Link text must make sense on its own.
+
+related: [html.urls-paths, html.buttons]
