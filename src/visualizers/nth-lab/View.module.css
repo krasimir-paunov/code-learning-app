@@ -1,0 +1,167 @@
+.frame {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+
+  & input {
+    inline-size: 9rem;
+    min-block-size: var(--touch-target);
+    padding-inline: var(--space-2);
+    border: var(--border-width) solid var(--border-strong);
+    border-radius: var(--radius-md);
+    background: var(--bg-1);
+    color: var(--code-number);
+    font: inherit;
+  }
+}
+
+.prefix {
+  color: var(--code-function);
+}
+
+.picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.pick {
+  min-block-size: 2.25rem;
+  padding-inline: var(--space-2);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--bg-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+
+  &[aria-pressed='true'] {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+.toggles {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.lab {
+  display: grid;
+  gap: var(--space-3);
+}
+
+@container (min-width: 640px) {
+  .lab {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+
+.title {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+
+  & code {
+    color: var(--code-function);
+    overflow-wrap: anywhere;
+  }
+}
+
+.stage {
+  padding: var(--space-3);
+  border: var(--border-width) dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-1);
+}
+
+.summary {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.table {
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+
+  & th,
+  & td {
+    padding: var(--space-1) var(--space-3);
+    border-block-end: var(--border-width) solid var(--border);
+    text-align: start;
+  }
+
+  & th {
+    color: var(--text-2);
+    font-family: var(--font-body);
+    font-size: var(--fs-xs);
+  }
+
+  & tr[data-hit] td {
+    color: var(--accent);
+  }
+
+  & tr:not([data-hit]) td {
+    color: var(--text-3);
+  }
+}
+
+.states {
+  display: grid;
+  gap: var(--space-2);
+  padding-block-start: var(--space-3);
+  border-block-start: var(--border-width) solid var(--border);
+}
+
+.stateRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* The demo's own state styles: the lesson's subject, kept within the design tokens. */
+.demoButton {
+  min-block-size: var(--touch-target);
+  padding-inline: var(--space-4);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-3);
+  font-weight: 600;
+
+  &:hover {
+    background: color-mix(in oklch, var(--accent) 20%, var(--bg-3));
+  }
+
+  &:active {
+    translate: 0 1px;
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--reward);
+    outline-offset: 3px;
+  }
+}
+
+.matching {
+  font-size: var(--fs-sm);
+
+  & code {
+    color: var(--accent);
+  }
+}
