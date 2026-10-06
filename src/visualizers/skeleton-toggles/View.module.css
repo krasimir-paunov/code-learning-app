@@ -1,0 +1,167 @@
+.frame {
+  container-type: inline-size;
+}
+
+.lab {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@container (min-width: 760px) {
+  .lab {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.source {
+  min-inline-size: 0;
+  border-radius: var(--radius-md);
+  background: var(--code-bg);
+}
+
+.fileName {
+  padding: var(--space-2) var(--space-3);
+  border-block-end: var(--border-width) solid var(--border);
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.lines {
+  margin: 0;
+  padding: var(--space-2) 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: 2rem;
+  padding-inline: var(--space-2) var(--space-3);
+
+  & code {
+    color: var(--code-fg);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  &[data-removed] code {
+    color: var(--text-3);
+    text-decoration: line-through;
+  }
+}
+
+.toggle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: var(--touch-target);
+  block-size: var(--touch-target);
+  margin-block: calc((2rem - var(--touch-target)) / 2);
+  cursor: pointer;
+
+  & input {
+    inline-size: 1.1rem;
+    block-size: 1.1rem;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+}
+
+.spacer {
+  flex: none;
+  inline-size: var(--touch-target);
+}
+
+.effects {
+  display: grid;
+  gap: var(--space-3);
+}
+
+@container (min-width: 520px) and (max-width: 759px) {
+  .effects {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.effect {
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-inline-start: 3px solid var(--success);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+  font-size: var(--fs-sm);
+
+  &[data-ok='false'] {
+    border-inline-start-color: var(--warning);
+  }
+}
+
+.effectTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--fs-sm);
+
+  & svg {
+    inline-size: 18px;
+    block-size: 18px;
+    color: var(--success);
+  }
+
+  [data-ok='false'] & svg {
+    color: var(--warning);
+  }
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-inline-size: 16rem;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  background: var(--bg-3);
+}
+
+.favicon {
+  flex: none;
+  inline-size: 0.9rem;
+  block-size: 0.9rem;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+}
+
+.tabText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A phone outline; the page inside is laid out at its CSS width and scaled to the screen. */
+.phone {
+  overflow: hidden;
+  justify-self: center;
+  border: var(--space-1) solid var(--bg-3);
+  border-radius: var(--radius-lg);
+  background: var(--bg-1);
+  box-sizing: content-box;
+}
+
+.phonePage {
+  padding: var(--space-3);
+  box-sizing: border-box;
+  transform-origin: top left;
+}
+
+.sample {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+}
