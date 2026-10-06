@@ -16,7 +16,15 @@ Interactive learning web app (working title **Project Neon**; the name lives onl
 
 **Cheat sheets:** one per track (HTML, CSS, JS, C#, .NET, Algorithms Big O table). Original content only, never copied. Each entry: snippet, one-line explanation, usage tag (daily / common / rare), copy button, Learn link (only when the lesson is published). Instant search + usage filter, never gated, print-friendly, stored as data.
 
-**Constraints:** static frontend only, no backend/accounts. Progress in localStorage with JSON export/import. Hosted on GitHub Pages. Lessons and cheat sheets are data; adding one never requires engine changes. Every lesson's visualizer is lazy-loaded. English only.
+**Constraints:** static frontend only, no backend/accounts. Progress in localStorage with JSON export/import. Hosted on GitHub Pages from the public repo https://github.com/krasimir-paunov/code-learning-app. Lessons and cheat sheets are data; adding one never requires engine changes. Every lesson's visualizer is lazy-loaded. English only.
+
+## Approved decisions (Phase 0)
+
+- **272 lessons**, each tagged **Core** (job-ready, 201) or **Extended** (depth, 71). All are on the map from Phase 1; unbuilt ones show "coming soon".
+- **Two passes:** Pass 1 builds Core lessons track by track (Phases 2–6) and can ship as v1.0; Pass 2 adds Extended lessons in the same order. A Core lesson never hard-requires an Extended one.
+- **C# gate is soft:** the C# track *recommends* JS fundamentals (and some Algorithms lessons) via a "Recommended path" banner with a one-click, per-track skip. Never a hard lock. **Free roam** is a global setting that opens everything.
+- **Optional TypeScript module** (J14, 6 Extended lessons) at the end of the JS track, built after Phase 6.
+- **Dark theme only** for now; tokens are two-layer (primitive → semantic) so a light theme is just a new token set.
 
 ## Docs (source of truth)
 
@@ -25,7 +33,7 @@ Interactive learning web app (working title **Project Neon**; the name lives onl
 - `docs/DESIGN.md`: tokens, typography, motion, component inventory, where effects may and may not appear.
 - `docs/ROADMAP.md`: phases 1–8 and the lesson Definition of Done.
 
-**Current phase:** 0 (planning) complete; awaiting approval to start Phase 1.
+**Current phase:** 0 (planning) approved and complete. Phase 1 starts only when the user says so.
 
 ## Stack
 
@@ -41,12 +49,12 @@ npm run e2e              # Playwright + axe
 npm run lint             # ESLint + Prettier check
 npm run typecheck
 npm run content:check    # schemas, ids, prerequisite graph, links, CURRICULUM.md parity
-npm run verify:snippets  # executes JS (Node/Chromium) and C# (dotnet run) samples, compares outputs
+npm run verify:snippets  # executes JS (Node/Chromium), C# (dotnet run) and TS (tsc) samples, compares outputs
 ```
 
 ## Non-negotiable rules
 
-1. **Accuracy.** Every code sample and every "this prints X" claim is executed by `verify:snippets` (Node 22, Chromium, or `dotnet run file.cs` on .NET 10). Never write an output by reasoning alone. Compiler diagnostics and EF-generated SQL shown to learners are captured from the real tools. `verify: none` needs a written reason.
+1. **Accuracy.** Every code sample and every "this prints X" claim is executed by `verify:snippets` (Node 22, Chromium, `dotnet run file.cs` on .NET 10, or `tsc`). Never write an output by reasoning alone. Compiler diagnostics and EF-generated SQL shown to learners are captured from the real tools. `verify: none` needs a written reason.
 2. **Lesson and challenge ids are permanent** (they key saved progress). Rename titles freely, never ids.
 3. **Content is data.** No lesson-specific code in `src/engine/`. New behavior = new visualizer, challenge type or runner plugin.
 4. **Effects never touch reading surfaces** (concept, code, challenges, feedback, cheat sheets, forms). See DESIGN.md §5.
@@ -59,7 +67,7 @@ npm run verify:snippets  # executes JS (Node/Chromium) and C# (dotnet run) sampl
 - Function components and hooks only. Named exports; default export only where lazy loading requires it (`View.tsx`).
 - File names: components `PascalCase.tsx` + `PascalCase.module.css`; everything else `kebab-case.ts`. Content folders and ids `kebab-case`, ids namespaced `track.slug`.
 - Pure logic (visualizer models, graders, XP/streak math, unlock rules, migrations) lives in plain `.ts` files with unit tests next to them (`*.test.ts`). React components render; they don't compute domain logic.
-- Styles: tokens only (`var(--…)`), no raw colors/sizes outside `tokens.css`. Modern CSS (nesting, `:has()`, container queries, logical properties). Mobile-first. Every animation behind the motion preference.
+- Styles: semantic tokens only (`var(--…)`), no raw colors/sizes outside `tokens.css`; components never reference primitive tokens. Modern CSS (nesting, `:has()`, container queries, logical properties). Mobile-first. Every animation behind the motion preference.
 - Accessibility: semantic HTML first, ARIA only when needed; every control keyboard-operable with a visible focus ring; icon buttons have accessible names; visualizers announce state as text.
 - Performance: route-level and lesson-level code splitting; respect bundle budgets (ARCHITECTURE §12); never import CodeMirror, Motion or a visualizer from the shell.
 - Comments explain *why*, not *what*. No dead code, no commented-out code.

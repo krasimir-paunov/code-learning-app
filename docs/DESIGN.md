@@ -4,6 +4,12 @@
 
 All colors, sizes and timings below are tokens in `src/styles/tokens.css`. Components never use raw values.
 
+**Theme.** Dark only for now, but built so a light theme is a token file, not a refactor:
+- Two layers. **Primitive** tokens hold raw values (`--ink-950: #07090d`, `--cyan-400: #22d3ee`...). **Semantic** tokens (the names below: `--bg-1`, `--text-1`, `--neon-cyan`, `--track-js`...) reference primitives. Components may use semantic tokens only.
+- Semantic tokens are defined on `:root[data-theme="dark"]`, which is set by default together with `color-scheme: dark`. A future light theme adds `:root[data-theme="light"]` with the same semantic names (re-checked for contrast; neon accents need darker variants on light backgrounds).
+- Effects read colors from semantic tokens too (the digital rain uses `--neon-green` and `--bg-0`), so they follow any theme.
+- The print stylesheet already works this way: it redefines semantic tokens under `@media print`, which keeps the light-theme path exercised from day one.
+
 ## 1. Color tokens
 
 Contrast ratios were computed with the WCAG 2.x formula against each background. Minimums: 4.5:1 for text, 3:1 for large text, UI component boundaries and focus indicators.
@@ -134,9 +140,11 @@ Rules:
 - `LevelUpOverlay` (focus-trapped dialog, glitch title, dismiss with Esc), `ToastRegion` (`aria-live="polite"`)
 
 **Map**
-- `SkillMap` (pan/zoom canvas with SVG edges + HTML node layer), `TrackLane`, `ModuleNode`, `LessonNode` (states: planned, locked, available, in-progress, completed, boss variant), `Edge` (hard solid, related dashed), `MapLegend`, `MapListView`, `ZoomControls`, `LessonPreviewCard` (title, minutes, objective, prerequisites, Start button)
+- `SkillMap` (pan/zoom canvas with SVG edges + HTML node layer), `TrackLane`, `ModuleNode`, `LessonNode` (states: planned, locked, available, in-progress, completed; variants: Core, Extended, boss; "recommended first" marker), `Edge` (hard solid, recommended dotted, related dashed), `MapLegend`, `MapListView`, `ZoomControls`, `TierFilter` (Core only / All), `LessonPreviewCard` (title, tier, minutes, objective, prerequisites, Start button)
+- Node variants: **Core** nodes are full size with a filled track-colored ring; **Extended** nodes are ~75% size, outlined ring, with a "depth" text label in the preview card and list view (never color alone); **planned** nodes of either tier are dimmed with a "coming soon" label and are not clickable.
 
 **Lesson**
+- `RecommendationBanner` (top of a lesson with an unmet recommended prerequisite: one sentence, "Go there" link, "Skip, I already know this" button; calm `--bg-2` surface with a `--neon-violet` left border, no animation; dismissal is announced and focus moves to the lesson title)
 - `LessonPlayer`, `SectionRail`, `ConceptCard`, `PlaygroundFrame` (title, prompt, reset, fullscreen, compact-mode switch), `ChallengeShell` (prompt, attempts, hint drawer, reveal, submit, feedback), `HintDrawer`, `FeedbackPanel` (pass/fail with specific details), `ProductionCallout`, `MistakeCallout` (bad/fix side by side, stacked on mobile), `RecapList`, `LessonCompleteCard` (XP earned, next lesson)
 
 **Challenge views:** `PredictOutput`, `FillBlank`, `FindBug`, `Reorder`, `LiveCode`, `VisualMatch` (with ghost overlay slider), `Trace`, `Choice`
@@ -159,7 +167,7 @@ Rules:
 - **Map:** opens zoomed to the learner's current frontier (first available node). Overview shows tracks as colored lanes; module nodes show completion rings.
 - **Lesson:** title, track chip, minutes, then the six sections. No effects. Completing the last challenge shows `LessonCompleteCard` inline; the level-up overlay appears only on an actual level change.
 - **Cheat sheets:** dense, two columns on `lg+`, sticky search and filters, track tabs. Print view: single column, black on white, usage tag in words.
-- **Profile:** stats, activity calendar (last 12 weeks), settings (effects, free roam, code tab, editor font size), export/import with a clear summary before applying.
+- **Profile:** stats, activity calendar (last 12 weeks), settings (effects, free roam, code tab, editor font size, skipped recommendations with "restore"), export/import with a clear summary before applying.
 
 ## 8. Accessibility checklist (every screen)
 

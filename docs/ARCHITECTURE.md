@@ -118,35 +118,45 @@ tracks:
       - id: algo.complexity
         title: Complexity
         requires: [js.loops, js.functions, js.arrays]   # entry prerequisites
-        lessons:
+        lessons:                 # a plain id = Core lesson
           - algo.what-is-an-algorithm
           - algo.big-o
           - algo.analyze-code
           - algo.space-complexity
-          - algo.amortized
+          - { id: algo.amortized, tier: extended }
       - id: algo.searching
         title: Searching
-        # requires omitted → last lesson of the previous module in this track
+        # requires omitted → last Core lesson of the previous module in this track
         lessons:
           - algo.linear-search
           - algo.binary-search
-          - algo.binary-search-variants
+          - { id: algo.binary-search-variants, tier: extended }
       - id: algo.sorting
         title: Sorting
         lessons:
           - algo.sorting-race
-          - algo.naive-sorts
-          - algo.insertion-sort
+          - { id: algo.naive-sorts, tier: extended }
+          - { id: algo.insertion-sort, tier: extended }
           - id: algo.merge-sort
             requires: [algo.recursion]   # extra hard prerequisite (adds to the implicit chain)
             related: [cs.list]           # soft link, dashed edge, never blocks
           # ...
+  - id: cs
+    modules:
+      - id: cs.toolchain
+        title: The C# toolchain
+        requires: []
+        recommends: [js.objects]         # soft gate: "Recommended path" banner, one-click skip
+        lessons: [cs.hello-dotnet, ...]
 ```
 
 Rules:
-- **Implicit chain:** each lesson requires the previous lesson in its module; a module's first lesson requires the module's `requires` (default: the last lesson of the previous module in the same track).
-- **Explicit extras:** `requires` on a lesson adds hard edges; `related` adds soft edges.
-- `boss: true` marks boss nodes (bonus XP, special node style).
+- **Tiers:** every lesson is `core` (default) or `extended`. Core = needed to be job-ready; built in Pass 1. Extended = depth; built in Pass 2.
+- **Implicit chain:** a Core lesson requires the previous **Core** lesson in its module; an Extended lesson requires the previous lesson of either tier. A module's first Core lesson requires the module's `requires` (default: the last Core lesson of the previous module in the same track).
+- **Explicit extras:** `requires` on a lesson adds hard edges; `recommends` adds soft gates; `related` adds dashed, non-blocking edges.
+- **Core never depends on Extended.** `content:check` fails if a Core lesson or a module entry hard-requires an Extended lesson, so shipping Core only (after Pass 1) can never strand a learner.
+- **Unpublished prerequisites:** a hard requirement on a lesson that is not published yet is replaced by that lesson's own requirements (transitively), so a gap in authored content never locks the map. Recommendations pointing at unpublished lessons are dropped.
+- `boss: true` marks boss nodes (bonus XP, special node style). Bosses test Core material only.
 
 Built manifest:
 
@@ -155,15 +165,17 @@ type NodeId = string;                       // lesson id, e.g. "algo.binary-sear
 interface SkillNode {
   id: NodeId; track: TrackId; module: ModuleId;
   title: string; minutes: number; boss: boolean;
+  tier: 'core' | 'extended';
   published: boolean;                       // false = planned / coming soon
-  requires: NodeId[];                       // fully expanded hard prerequisites
+  requires: NodeId[];                       // fully expanded hard prerequisites (unpublished ones resolved away)
+  recommends: NodeId[];                     // soft gates (published lessons only)
   related: NodeId[];
   position: { x: number; y: number };       // module-local layout (dagre, build time)
 }
 interface SkillModule { id: ModuleId; track: TrackId; title: string; lessons: NodeId[]; requires: NodeId[]; position: { x: number; y: number } }
 ```
 
-Validation: unique ids, all references resolve, **no cycles**, every published lesson appears exactly once, and curriculum ids match `docs/CURRICULUM.md`.
+Validation: unique ids, all references resolve, **no cycles**, every published lesson appears exactly once, no Core lesson or module entry hard-requires an Extended lesson, and curriculum ids and tiers match `docs/CURRICULUM.md`.
 
 **Node state** is derived, never stored:
 
@@ -174,9 +186,18 @@ type NodeState = 'planned' | 'locked' | 'available' | 'in-progress' | 'completed
 // in-progress:  progress.lessons[id] exists
 // available:    all requires completed, or settings.freeRoam
 // locked:       otherwise (still previewable: concept card readable, challenges disabled)
+
+// Orthogonal flag, computed for available nodes:
+// recommendationPending: some `recommends` not completed
+//                        && !progress.skippedRecommendations.includes(node.track)
+//                        && !settings.freeRoam
 ```
 
-**Free roam** (setting, off by default): every published lesson is available. Intended for experienced developers; completion still tracks normally.
+**Soft gates (recommended path).** A node with `recommendationPending` is open, shows a small "recommended first" marker on the map, and the lesson opens with a `RecommendationBanner`: "This track assumes you know JavaScript fundamentals. Recommended first: *Objects* →" with two actions: **Go there** and **Skip, I already know this**. Skip is one click and applies to the whole track (stored in `progress.skippedRecommendations`), so the banner never nags on later lessons. It can be undone in Profile.
+
+**Free roam** (global setting, off by default): every published lesson is available and no recommendation banners appear. Intended for experienced developers; completion still tracks normally.
+
+**Core / All filter:** the map and list view have a "Core only / All" toggle (default All). Extended nodes are drawn smaller with an outlined style and a "depth" label, so the Core spine of each track reads at a glance.
 
 **Map rendering:** two zoom levels. The overview shows tracks as lanes and modules as nodes (about 60). Selecting a module zooms into its lessons. Nodes are real `<button>`s in an HTML layer over an SVG edge layer (focusable, labelled with title + state). Arrow keys move along edges. A **list view** (same data, grouped by track/module) is always one click away and is the default on narrow screens and for screen-reader users.
 
@@ -211,7 +232,7 @@ interface CodeBlock {
   caption?: string;
   tabs: ({ lang: 'html' | 'css' | 'js' | 'ts' | 'cs' | 'json' | 'sql' | 'bash' | 'text' } & CodeSource & {
     output?: string;            // if present it is a claim → verify:snippets runs the file and compares
-    verify?: 'node' | 'browser' | 'dotnet' | 'none';   // 'none' requires a `why`
+    verify?: 'node' | 'browser' | 'dotnet' | 'dotnet-build' | 'tsc' | 'none';   // 'none' requires a `why`
     why?: string;
   })[];
 }
@@ -614,6 +635,7 @@ interface ProgressV1 {
   }>;
   activity: Record<LocalDate, { xp: number; passed: number }>;   // "2026-10-06" in the learner's local time zone
   lastCelebratedLevel: number;                        // level-up animation plays once per level
+  skippedRecommendations: TrackId[];                  // tracks whose "Recommended path" banner was skipped
   settings: {
     freeRoam: boolean;
     effects: 'system' | 'full' | 'reduced' | 'off';   // 'system' follows prefers-reduced-motion
@@ -687,12 +709,13 @@ sections:
 | JS (`verify: node`) | Run in Node 22 (`node:vm`), capture stdout, compare to `output`/`answer`. |
 | JS/HTML/CSS (`verify: browser`) | Run in headless Chromium via Playwright inside the real `web-sandbox` runner. Used for DOM, event-loop and timing-sensitive examples. |
 | C# (`verify: dotnet`) | `dotnet run <file>.cs` (.NET 10 file-based apps; `#:package` / `#:sdk Microsoft.NET.Sdk.Web` directives for package and ASP.NET Core samples). Samples that only need to compile (e.g. an endpoint) declare `verify: dotnet-build`. |
+| TypeScript (`verify: tsc`) | Type-check with the TypeScript compiler (`strict`); a snippet may declare `expectErrors` (code + message) so the exact diagnostics shown to learners are the compiler's own. Runs with `verify: node` too when it also claims output. |
 | Challenges | `find-bug` fixes, `live-code` solutions/starters and `trace` expectations proven by the type's `buildCheck`. |
 | `verify: none` | Requires a `why` (e.g. "pseudo-output of a simulated HTTP request") and is listed in a report for human review. |
 
 Results are cached by content hash (`.cache/verify.json`) so local runs only execute changed snippets; CI restores the cache from `main` for PRs and runs everything on a nightly schedule.
 
-`npm run content:check`: schema validation, unique ids, graph rules, link resolution, curriculum ↔ `CURRICULUM.md` id parity, minutes within 3–10, anatomy completeness (recap 2–3 items, production 1–3, ≥ 1 challenge).
+`npm run content:check`: schema validation, unique ids, graph rules, link resolution, curriculum ↔ `CURRICULUM.md` id and tier parity, Core-never-requires-Extended, minutes within 3–10, anatomy completeness (recap 2–3 items, production 1–3, ≥ 1 challenge).
 
 ## 12. Routing and performance
 
@@ -712,7 +735,7 @@ A service worker (Phase 8, `vite-plugin-pwa`) precaches the shell and caches les
 
 **GitHub Pages, deployed by GitHub Actions.**
 
-- Free with no build-minute or bandwidth billing surprises for a public repository, and code, CI and hosting live in one place with no extra account.
+- Free for a public repository (this project's repo is public: https://github.com/krasimir-paunov/code-learning-app, so the site is served from `https://krasimir-paunov.github.io/code-learning-app/` until a custom domain is set). Code, CI and hosting live in one place with no extra account.
 - Netlify and Vercel offer more (custom headers, rewrites, preview deploys), but their free tiers are metered (Netlify's credit-based free plan) or limited to non-commercial use (Vercel Hobby), and we do not need a server feature: the app is fully static and the sandbox uses `srcdoc` iframes, which do not depend on response headers.
 - Trade-offs we accept: no custom HTTP headers (CSP is set by `<meta>`; the sandbox iframe has its own CSP), and no SPA rewrites. Solved by **route shells**: at build time `tools/route-shells.ts` writes an `index.html` copy (with route-specific `<title>`/description) for every known route (`/map/`, `/learn/<id>/`, `/cheatsheets/<track>/`...). Deep links return 200 and share well. A `404.html` handles anything else.
 - The Vite `base` comes from an environment variable (`/<repo>/` on `*.github.io`, `/` with a custom domain). Add `.nojekyll` (needed in Phase 7 for the `_framework` folder of the .NET runtime).
