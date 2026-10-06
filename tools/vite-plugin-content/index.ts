@@ -2,6 +2,7 @@
  * Serves validated content as virtual modules:
  * - virtual:content/manifest     → the skill graph with build-time layout (small, shared)
  * - virtual:content/lessons      → { [lessonId]: () => import(lesson chunk) }
+ * - virtual:content/cheatsheets  → every compiled sheet (loaded by the cheat-sheet route)
  * - virtual:content/lesson/<id>/data → one compiled lesson (lazy JSON chunk). The /data suffix
  *   keeps ids like `js.json` from looking like a .json file to Vite.
  * The content tooling is loaded through tsx so it shares the app's TypeScript schemas.
@@ -62,6 +63,9 @@ export function contentPlugin({ fixtures = false }: { fixtures?: boolean } = {})
       const name = id.slice(RESOLVED.length);
       if (name === 'manifest') {
         return `export default ${JSON.stringify(runtimeManifest(bundle.manifest))};`;
+      }
+      if (name === 'cheatsheets') {
+        return `export default ${JSON.stringify(bundle.sheets.map((s) => s.compiled))};`;
       }
       if (name === 'lessons') {
         // One lazy chunk per lesson, keyed by id.

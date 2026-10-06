@@ -1,0 +1,73 @@
+track: html
+title: HTML
+intro: 'Semantic, accessible HTML: the structure screen readers, search engines and CSS rely on.'
+sections:
+  - id: document
+    title: Document
+    entries:
+      - id: html.sheet.skeleton
+        title: Page skeleton
+        code: { lang: html, inline: "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    <title>Page title</title>\n  </head>\n  <body></body>\n</html>" }
+        explain: '`lang` sets pronunciation for screen readers; the viewport line makes phones use the real width.'
+        usage: daily
+        learn: html.document-skeleton
+      - id: html.sheet.landmarks
+        title: Page landmarks
+        code: { lang: html, inline: "<header>…</header>\n<nav aria-label=\"Main\">…</nav>\n<main>…</main>\n<aside>…</aside>\n<footer>…</footer>" }
+        explain: Landmarks let assistive technology jump straight to each region. Use one `main` per page.
+        usage: daily
+        learn: html.landmarks
+      - id: html.sheet.headings
+        title: Heading outline
+        code: { lang: html, inline: "<h1>Recipes</h1>\n<h2>Breakfast</h2>\n<h3>Pancakes</h3>\n<h2>Dinner</h2>" }
+        explain: One `h1`, then levels in order without skipping. Pick the level by structure, not size.
+        usage: daily
+        learn: html.headings-paragraphs
+  - id: content
+    title: Content
+    entries:
+      - id: html.sheet.img
+        title: Images without layout shift
+        code: { lang: html, inline: "<img src=\"chart.png\" alt=\"Sales doubled from 2024 to 2025\" width=\"640\" height=\"360\" loading=\"lazy\" />" }
+        explain: '`alt` says what the image means (use `alt=""` for decoration); width and height reserve space.'
+        usage: daily
+        learn: html.images
+      - id: html.sheet.link-new-tab
+        title: External link
+        code: { lang: html, inline: "<a href=\"https://example.com\" target=\"_blank\">Docs (opens in a new tab)</a>" }
+        explain: '`target="_blank"` implies `rel="noopener"` in modern browsers. Say that it opens a new tab.'
+        usage: common
+        learn: html.links
+      - id: html.sheet.table
+        title: Accessible data table
+        code: { lang: html, inline: "<table>\n  <caption>Monthly costs</caption>\n  <thead>\n    <tr><th scope=\"col\">Item</th><th scope=\"col\">Cost</th></tr>\n  </thead>\n  <tbody>\n    <tr><th scope=\"row\">Hosting</th><td>$5</td></tr>\n  </tbody>\n</table>" }
+        explain: '`caption` names the table; `th` with `scope` tells screen readers which cells a header labels.'
+        usage: common
+        learn: html.tables
+      - id: html.sheet.details
+        title: Show and hide without JavaScript
+        code: { lang: html, inline: "<details>\n  <summary>Shipping options</summary>\n  <p>Standard (3–5 days) or express (1 day).</p>\n</details>" }
+        explain: Keyboard and screen-reader support built in.
+        usage: common
+        learn: html.native-widgets
+  - id: forms
+    title: Forms
+    entries:
+      - id: html.sheet.label
+        title: Label every input
+        code: { lang: html, inline: "<label for=\"email\">Email</label>\n<input id=\"email\" name=\"email\" type=\"email\" autocomplete=\"email\" required />" }
+        explain: A connected label names the field and makes the label clickable. Placeholders are not labels.
+        usage: daily
+        learn: html.form-basics
+      - id: html.sheet.button-type
+        title: Buttons inside forms
+        code: { lang: html, inline: "<button type=\"submit\">Save</button>\n<button type=\"button\">Preview</button>" }
+        explain: Inside a form, a button submits unless you say `type="button"`.
+        usage: daily
+        learn: html.buttons
+      - id: html.sheet.radio-group
+        title: Grouped choices
+        code: { lang: html, inline: "<fieldset>\n  <legend>Plan</legend>\n  <label><input type=\"radio\" name=\"plan\" value=\"free\" checked /> Free</label>\n  <label><input type=\"radio\" name=\"plan\" value=\"pro\" /> Pro</label>\n</fieldset>" }
+        explain: Same `name` makes one group; `fieldset` + `legend` give the group its question.
+        usage: common
+        learn: html.select-textarea-fieldset

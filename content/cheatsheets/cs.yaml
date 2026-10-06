@@ -1,0 +1,115 @@
+track: cs
+title: C#
+intro: C# 14 on .NET 10. Every output here was printed by `dotnet run`.
+sections:
+  - id: basics
+    title: Basics
+    entries:
+      - id: cs.sheet.interpolation
+        title: Build strings
+        code: { lang: cs, inline: "var name = \"Ada\";\nvar points = 42;\nConsole.WriteLine($\"{name} has {points} points\");" }
+        output: 'Ada has 42 points'
+        verify: dotnet
+        explain: '`$"..."` interpolates expressions; `var` when the type is obvious from the right side.'
+        usage: daily
+        learn: cs.strings
+      - id: cs.sheet.raw-string
+        title: Multi-line text without escaping
+        code: { lang: cs, inline: "var json = \"\"\"\n    {\"name\": \"Ada\"}\n    \"\"\";\nConsole.WriteLine(json);" }
+        output: '{"name": "Ada"}'
+        verify: dotnet
+        explain: Raw string literals keep quotes as-is and strip the indentation of the closing quotes.
+        usage: common
+        learn: cs.strings
+      - id: cs.sheet.null-handling
+        title: Handle null
+        code: { lang: cs, inline: "string? city = null;\nConsole.WriteLine(city?.Length ?? 0);\ncity ??= \"Sofia\";\nConsole.WriteLine(city);" }
+        output: |
+          0
+          Sofia
+        verify: dotnet
+        explain: '`?` marks nullable; `?.` short-circuits, `??` supplies a default, `??=` assigns only if null.'
+        usage: daily
+        learn: cs.nullability
+      - id: cs.sheet.switch-expression
+        title: Map values with switch
+        code: { lang: cs, inline: "static string Grade(int score) => score switch\n{\n    >= 90 => \"A\",\n    >= 75 => \"B\",\n    _ => \"C\",\n};\n\nConsole.WriteLine(Grade(95) + Grade(80) + Grade(10));" }
+        output: 'ABC'
+        verify: dotnet
+        explain: Arms are tried top to bottom; `_` catches everything else.
+        usage: daily
+        learn: cs.switch-expressions
+  - id: collections
+    title: Collections
+    entries:
+      - id: cs.sheet.collection-expressions
+        title: Create and combine
+        code: { lang: cs, inline: "int[] a = [1, 2];\nint[] b = [3];\nint[] all = [..a, ..b, 4];\nConsole.WriteLine(string.Join(\",\", all));" }
+        output: '1,2,3,4'
+        verify: dotnet
+        explain: Collection expressions build arrays, lists and spans; `..` spreads another collection in.
+        usage: daily
+        learn: cs.collection-expressions
+      - id: cs.sheet.list
+        title: A growable list
+        code: { lang: cs, inline: "List<string> names = [\"Ada\"];\nnames.Add(\"Linus\");\nConsole.WriteLine(names.Count);" }
+        output: '2'
+        verify: dotnet
+        explain: '`List<T>` is a dynamic array: fast indexing and appends, slow inserts in the middle.'
+        usage: daily
+        learn: cs.list
+      - id: cs.sheet.try-get-value
+        title: Look up without exceptions
+        code: { lang: cs, inline: "Dictionary<string, int> stock = new() { [\"apples\"] = 3 };\nif (stock.TryGetValue(\"pears\", out var count)) Console.WriteLine(count);\nelse Console.WriteLine(\"no pears\");" }
+        output: 'no pears'
+        verify: dotnet
+        explain: The indexer throws on a missing key; `TryGetValue` returns false instead.
+        usage: daily
+        learn: cs.dictionary-hashset
+      - id: cs.sheet.linq
+        title: Filter, sort, materialize
+        code: { lang: cs, inline: "int[] scores = [72, 95, 58, 88];\nvar passed = scores.Where(s => s >= 60).OrderByDescending(s => s).ToList();\nConsole.WriteLine(string.Join(\" \", passed));" }
+        output: '95 88 72'
+        verify: dotnet
+        explain: LINQ queries run when enumerated; `ToList()` runs it once and keeps the results.
+        usage: daily
+        learn: cs.linq-basics
+      - id: cs.sheet.index
+        title: Loop with the index
+        code: { lang: cs, inline: "List<string> items = [\"a\", \"b\"];\nforeach (var (i, item) in items.Index())\n    Console.WriteLine($\"{i}: {item}\");" }
+        output: |
+          0: a
+          1: b
+        verify: dotnet
+        explain: '`Index()` (.NET 9+) pairs each item with its position.'
+        usage: common
+        learn: cs.linq-operators
+  - id: types
+    title: Types and patterns
+    entries:
+      - id: cs.sheet.record
+        title: Data with value equality
+        code: { lang: cs, inline: "var a = new Point(1, 2);\nvar b = a with { Y = 5 };\nConsole.WriteLine(a == new Point(1, 2));\nConsole.WriteLine(b);\n\nrecord Point(int X, int Y);" }
+        output: |
+          True
+          Point { X = 1, Y = 5 }
+        verify: dotnet
+        explain: Records compare by value, print their contents, and copy with `with`.
+        usage: daily
+        learn: cs.records
+      - id: cs.sheet.list-pattern
+        title: Match the shape of a list
+        code: { lang: cs, inline: "int[] xs = [1, 2, 3];\nvar description = xs switch\n{\n    [] => \"empty\",\n    [var only] => $\"one: {only}\",\n    [var first, .., var last] => $\"from {first} to {last}\",\n};\nConsole.WriteLine(description);" }
+        output: 'from 1 to 3'
+        verify: dotnet
+        explain: List patterns match length and elements; `..` matches any number in between.
+        usage: common
+        learn: cs.pattern-matching
+      - id: cs.sheet.async
+        title: Await a task
+        code: { lang: cs, inline: "async Task<int> GetAnswerAsync()\n{\n    await Task.Delay(10);\n    return 42;\n}\n\nConsole.WriteLine(await GetAnswerAsync());" }
+        output: '42'
+        verify: dotnet
+        explain: '`await` frees the thread while waiting; async methods return `Task` or `Task<T>`, not `void`.'
+        usage: daily
+        learn: cs.tasks-async-await

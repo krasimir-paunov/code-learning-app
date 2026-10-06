@@ -7,6 +7,10 @@ import { lazyNamed } from './lazy-named.ts';
 const LandingPage = lazyNamed(() => import('../features/landing/LandingPage.tsx'), 'LandingPage');
 const MapPage = lazyNamed(() => import('../features/map/MapPage.tsx'), 'MapPage');
 const LessonPage = lazyNamed(() => import('../features/lesson/LessonPage.tsx'), 'LessonPage');
+const CheatSheetsPage = lazyNamed(
+  () => import('../features/cheatsheets/CheatSheetsPage.tsx'),
+  'CheatSheetsPage',
+);
 const ProfilePage = lazyNamed(() => import('../features/profile/ProfilePage.tsx'), 'ProfilePage');
 const NotFoundPage = lazyNamed(() => import('./NotFoundPage.tsx'), 'NotFoundPage');
 
@@ -21,6 +25,8 @@ export function App() {
             <Route path="map" element={<MapPage />} />
             <Route path="map/:moduleId" element={<MapPage />} />
             <Route path="learn/:lessonId" element={<LessonPage />} />
+            <Route path="cheatsheets" element={<CheatSheetsPage />} />
+            <Route path="cheatsheets/:track" element={<CheatSheetsPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>

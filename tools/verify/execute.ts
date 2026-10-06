@@ -48,8 +48,9 @@ export async function execute(code: string, lang: string, verify: VerifyKind): P
     case 'node': {
       if (lang !== 'js') throw new Error(`verify: node needs a js snippet (got ${lang})`);
       const dir = workDir(code);
-      fs.writeFileSync(path.join(dir, 'snippet.cjs'), code);
-      return run('node', ['snippet.cjs'], dir, 20_000);
+      // An ES module, so snippets can use top-level await like modern code does.
+      fs.writeFileSync(path.join(dir, 'snippet.mjs'), code);
+      return run('node', ['snippet.mjs'], dir, 20_000);
     }
     case 'browser': {
       const name = { html: 'index.html', js: 'main.js' }[lang];

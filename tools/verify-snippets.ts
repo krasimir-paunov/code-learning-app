@@ -113,6 +113,28 @@ for (const lesson of bundle.lessons) {
   }
 }
 
+for (const sheet of bundle.sheets) {
+  const file = relative(sheet.file);
+  for (const claim of sheet.claims) {
+    const label = `${file} ${claim.where} [${claim.verify}]`;
+    await verify(
+      hash('claim', claim.code, claim.lang, claim.verify, claim.expected),
+      label,
+      async () => {
+        const actual = await execute(claim.code, claim.lang, claim.verify);
+        return normalizeOutput(actual) === normalizeOutput(claim.expected)
+          ? []
+          : [
+              `expected output
+${claim.expected.trimEnd()}
+  but the code printed
+${actual.trimEnd()}`,
+            ];
+      },
+    );
+  }
+}
+
 await closeBrowser();
 fs.mkdirSync(path.dirname(CACHE_FILE), { recursive: true });
 fs.writeFileSync(CACHE_FILE, JSON.stringify(cache, null, 2));

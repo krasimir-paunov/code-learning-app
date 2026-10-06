@@ -1,0 +1,141 @@
+track: net
+title: .NET
+intro: ASP.NET Core and EF Core on .NET 10. Every C# program here is compiled with the real SDK.
+sections:
+  - id: apis
+    title: Minimal APIs
+    entries:
+      - id: net.sheet.minimal-api
+        title: A whole API in one file
+        code:
+          lang: cs
+          inline: |-
+            #:sdk Microsoft.NET.Sdk.Web
+
+            var builder = WebApplication.CreateBuilder(args);
+            var app = builder.Build();
+
+            app.MapGet("/hello/{name}", (string name) => $"Hello, {name}!");
+
+            app.Run();
+        verify: dotnet-build
+        explain: '`{name}` in the route binds to the `name` parameter. Run a single file with `dotnet run app.cs`.'
+        usage: daily
+        learn: net.minimal-api-routing
+      - id: net.sheet.typed-results
+        title: Return the right status code
+        code:
+          lang: cs
+          inline: |-
+            #:sdk Microsoft.NET.Sdk.Web
+            using Microsoft.AspNetCore.Http.HttpResults;
+
+            var app = WebApplication.CreateBuilder(args).Build();
+
+            app.MapGet("/todos/{id:int}", Results<Ok<Todo>, NotFound> (int id) =>
+                id == 1 ? TypedResults.Ok(new Todo(1, "Ship it")) : TypedResults.NotFound());
+
+            app.Run();
+
+            record Todo(int Id, string Title);
+        verify: dotnet-build
+        explain: '`Results<…>` lists every response the endpoint can produce, which OpenAPI documents for you.'
+        usage: daily
+        learn: net.results
+  - id: services
+    title: Services and configuration
+    entries:
+      - id: net.sheet.di
+        title: Register and inject a service
+        code:
+          lang: cs
+          inline: |-
+            #:sdk Microsoft.NET.Sdk.Web
+
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddSingleton<IClock, SystemClock>();
+            var app = builder.Build();
+
+            app.MapGet("/now", (IClock clock) => clock.UtcNow);
+
+            app.Run();
+
+            interface IClock { DateTime UtcNow { get; } }
+            class SystemClock : IClock { public DateTime UtcNow => DateTime.UtcNow; }
+        verify: dotnet-build
+        explain: Register against an interface; the container passes the implementation to endpoints and constructors.
+        usage: daily
+        learn: net.di
+      - id: net.sheet.options
+        title: Bind configuration to a class
+        code:
+          lang: cs
+          inline: |-
+            #:sdk Microsoft.NET.Sdk.Web
+            using Microsoft.Extensions.Options;
+
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
+            var app = builder.Build();
+
+            app.MapGet("/smtp-host", (IOptions<SmtpOptions> options) => options.Value.Host);
+
+            app.Run();
+
+            class SmtpOptions
+            {
+                public string Host { get; set; } = "";
+                public int Port { get; set; } = 587;
+            }
+        verify: dotnet-build
+        explain: Reads the `Smtp` section of appsettings.json (and any later source, like environment variables).
+        usage: common
+        learn: net.options
+      - id: net.sheet.appsettings
+        title: appsettings.json
+        code:
+          lang: json
+          inline: |-
+            {
+              "Smtp": { "Host": "smtp.example.com", "Port": 587 },
+              "Logging": { "LogLevel": { "Default": "Information" } }
+            }
+        explain: '`appsettings.{Environment}.json` and environment variables (`Smtp__Host`) override it.'
+        usage: daily
+        learn: net.configuration
+      - id: net.sheet.logging
+        title: Structured logging
+        code:
+          lang: cs
+          inline: |-
+            #:sdk Microsoft.NET.Sdk.Web
+
+            var app = WebApplication.CreateBuilder(args).Build();
+
+            app.MapGet("/orders/{id:int}", (int id, ILogger<Program> logger) =>
+            {
+                logger.LogInformation("Order {OrderId} viewed", id); // a template, not $"..."
+                return id;
+            });
+
+            app.Run();
+        verify: dotnet-build
+        explain: Message templates keep `OrderId` as a searchable field; string interpolation would lose it.
+        usage: daily
+        learn: net.logging
+  - id: tools
+    title: CLI
+    entries:
+      - id: net.sheet.cli
+        title: Everyday commands
+        code:
+          lang: bash
+          inline: |-
+            dotnet new webapi -n Shop   # new project from a template
+            dotnet run                  # build and run
+            dotnet watch                # rerun on every save
+            dotnet test                 # run the test projects
+            dotnet add package Microsoft.EntityFrameworkCore.Sqlite
+        explain: The SDK CLI does everything the IDE does.
+        usage: daily
+        learn: net.ecosystem

@@ -1,0 +1,148 @@
+track: js
+title: JavaScript
+intro: Modern JavaScript (ES2023+). Every result shown here was printed by Node.
+sections:
+  - id: values
+    title: Values and syntax
+    entries:
+      - id: js.sheet.const-let
+        title: Declare variables
+        code: { lang: js, inline: "const max = 10; // never reassigned\nlet count = 0; // reassigned below\ncount += 1;" }
+        check: console.log(max, count);
+        output: '10 1'
+        verify: node
+        explain: Default to `const`; use `let` only when you reassign. `var` is legacy.
+        usage: daily
+        learn: js.variables
+      - id: js.sheet.template-literal
+        title: Build strings
+        code: { lang: js, inline: "const name = 'Ada';\nconst greeting = `Hello, ${name}! You have ${2 + 3} messages.`;" }
+        check: console.log(greeting);
+        output: 'Hello, Ada! You have 5 messages.'
+        verify: node
+        explain: Backticks interpolate any expression with `${}` and can span lines.
+        usage: daily
+        learn: js.strings
+      - id: js.sheet.nullish
+        title: Defaults for missing values
+        code: { lang: js, inline: "const user = { name: 'Ada', settings: null };\nconst theme = user.settings?.theme ?? 'dark';\nconst count = 0 || 10; // 10: || also replaces 0\nconst kept = 0 ?? 10; // 0: ?? only replaces null/undefined" }
+        check: console.log(theme, count, kept);
+        output: 'dark 10 0'
+        verify: node
+        explain: '`?.` stops at `null`/`undefined`; `??` falls back only for those, unlike `||`.'
+        usage: daily
+        learn: js.equality-truthiness
+      - id: js.sheet.strict-equality
+        title: Compare values
+        code: { lang: js, inline: "const results = [1 === 1, 1 === '1', 1 == '1', NaN === NaN, Number.isNaN(NaN)];" }
+        check: console.log(results.join(' '));
+        output: 'true false true false true'
+        verify: node
+        explain: Always use `===`; `==` converts types first. Check `NaN` with `Number.isNaN`.
+        usage: daily
+        learn: js.equality-truthiness
+  - id: arrays
+    title: Arrays
+    entries:
+      - id: js.sheet.array-map-filter
+        title: Transform and filter
+        code: { lang: js, inline: "const prices = [5, 12, 30];\nconst doubled = prices.map((p) => p * 2);\nconst cheap = prices.filter((p) => p < 20);" }
+        check: console.log(JSON.stringify(doubled), JSON.stringify(cheap));
+        output: '[10,24,60] [5,12]'
+        verify: node
+        explain: '`map` returns a new array of results; `filter` keeps items whose callback returns true.'
+        usage: daily
+        learn: js.array-iteration
+      - id: js.sheet.array-reduce
+        title: Combine into one value
+        code: { lang: js, inline: "const total = [5, 12, 30].reduce((sum, p) => sum + p, 0);" }
+        check: console.log(total);
+        output: '47'
+        verify: node
+        explain: Always pass the initial value (`0` here); without it, an empty array throws.
+        usage: common
+        learn: js.array-iteration
+      - id: js.sheet.array-find
+        title: Find one item
+        code: { lang: js, inline: "const users = [{ id: 1, name: 'Ada' }, { id: 2, name: 'Linus' }];\nconst linus = users.find((u) => u.id === 2);\nconst missing = users.find((u) => u.id === 9);" }
+        check: console.log(linus.name, missing);
+        output: 'Linus undefined'
+        verify: node
+        explain: '`find` returns the first match or `undefined`; `findIndex` returns its index or `-1`.'
+        usage: daily
+        learn: js.array-iteration
+      - id: js.sheet.to-sorted
+        title: Sort numbers without mutating
+        code: { lang: js, inline: "const xs = [10, 1, 5];\nconst sorted = xs.toSorted((a, b) => a - b);\nconst wrong = [10, 1, 5].sort(); // compares as strings!" }
+        check: console.log(JSON.stringify(sorted), JSON.stringify(xs), JSON.stringify(wrong));
+        output: '[1,5,10] [10,1,5] [1,10,5]'
+        verify: node
+        explain: Default sorting compares strings. Pass a comparator; `toSorted` (ES2023) leaves the original alone.
+        usage: common
+        learn: js.array-copying-methods
+      - id: js.sheet.at
+        title: Last item
+        code: { lang: js, inline: "const xs = ['a', 'b', 'c'];\nconst last = xs.at(-1);" }
+        check: console.log(last);
+        output: 'c'
+        verify: node
+        explain: '`at` accepts negative indexes, counting from the end.'
+        usage: common
+        learn: js.arrays
+  - id: objects
+    title: Objects and collections
+    entries:
+      - id: js.sheet.destructuring
+        title: Unpack with defaults
+        code: { lang: js, inline: "const { name, role = 'reader', ...rest } = { name: 'Ada', id: 7, team: 'core' };" }
+        check: console.log(name, role, JSON.stringify(rest));
+        output: 'Ada reader {"id":7,"team":"core"}'
+        verify: node
+        explain: Pull properties into variables, give defaults, and collect the remainder with `...rest`.
+        usage: daily
+        learn: js.destructuring-spread
+      - id: js.sheet.spread-merge
+        title: Copy and override
+        code: { lang: js, inline: "const defaults = { theme: 'dark', size: 'md' };\nconst settings = { ...defaults, size: 'lg' };" }
+        check: console.log(JSON.stringify(settings), defaults.size);
+        output: '{"theme":"dark","size":"lg"} md'
+        verify: node
+        explain: Later properties win. The copy is shallow; use `structuredClone` for a deep copy.
+        usage: daily
+        learn: js.destructuring-spread
+      - id: js.sheet.group-by
+        title: Group items
+        code: { lang: js, inline: "const tasks = [{ t: 'a', done: true }, { t: 'b', done: false }, { t: 'c', done: true }];\nconst byStatus = Object.groupBy(tasks, (x) => (x.done ? 'done' : 'open'));" }
+        check: console.log(byStatus.done.length, byStatus.open.length);
+        output: '2 1'
+        verify: node
+        explain: '`Object.groupBy` returns an object keyed by whatever the callback returns.'
+        usage: common
+        learn: js.object-utilities
+      - id: js.sheet.set-dedupe
+        title: Remove duplicates
+        code: { lang: js, inline: "const unique = [...new Set(['a', 'b', 'a', 'c', 'b'])];" }
+        check: console.log(JSON.stringify(unique));
+        output: '["a","b","c"]'
+        verify: node
+        explain: A `Set` keeps one of each value, in insertion order.
+        usage: common
+        learn: js.map-set
+  - id: async
+    title: Async
+    entries:
+      - id: js.sheet.fetch-json
+        title: Fetch JSON safely
+        code: { lang: js, inline: "async function getUser(id) {\n  const response = await fetch(`/api/users/${id}`);\n  if (!response.ok) throw new Error(`HTTP ${response.status}`);\n  return response.json();\n}" }
+        explain: '`fetch` only rejects on network failure; a 404 resolves. Check `response.ok` yourself.'
+        usage: daily
+        learn: js.fetch
+      - id: js.sheet.promise-all
+        title: Run in parallel
+        code: { lang: js, inline: "const wait = (ms, value) => new Promise((resolve) => setTimeout(() => resolve(value), ms));\nconst [a, b] = await Promise.all([wait(30, 'a'), wait(10, 'b')]);" }
+        check: console.log(a, b);
+        output: 'a b'
+        verify: node
+        explain: '`Promise.all` waits for every promise and keeps the input order, not the finish order.'
+        usage: common
+        learn: js.promise-combinators

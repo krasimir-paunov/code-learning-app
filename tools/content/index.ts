@@ -1,5 +1,6 @@
 import type { PublishedInfo, SkillManifest } from '../../src/engine/skilltree/types.ts';
 import { compileLesson, type LessonBuild } from './compile-lesson.ts';
+import { compileSheets, type SheetBuild } from './compile-sheets.ts';
 import { createCodeHighlighter } from './highlight.ts';
 import {
   buildManifest,
@@ -15,6 +16,7 @@ import { loadPlugins } from './plugins.ts';
 export interface ContentBundle {
   manifest: SkillManifest;
   lessons: LessonBuild[];
+  sheets: SheetBuild[];
   issues: ContentIssue[];
 }
 
@@ -38,7 +40,7 @@ export async function loadContent(options: ContentOptions = {}): Promise<Content
     const build = compileLesson(source, { plugins, highlighter, markdown }, issues);
     if (build) lessons.push(build);
   }
-  if (!curriculum) return { manifest: EMPTY_MANIFEST, lessons, issues };
+  if (!curriculum) return { manifest: EMPTY_MANIFEST, lessons, sheets: [], issues };
 
   const published = new Map<string, PublishedInfo>(
     lessons.map((l) => [
@@ -73,7 +75,8 @@ export async function loadContent(options: ContentOptions = {}): Promise<Content
       if (!manifest.nodes[id]) issues.push({ file, message: `related: unknown lesson "${id}"` });
     }
   }
-  return { manifest, lessons, issues };
+  const sheets = compileSheets(manifest, { highlighter, markdown }, issues);
+  return { manifest, lessons, sheets, issues };
 }
 
 export function formatIssues(issues: ContentIssue[]): string {

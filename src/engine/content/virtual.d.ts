@@ -10,3 +10,9 @@ declare module 'virtual:content/lessons' {
   type CompiledLesson = import('./lesson-types.ts').CompiledLesson;
   export const lessonLoaders: Record<string, () => Promise<{ default: CompiledLesson }>>;
 }
+
+declare module 'virtual:content/cheatsheets' {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  const sheets: import('./cheatsheet-types.ts').CompiledSheet[];
+  export default sheets;
+}

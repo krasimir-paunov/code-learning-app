@@ -1,0 +1,75 @@
+track: algo
+title: Algorithms & Data Structures
+intro: Costs at a glance. n is the number of items; "amortized" means averaged over many operations.
+sections:
+  - id: big-o
+    title: Big O by data structure
+    entries:
+      - id: algo.sheet.structures
+        kind: table
+        title: Operations by structure
+        columns: [Structure, Access by index, Search, Insert / remove at end, Insert / remove in the middle]
+        rows:
+          - ['Array / `List<T>` / JS array', 'O(1)', 'O(n)', 'O(1) amortized', 'O(n)']
+          - ['Sorted array (binary search)', 'O(1)', 'O(log n)', 'O(n) to keep order', 'O(n)']
+          - [Linked list, 'O(n)', 'O(n)', 'O(1)', 'O(1) at a known node']
+          - ['Hash map / set (`Dictionary`, `Map`, `Set`)', '-', 'O(1) average, O(n) worst', 'O(1) average', 'O(1) average']
+          - ['Balanced search tree (`SortedDictionary`)', '-', 'O(log n)', 'O(log n)', 'O(log n)']
+          - ['Binary heap (`PriorityQueue`)', '-', 'O(n)', 'O(log n) push / pop', '-']
+        notes:
+          - Stacks and queues are O(1) for push/pop and enqueue/dequeue.
+        explain: Pick the structure by the operation you do most.
+        usage: daily
+      - id: algo.sheet.growth
+        kind: table
+        title: How costs grow
+        columns: [Big O, Name, 'n = 1,000', 'n = 1,000,000', Typical example]
+        rows:
+          - ['O(1)', Constant, '1', '1', 'Array index, hash lookup']
+          - ['O(log n)', Logarithmic, '≈ 10', '≈ 20', Binary search]
+          - ['O(n)', Linear, '1,000', '1,000,000', One loop over the data]
+          - ['O(n log n)', Linearithmic, '≈ 10,000', '≈ 20,000,000', Good sorting]
+          - ['O(n²)', Quadratic, '1,000,000', '10¹²', Nested loops over the data]
+        explain: 'Steps, not seconds: doubling n adds one step to O(log n) and quadruples O(n²).'
+        usage: daily
+        learn: algo.big-o
+  - id: sorting
+    title: Sorting
+    entries:
+      - id: algo.sheet.sorting
+        kind: table
+        title: Sorting algorithms compared
+        columns: [Algorithm, Best, Average, Worst, Extra space, Stable]
+        rows:
+          - [Bubble / selection, 'O(n) / O(n²)', 'O(n²)', 'O(n²)', 'O(1)', 'Bubble yes, selection no']
+          - [Insertion, 'O(n)', 'O(n²)', 'O(n²)', 'O(1)', 'Yes']
+          - [Merge sort, 'O(n log n)', 'O(n log n)', 'O(n log n)', 'O(n)', 'Yes']
+          - [Quicksort, 'O(n log n)', 'O(n log n)', 'O(n²)', 'O(log n)', 'No']
+          - [Heapsort, 'O(n log n)', 'O(n log n)', 'O(n log n)', 'O(1)', 'No']
+        notes:
+          - V8's `Array.prototype.sort` is TimSort (stable); .NET's `Array.Sort` is introsort (not stable).
+          - Insertion sort is near O(n) on almost-sorted data, which is why hybrid sorts use it for small runs.
+        explain: In real code, call the built-in sort and pass a comparator.
+        usage: common
+        learn: algo.sorting-race
+  - id: searching
+    title: Searching
+    entries:
+      - id: algo.sheet.binary-search
+        title: Binary search
+        code: { lang: js, inline: "function binarySearch(xs, target) {\n  let lo = 0;\n  let hi = xs.length - 1;\n  while (lo <= hi) {\n    const mid = Math.floor((lo + hi) / 2);\n    if (xs[mid] === target) return mid;\n    if (xs[mid] < target) lo = mid + 1;\n    else hi = mid - 1;\n  }\n  return -1;\n}" }
+        check: console.log(binarySearch([2, 5, 8, 12, 16, 23], 16), binarySearch([2, 5, 8], 4));
+        output: '4 -1'
+        verify: node
+        explain: Needs sorted input. O(log n). Loop while `lo <= hi`.
+        usage: common
+        learn: algo.binary-search
+      - id: algo.sheet.two-sum
+        title: Seen-set pattern (two sum)
+        code: { lang: js, inline: "function hasPairWithSum(xs, target) {\n  const seen = new Set();\n  for (const x of xs) {\n    if (seen.has(target - x)) return true;\n    seen.add(x);\n  }\n  return false;\n}" }
+        check: console.log(hasPairWithSum([3, 9, 4, 1], 13), hasPairWithSum([3, 9], 5));
+        output: 'true false'
+        verify: node
+        explain: Trading O(n) memory for O(n) time instead of comparing every pair in O(n²).
+        usage: common
+        learn: algo.hash-patterns
