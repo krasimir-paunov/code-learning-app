@@ -1,0 +1,147 @@
+id: html.browser-pipeline
+version: 1
+title: From URL to pixels
+summary: Follow your HTML from the network to the screen, and watch the parser repair it.
+minutes: 6
+tags: [parsing, dom, rendering, devtools]
+
+concept:
+  title: The browser draws a tree, not your text
+  body: |
+    When you open a URL, the browser **requests** the page and receives **bytes**. It decodes
+    them to text, cuts the text into **tokens** (tags and text), and builds a tree of nodes:
+    the **DOM**. Layout and paint then turn the tree into pixels.
+
+    The parser never stops at an error. It **repairs** markup by fixed rules: it closes
+    elements, adds missing ones and moves misplaced ones. Everything after it, CSS, JavaScript
+    and DevTools included, sees the repaired tree, not your source.
+  code:
+    caption: You wrote no end tags; the tree has them
+    tabs:
+      - lang: html
+        file: snippets/optional-end-tags.html
+        output: '<li>Soup</li><li>Salad</li>'
+        verify: browser
+
+playground:
+  visualizer: dom-tree
+  props:
+    url: https://example.com/menu.html
+    examples:
+      - label: Missing tags
+        source: |
+          <title>Menu</title>
+          <p>Soup of the day</p>
+      - label: Block in a paragraph
+        source: <p>Intro <div>Details</div> end.</p>
+      - label: Table
+        source: |
+          <table>
+            <tr><td>Soup</td><td>€4</td></tr>
+          </table>
+      - label: Unclosed items
+        source: |
+          <ul>
+            <li>Soup
+            <li>Salad
+          </ul>
+  prompt: |
+    Open the **DOM tree**. You wrote two elements, but the tree has five: the parser added
+    `<html>`, `<head>` and `<body>`. Now choose **Block in a paragraph**.
+  explore:
+    - Step through **Bytes**, **Tokens**, **DOM tree** and **Render** for the same source.
+    - In **Table**, find the element you never typed. Then edit the source and watch the tree update.
+
+challenges:
+  - id: pipeline-order
+    type: reorder
+    prompt: Put the browser's steps in order, from typing the URL to seeing the page.
+    items:
+      - '**Request** the URL from the server'
+      - '**Receive bytes** and decode them to text'
+      - '**Tokenize** the text into tags and text'
+      - '**Build the DOM** tree'
+      - '**Lay out and paint** the tree into pixels'
+    hints:
+      - Nothing can be parsed before it arrives over the network.
+      - Tokens are a flat list; the tree is built from them.
+    explanation: |
+      Request, bytes, tokens, tree, pixels. DevTools' Elements panel shows the tree from step
+      four, which is why it can differ from your source.
+
+  - id: how-many-paragraphs
+    type: predict-output
+    prompt: How many `<p>` elements does the page end up with?
+    code: { lang: html, file: snippets/p-count.html }
+    answer: '2'
+    choices: ['0', '1', '2', '3']
+    verify: browser
+    hints:
+      - A paragraph can't contain a `<div>`. What must the parser do when one starts?
+      - The parser then reaches `</p>` with no paragraph open.
+    explanation: |
+      A `<div>` can't go inside a `<p>`, so the parser closes the paragraph before it. The `</p>`
+      at the end then has no open paragraph, and the parser treats it as `<p></p>`: a second,
+      empty paragraph. " end." sits between them, in neither.
+
+  - id: phantom-tbody
+    type: choice
+    prompt: |
+      Your table source has `<table>`, `<tr>` and `<td>`. DevTools' Elements panel shows a
+      `<tbody>` between `<table>` and `<tr>`. Why?
+    options:
+      - text: The parser added it while building the DOM.
+        correct: true
+        why: Table rows always live in a row group, so the parser inserts `<tbody>` when you leave it out.
+      - text: DevTools adds it to make the panel easier to read.
+        why: DevTools shows the real DOM. Scripts and CSS see the same `<tbody>`.
+      - text: A browser extension rewrote the page.
+        why: Every browser does this on every page, with no extensions involved.
+      - text: Your editor's formatter inserted it into the file.
+        why: Your file is unchanged; View source still shows no `<tbody>`.
+    explanation: |
+      View source shows what you wrote; the Elements panel shows what the browser built. When
+      they differ, the parser repaired or completed your markup.
+
+production:
+  - title: Frameworks warn about the same repairs
+    body: |
+      Server-rendered React compares the HTML the browser built with the tree it expects. A
+      `<div>` inside a `<p>` gets repaired by the parser, the trees stop matching, and React warns
+      that this will cause a hydration error.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/react-warning.html
+  - title: The browser never reports parse errors
+    body: |
+      Broken markup still renders, so problems surface later as odd styling or framework
+      warnings. Run a validator (the W3C Nu validator, or `html-validate` in CI) to catch them
+      in the source.
+
+mistake:
+  title: Selecting `table > tr`
+  body: |
+    The source puts `<tr>` straight inside `<table>`, so the child selector looks right. But in
+    the DOM the rows sit inside the `<tbody>` the parser added, so `table > tr` matches nothing
+    and the style never applies.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/child-selector.bad.html
+        output: '0'
+        verify: browser
+  fix: Select through the row group (`table > tbody > tr`) or drop the child combinator.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/child-selector.good.html
+        output: '1'
+        verify: browser
+
+recap:
+  - The browser goes from request to bytes, tokens, a DOM tree, then layout and paint.
+  - The parser never fails; it closes, adds and moves elements by fixed rules.
+  - DevTools, CSS and JavaScript all see the repaired tree, not your source.
+
+related: [html.what-is-html, html.devtools-elements]

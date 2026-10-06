@@ -92,7 +92,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 |---|---|---|---|---|---|---|---|---|---|
 | H1.1 | `html.what-is-html` | Elements, tags, attributes | Core | Read and write an element; know tag vs element vs attribute. | — | `anatomy-explorer` (hover parts of `<a href>`), `live-editor` | FB, BUG | 4 | done |
 | H1.2 | `html.document-skeleton` | The document skeleton | Core | Know what each line of the boilerplate does (`doctype`, `lang`, `charset`, `viewport`, `title`). | ↑ | `skeleton-toggles`: switch lines off, watch the phone preview/tab title/encoding break | RO, BUG | 5 | done |
-| H1.3 | `html.browser-pipeline` | From URL to pixels | Core | Follow URL → request → parse → DOM → render; see how browsers repair bad nesting. | ↑ | `dom-tree`: type HTML, the DOM tree updates live | PO, CH | 6 | todo |
+| H1.3 | `html.browser-pipeline` | From URL to pixels | Core | Follow URL → request → parse → DOM → render; see how browsers repair bad nesting. | ↑ | `dom-tree`: type HTML, the DOM tree updates live | PO, CH | 6 | done |
 | H1.4 | `html.devtools-elements` | Inspecting with DevTools | Core | Use the Elements panel to inspect and live-edit any page. | ↑ | `devtools-sim` | CH, BUG | 4 | todo |
 
 ### H2 · Text and structure — Entry: H1.4
