@@ -1,0 +1,151 @@
+id: html.landmarks
+version: 1
+title: Page landmarks
+summary: Divide a page into landmark regions that people can jump between.
+minutes: 7
+tags: [header, nav, main, aside, footer, article, section, landmarks]
+
+concept:
+  title: Landmarks are the page's regions
+  body: |
+    Headings outline a page; **landmarks** divide it into regions. Screen readers list them, so
+    people jump straight to the menu or the content.
+
+    - `<header>`: the site header (banner). `<nav>`: a block of navigation links.
+    - `<main>`: the page's own content. Exactly one per page.
+    - `<aside>`: related content beside the main content. `<footer>`: the site footer.
+
+    Position matters: a `<header>` or `<footer>` inside an `<article>`, `<section>`, `<main>`,
+    `<aside>` or `<nav>` belongs to that part and is no longer a landmark. `<article>` marks
+    self-contained content (a post, a product card). `<section>` groups content under a heading
+    and becomes a landmark only when it has a name.
+  code:
+    caption: The usual skeleton of a page's body
+    tabs:
+      - lang: html
+        file: snippets/page.html
+
+playground:
+  visualizer: landmark-map
+  props:
+    regions:
+      - id: top
+        label: Logo and site name
+        want: [header]
+        children:
+          - { id: menu, label: Main menu links, want: [nav] }
+      - id: content
+        label: Main content
+        want: [main]
+        children:
+          - id: post
+            label: Blog post
+            want: [article]
+            children:
+              - { id: post-head, label: Post title and date, want: [header] }
+              - { id: comments, label: Comments, want: [section] }
+      - { id: side, label: Related posts, want: [aside], side: true }
+      - { id: bottom, label: Copyright and contact, want: [footer] }
+  prompt: |
+    Every block is a `<div>`, so the landmarks list is empty. Choose `<header>` and click
+    **Logo and site name** and **Post title and date**: two banners. Now make **Blog post** an
+    `<article>` and watch one of them stop being a landmark.
+  explore:
+    - Turn **Main content** into `<main>`, then another block too. What does the panel say?
+    - Make **Comments** a `<section>`. Why is it still not a landmark?
+
+challenges:
+  - id: article-header
+    type: choice
+    prompt: |
+      A blog page has a site header with the logo, and each post on it has its own `<header>`
+      with the title and date. Which statement is true?
+    options:
+      - text: Only the site header is a banner landmark; the post headers belong to their articles.
+        correct: true
+        why: A `<header>` inside an `<article>` is that article's header, not a page landmark.
+      - text: A page may only have one `<header>` element.
+        why: Any number is fine. Only the top-level one becomes the banner landmark.
+      - text: Every `<header>` is a banner landmark, so the list fills up with duplicates.
+        why: Browsers map only top-level headers to the banner role.
+      - text: The post headers should be `<div>`s to avoid confusion.
+        why: "`<header>` is right for an article's introductory content; it just isn't a landmark."
+    explanation: Landmark roles depend on position. The same element can be a page region or part of an article.
+
+  - id: name-the-navs
+    type: choice
+    prompt: |
+      Your page has two `<nav>` elements: the main menu in the header and a list of links in the
+      footer. A screen reader's landmarks list shows "navigation" twice. What do you add?
+    options:
+      - text: '`aria-label="Main"` and `aria-label="Footer"` on the two navs'
+        correct: true
+        why: The names appear in the landmarks list, so people can pick the right one.
+      - text: Change the footer `<nav>` into a `<div>`
+        why: Then the footer links are no longer findable as navigation at all.
+      - text: '`id="main-nav"` and `id="footer-nav"`'
+        why: IDs are for links and scripts; assistive technology doesn't announce them.
+      - text: A `title` attribute on each link
+        why: That labels links, not the navigation regions.
+    explanation: When a landmark repeats, give each one a short name with `aria-label` or `aria-labelledby`.
+
+  - id: unsoup
+    type: live-code
+    prompt: |
+      Turn the divs into landmarks: a site header that contains the main navigation, the main
+      content, and a site footer. Keep the classes.
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/soup.starter.html }
+    solution:
+      index.html: { file: snippets/soup.solution.html }
+    tests: { file: snippets/soup.test.js }
+    hints:
+      - '`div.top` becomes `<header class="top">`, and the menu inside it becomes `<nav>`.'
+      - The content block is the page's `<main>`; the copyright block is its `<footer>`.
+    explanation: |
+      Same layout, same classes, but now a screen reader user can press one key to reach the
+      menu or the content.
+
+production:
+  - title: A skip link for keyboard users
+    body: |
+      Screen readers jump by landmark, but sighted keyboard users would tab through every menu
+      link first. A "Skip to content" link, visible on focus, takes them to `<main>`. This app
+      has one: press Tab on any page.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/skip-link.html
+  - title: Name repeated landmarks
+    body: Two navs need two names. The landmarks list then reads "Main navigation" and "Footer navigation".
+    code:
+      tabs:
+        - lang: html
+          file: snippets/named-navs.html
+  - title: The newer `<search>` element
+    body: |
+      A `<search>` element wraps a site search form and maps to the search landmark. It has been
+      supported in all major browsers since late 2023.
+
+mistake:
+  title: Wrapping every block in `<section>`
+  body: |
+    `<section>` sounds more semantic than `<div>`, so everything becomes a section. Without a
+    heading or name, a section is announced as nothing and adds no structure.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/sections.bad.html
+  fix: Use `<div>` for layout. Use `<section>` for a themed group with its own heading, and connect them with `aria-labelledby`.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/sections.good.html
+
+recap:
+  - "`<header>`, `<nav>`, `<main>`, `<aside>` and `<footer>` are the page's landmark regions; exactly one `<main>`."
+  - A header or footer inside an article or section belongs to it and is not a landmark.
+  - Name repeated landmarks; use `<div>` when a block has no meaning.
+
+related: [html.headings-paragraphs, html.keyboard-focus]
