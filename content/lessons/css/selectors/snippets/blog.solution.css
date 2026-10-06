@@ -1,0 +1,7 @@
+article .intro {
+  font-style: italic;
+}
+
+a[href^="https"] {
+  color: #ff8c00;
+}

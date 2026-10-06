@@ -1,0 +1,12 @@
+<section>
+  <h2>Trails</h2>
+  <p>One</p>
+  <div><p>Two</p></div>
+  <p>Three</p>
+</section>
+<script>
+  console.log(document.querySelectorAll('section p').length);
+  console.log(document.querySelectorAll('section > p').length);
+  console.log(document.querySelectorAll('h2 + p').length);
+  console.log(document.querySelectorAll('h2 ~ p').length);
+</script>

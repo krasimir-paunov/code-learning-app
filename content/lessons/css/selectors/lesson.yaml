@@ -1,0 +1,181 @@
+id: css.selectors
+version: 1
+title: Selectors and combinators
+summary: Target exactly the elements you mean by class, attribute and position in the tree.
+minutes: 6
+tags: [class, attribute selectors, combinators, descendant, child, sibling]
+
+concept:
+  title: Describe the element, then where it sits
+  body: |
+    A selector describes elements: by type (`p`), class (`.intro`), id (`#cart`) or attribute
+    (`[href^="https"]`, "href starts with https"). Join them with no space to require all of
+    them on one element: `p.intro`.
+
+    **Combinators** add where the element sits in the tree:
+
+    - `article p`: any `p` inside an `article`, at any depth.
+    - `article > p`: only direct children.
+    - `h2 + p`: the `p` right after an `h2`. `h2 ~ p`: every later `p` with the same parent.
+
+    Read a selector from right to left: the last part is what gets styled.
+  code:
+    caption: The selectors you will use every day
+    tabs:
+      - lang: css
+        file: snippets/selectors.css
+
+playground:
+  visualizer: selector-lab
+  props:
+    html: |
+      <main>
+        <article class="post featured">
+          <h2>Spring trails</h2>
+          <p class="intro">Mud season is over.</p>
+          <p>Start with the ridge loop.</p>
+          <a href="https://maps.example/ridge">Map</a>
+        </article>
+        <article class="post">
+          <h2>Gear check</h2>
+          <p class="intro">New boots need breaking in.</p>
+          <ul>
+            <li><a href="/boots">Boots</a></li>
+            <li><a href="/files/socks.pdf">Sock guide (PDF)</a></li>
+          </ul>
+        </article>
+      </main>
+      <aside>
+        <p class="intro">Join the newsletter.</p>
+        <a href="/sale">Sale</a>
+      </aside>
+    css: 'article, aside { padding: 6px 8px; } h2 { margin: 0 0 4px; font-size: 18px; } p, ul { margin: 4px 0; }'
+    picks:
+      - .intro
+      - article .intro
+      - article > p
+      - h2 + p
+      - h2 ~ p
+      - a[href^="https"]
+      - a[href$=".pdf"]
+      - .post.featured a
+      - main a, aside a
+  prompt: |
+    Pick `.intro`, then `article .intro`: same class, one match fewer. Read the plain-English
+    sentence each time, then try `h2 + p` and `h2 ~ p`.
+  explore:
+    - Type `li > a` and then `ul > a`. Why does the second match nothing?
+    - Type a selector of your own and check the sentence says what you meant.
+
+challenges:
+  - id: count-matches
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: html, file: snippets/combinators.html }
+    answer: |
+      3
+      2
+      1
+      2
+    choices:
+      - |
+        3
+        2
+        1
+        2
+      - |
+        3
+        3
+        1
+        3
+      - |
+        2
+        2
+        1
+        2
+      - |
+        3
+        2
+        2
+        3
+    verify: browser
+    hints:
+      - '"Two" is inside a `<div>`, so it is a descendant of the section but not a child.'
+      - '`+` takes only the very next sibling; `~` takes every later one.'
+    explanation: |
+      `section p` finds all three paragraphs, `section > p` only the two direct children. `h2 + p`
+      is "One" alone; `h2 ~ p` is "One" and "Three" (the div is in the way of "Two").
+
+  - id: target-precisely
+    type: live-code
+    prompt: |
+      Write two rules: intro paragraphs **inside articles** become italic (the newsletter
+      intro must not), and links to other sites, whose `href` starts with `https`, become
+      orange (`#ff8c00`).
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/blog.html, editable: false }
+      style.css: { file: snippets/blog.starter.css }
+    solution:
+      index.html: { file: snippets/blog.html }
+      style.css: { file: snippets/blog.solution.css }
+    tests: { file: snippets/blog.test.js }
+    hints:
+      - Both intros have the class `intro`; only one is inside an `article`.
+      - 'Attribute selectors can test the start of a value: `[href^="…"]`.'
+    explanation: |
+      `article .intro` narrows the class by position; `a[href^="https"]` selects by what the link
+      points to, so new external links are styled automatically.
+
+  - id: first-paragraph
+    type: choice
+    prompt: Which selector styles only the first paragraph after each heading?
+    options:
+      - text: '`h2 + p`'
+        correct: true
+        why: '`+` is the adjacent sibling: only the `p` immediately after an `h2`.'
+      - text: '`h2 ~ p`'
+        why: That is every later `p` with the same parent, not just the first.
+      - text: '`h2 p`'
+        why: That looks for a `p` *inside* the `h2`.
+      - text: '`h2 > p`'
+        why: That looks for a `p` that is a child of the `h2`.
+    explanation: Siblings sit next to each other in the tree; descendants sit inside.
+
+production:
+  - title: Style state with attribute selectors
+    body: |
+      ARIA and form attributes already describe state. Select on them instead of adding a
+      class that has to be kept in sync.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/state.css
+  - title: JavaScript speaks the same language
+    body: '`document.querySelectorAll("article > p")` takes exactly the selectors you write in CSS, so getting fluent pays off twice.'
+  - title: Teams favour one class per component part
+    body: |
+      Short class selectors (`.post-title`) survive markup changes and are easy to override.
+      Long chains describe today's HTML structure and break when it changes.
+
+mistake:
+  title: Selectors that copy the whole tree
+  body: |
+    `body main .content article ul li a` works today. Wrap the list in a `div`, or move it,
+    and the style silently stops applying. It is also hard to override later.
+  bad:
+    tabs:
+      - lang: css
+        file: snippets/deep.bad.css
+  fix: Give the element a class that says what it is and select on that.
+  good:
+    tabs:
+      - lang: css
+        file: snippets/deep.good.css
+
+recap:
+  - Combine type, class, id and attribute selectors with no space to require all on one element.
+  - A space means "inside", `>` "direct child", `+` "right after", `~` "somewhere after".
+  - Read selectors right to left, and keep them short.
+
+related: [css.rules, css.pseudo-classes, css.specificity]

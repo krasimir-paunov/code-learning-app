@@ -1,0 +1,7 @@
+.intro { }                  /* class */
+#cart { }                   /* id */
+a[href^="https"] { }        /* attribute starts with */
+article p { }               /* descendant: any p inside an article */
+article > p { }             /* child: direct children only */
+h2 + p { }                  /* adjacent sibling: the p right after an h2 */
+h2 ~ p { }                  /* general sibling: every later p */

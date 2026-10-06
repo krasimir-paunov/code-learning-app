@@ -1,0 +1,8 @@
+/* Style the real state, not a duplicate class */
+button[aria-expanded="true"] .chevron {
+  rotate: 180deg;
+}
+
+input[disabled] {
+  opacity: 0.5;
+}
