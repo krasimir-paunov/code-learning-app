@@ -1,0 +1,45 @@
+.results {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.summary {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.list {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  & li {
+    display: flex;
+    gap: var(--space-2);
+    font-size: var(--fs-sm);
+  }
+
+  & svg {
+    flex: none;
+    inline-size: 16px;
+    block-size: 16px;
+    margin-block-start: 3px;
+  }
+
+  & li[data-passed='true'] svg {
+    color: var(--success);
+  }
+
+  & li[data-passed='false'] svg {
+    color: var(--danger);
+  }
+}
+
+.message {
+  display: block;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}

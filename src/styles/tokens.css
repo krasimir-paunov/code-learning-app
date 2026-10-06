@@ -106,6 +106,9 @@
   --code-type: var(--yellow-200);
   --code-line-highlight: color-mix(in oklch, var(--cyan-400) 14%, transparent);
 
+  /* Rendered learner pages start from the browser default: a white canvas. */
+  --canvas-page: var(--white);
+
   /* Scrims for effects behind text */
   --scrim: color-mix(in oklch, var(--ink-950) 82%, transparent);
 }

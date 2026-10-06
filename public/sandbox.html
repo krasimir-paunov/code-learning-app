@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!--
+      Code sandbox. Loaded in <iframe sandbox="allow-scripts"> (no allow-same-origin), so it
+      runs in an opaque origin: it cannot read the app's storage, cookies or DOM. This policy
+      blocks every network request; learner code may only use inline and data:/blob: resources.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:"
+    />
+    <title>Sandbox</title>
+    <script>
+      // Receives the full document and a MessageChannel port from the app, then replaces
+      // itself with that document. The port stays on window for the injected bootstrap.
+      addEventListener('message', function (event) {
+        if (window.__port || event.source !== parent) return;
+        if (!event.data || event.data.type !== 'run' || !event.ports[0]) return;
+        window.__port = event.ports[0];
+        document.open();
+        document.write(event.data.html);
+        document.close();
+      });
+    </script>
+  </head>
+  <body></body>
+</html>

@@ -1,0 +1,15 @@
+.editor {
+  display: grid;
+  gap: var(--space-1);
+  min-inline-size: 0;
+
+  & :global(.cm-editor) {
+    max-block-size: 28rem;
+    border: var(--border-width) solid var(--border-strong);
+  }
+}
+
+.hint {
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+}
