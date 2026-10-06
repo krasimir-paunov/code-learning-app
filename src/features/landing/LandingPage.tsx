@@ -88,8 +88,8 @@ export function LandingPage() {
           Watch algorithms race
         </h2>
         <p className={styles.sectionLead}>
-          Three sorts on the same bars, counting every comparison and swap. In the Algorithms track
-          you choose the algorithms, the size and the speed, and step through every move.
+          Three sorts on the same bars, counting every comparison, swap and write. In the Algorithms
+          track you choose the algorithms, the size and the speed, and step through every move.
         </p>
         <Suspense fallback={null}>
           <SortRaceDemo />
