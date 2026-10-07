@@ -38,7 +38,7 @@ playground:
     heading. Then pick the `clamp()` preset and drag again.
   explore:
     - 'With `4vw`, switch **Browser text size** to 24px. Does the heading grow? Now try the `clamp()` preset.'
-    - 'In the article, switch `line-height` to `24px`. What happens to the heading''s two lines?'
+    - "In the article, switch `line-height` to `24px`. What happens to the heading's two lines?"
 
 challenges:
   - id: inherited-line-height
@@ -94,7 +94,7 @@ challenges:
     type: choice
     prompt: 'A designer wants the hero heading to scale with the screen. Why write `clamp(2rem, 1rem + 4vw, 4rem)` instead of `font-size: 6vw`?'
     options:
-      - text: '`vw` alone ignores the reader''s text size and has no limits; the clamp keeps a `rem` part and a floor and ceiling.'
+      - text: "`vw` alone ignores the reader's text size and has no limits; the clamp keeps a `rem` part and a floor and ceiling."
         correct: true
         why: Someone who sets larger text still gets a larger heading, and it never shrinks to unreadable on phones or explodes on wide screens.
       - text: '`vw` units are not supported for `font-size`.'
