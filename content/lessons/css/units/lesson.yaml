@@ -15,8 +15,8 @@ concept:
       text; it compounds when nested elements each set `font-size` in `em`.
     - `%`: a share of the parent (for widths).
     - `ch`: the width of "0". `max-width: 65ch` keeps lines readable.
-    - `vw` and `dvh`: a share of the viewport. `dvh` leaves out the toolbars that cover part of
-      the screen on phones.
+    - `vw` and `dvh`: a share of the viewport. `dvh` follows the visible height as phone
+      toolbars appear and hide, so `100dvh` never ends up behind them.
   code:
     caption: Typical units in a real stylesheet
     tabs:
