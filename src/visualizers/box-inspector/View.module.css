@@ -37,6 +37,8 @@
 
 .diagram {
   position: relative;
+  /* The scaled layers keep their unscaled layout box; clip it so it can't widen the page. */
+  overflow: clip;
 }
 
 .scaled {

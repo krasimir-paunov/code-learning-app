@@ -17,6 +17,7 @@
 .treeBox,
 .trace {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-2);
   min-inline-size: 0;
 }
@@ -69,6 +70,11 @@
 
   &[data-visited] {
     background: color-mix(in oklch, var(--accent) 10%, transparent);
+  }
+
+  & code {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
   }
 
   &[data-target] {

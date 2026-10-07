@@ -1,5 +1,6 @@
 .list {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-2);
   min-inline-size: 0;
   margin: 0;
@@ -9,6 +10,7 @@
 
 .item {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-1);
 }
 
@@ -67,13 +69,16 @@
 }
 
 .code {
-  overflow-x: auto;
   font-family: var(--font-mono);
   font-size: var(--fs-code);
-  white-space: pre;
+  /* Long answers wrap rather than scroll: a scrolling option would need its own focus stop. */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 
-  & pre {
+  & :is(pre, code) {
     margin: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
     background: transparent;
   }
 }
