@@ -6,7 +6,8 @@ import { parseRules } from '../shared/css/rules.ts';
 import { formatSpecificity } from '../shared/css/specificity.ts';
 import { ShadowStage } from '../shared/ShadowStage.tsx';
 import type { DevtoolsSimProps } from './build.ts';
-import { elementLabel, keyOf, matchedRules, type DeclarationKey } from './model.ts';
+import { keyOf, matchedRules, type DeclarationKey } from '../shared/css/matched.ts';
+import { elementLabel } from './model.ts';
 import styles from './View.module.css';
 
 interface Box {

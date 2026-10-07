@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
 import { parseRules } from '../shared/css/rules.ts';
-import { elementLabel, keyOf, matchedRules } from './model.ts';
+import { keyOf, matchedRules } from '../shared/css/matched.ts';
+import { elementLabel } from './model.ts';
 
 document.body.innerHTML =
   '<article class="card"><p class="price" id="cost">€89</p><button class="buy">Add</button></article>';
