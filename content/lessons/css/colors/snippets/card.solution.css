@@ -1,0 +1,9 @@
+.card {
+  padding: 16px;
+  background: oklch(25% 0.03 262);
+  color: oklch(95% 0.01 262);
+}
+
+.muted {
+  color: oklch(65% 0.03 262);
+}

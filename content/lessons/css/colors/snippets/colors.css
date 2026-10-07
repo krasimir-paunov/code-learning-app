@@ -1,0 +1,12 @@
+.button {
+  background: oklch(55% 0.2 262);
+  color: white;
+}
+
+.button:hover {
+  background: color-mix(in oklch, oklch(55% 0.2 262), black 15%);
+}
+
+.note {
+  color: #4b5563;
+}

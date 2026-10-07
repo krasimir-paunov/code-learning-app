@@ -1,0 +1,19 @@
+<p class="a">A</p>
+<p class="b">B</p>
+<p class="c">C</p>
+<style>
+  .a {
+    color: #ff8000;
+  }
+  .b {
+    color: hsl(30 100% 50%);
+  }
+  .c {
+    color: oklch(70% 0.15 145);
+  }
+</style>
+<script>
+  for (const p of document.querySelectorAll('p')) {
+    console.log(getComputedStyle(p).color);
+  }
+</script>

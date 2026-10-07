@@ -1,0 +1,9 @@
+.badge-warning {
+  background: hsl(60 90% 50%);
+  color: white;
+}
+
+.badge-info {
+  background: hsl(240 90% 50%);
+  color: white;
+}

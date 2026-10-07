@@ -1,0 +1,9 @@
+.badge-warning {
+  background: oklch(85% 0.15 100);
+  color: black;
+}
+
+.badge-info {
+  background: oklch(85% 0.08 262);
+  color: black;
+}

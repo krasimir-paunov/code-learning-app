@@ -1,0 +1,145 @@
+id: css.colors
+version: 1
+title: Color
+summary: Write colours in any notation, build shades in `oklch()`, and check contrast instead of guessing.
+minutes: 6
+tags: [color, hex, rgb, hsl, oklch, color-mix, contrast]
+
+concept:
+  title: One colour, many names, one test
+  body: |
+    `#ff8000`, `rgb(255 128 0)` and `hsl(30 100% 50%)` are the same orange, written as amounts
+    of red, green and blue or as hue, saturation and lightness.
+
+    `oklch(73% 0.19 53)` is lightness, chroma (how colourful) and hue. Its lightness matches
+    what your eye sees: keep L and change the hue, and the colours look equally light. HSL
+    can't promise that, so modern palettes are built in `oklch()`, with shades from
+    `color-mix()`.
+
+    Whatever you write, text must contrast with its background: 4.5:1 for body text, 3:1 for
+    large text and icons.
+  code:
+    caption: A button, its hover shade and muted text
+    tabs:
+      - lang: css
+        file: snippets/colors.css
+
+playground:
+  visualizer: color-lab
+  props:
+    color: '#636363'
+    backgrounds:
+      - { label: Dark card, color: '#111827' }
+      - { label: White page, color: '#ffffff' }
+    hues: [25, 60, 145, 200, 265, 330]
+    hsl: { s: 85, l: 50 }
+    oklch: { l: 0.7, c: 0.12 }
+  prompt: |
+    This grey fails on the dark card. In the `oklch` field, raise the lightness (the first
+    number) from 50% until body text passes. The other three notations follow.
+  explore:
+    - Switch **Same lightness?** from `hsl` to `oklch`. Why does the contrast stop jumping around?
+    - Type a named colour such as `rebeccapurple` into any field.
+
+challenges:
+  - id: fix-muted
+    type: live-code
+    prompt: |
+      "Updated 3 days ago" is too faint to read on the card. Change only the lightness of
+      `.muted` so it reaches 4.5:1, keeping its chroma and hue.
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/card.html, editable: false }
+      style.css: { file: snippets/card.starter.css }
+    solution:
+      index.html: { file: snippets/card.html }
+      style.css: { file: snippets/card.solution.css }
+    tests: { file: snippets/card.test.js }
+    hints:
+      - On a dark background, more contrast means a lighter text colour.
+      - 'The first number in `oklch()` is the lightness. Try steps of 5%.'
+    explanation: |
+      Lightness is what drives contrast. At 65% the text reaches 4.95:1, and it is still
+      the same cool grey because chroma and hue didn't change.
+
+  - id: computed-colors
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      rgb(255, 128, 0)
+      rgb(255, 128, 0)
+      oklch(0.7 0.15 145)
+    choices:
+      - |
+        rgb(255, 128, 0)
+        rgb(255, 128, 0)
+        oklch(0.7 0.15 145)
+      - |
+        #ff8000
+        hsl(30, 100%, 50%)
+        oklch(0.7 0.15 145)
+      - |
+        rgb(255, 128, 0)
+        rgb(255, 128, 0)
+        rgb(91, 182, 97)
+      - |
+        rgb(255, 128, 0)
+        rgb(255, 127, 0)
+        oklch(70% 0.15 145)
+    verify: browser
+    hints:
+      - Do `#ff8000` and `hsl(30 100% 50%)` describe different colours?
+      - '`oklch()` is a different colour space from the other two.'
+    explanation: |
+      Hex and `hsl()` are two ways to write sRGB colours, so the browser stores both as the same
+      `rgb()`. `oklch()` stays in its own space, which can also hold colours that sRGB can't show.
+
+  - id: green-button
+    type: choice
+    prompt: White text on a `oklch(70% 0.15 145)` green button measures 2.52:1. How do you fix it and keep the green?
+    options:
+      - text: Lower the lightness to about 50%
+        correct: true
+        why: '`oklch(50% 0.15 145)` is the same hue, and white text on it reaches 5.62:1.'
+      - text: Raise the chroma to 0.2
+        why: More colourful is not darker; the ratio stays at about 2.5:1.
+      - text: Make the text bold
+        why: Bold 16px text still counts as body text and needs 4.5:1. Only 18.66px bold or 24px counts as large.
+      - text: Add a dark text shadow
+        why: Contrast is measured between the text and its background; a shadow is a workaround, not a fix.
+    explanation: Contrast depends on lightness. In `oklch()` you change exactly that number and nothing else.
+
+production:
+  - title: Palettes in `oklch()`
+    body: |
+      Tailwind CSS 4 defines its default palette in `oklch()`, and many design systems do the
+      same: one lightness scale works across every hue. Hover and active states come from
+      `color-mix()` instead of hand-picked hex values.
+  - title: Check contrast where you pick colours
+    body: |
+      The DevTools colour picker shows the contrast ratio against the background behind the text,
+      with the AA and AAA lines drawn on the colour area. Check there before you commit a colour.
+
+mistake:
+  title: Trusting HSL lightness
+  body: |
+    Both badges use `50%` lightness and white text, so they should look alike. White text is
+    readable on the blue and nearly invisible on the yellow: HSL lightness is maths, not what
+    your eye sees.
+  bad:
+    tabs:
+      - lang: css
+        file: snippets/hsl.bad.css
+  fix: Pick lightness in `oklch()`, then check each pair's contrast.
+  good:
+    tabs:
+      - lang: css
+        file: snippets/hsl.good.css
+
+recap:
+  - 'Hex, `rgb()` and `hsl()` name the same sRGB colours; use whichever your team reads best.'
+  - '`oklch()` lightness matches what eyes see. Build palettes in it and derive shades with `color-mix()`.'
+  - 'Text needs 4.5:1 contrast with its background (3:1 for large text and icons). Measure it.'
+
+related: [css.custom-properties, css.units, css.accessible-styling]
