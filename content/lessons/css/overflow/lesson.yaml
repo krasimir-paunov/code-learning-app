@@ -131,7 +131,7 @@ mistake:
         file: snippets/page.good.css
 
 recap:
-  - '`overflow` handles content that doesn''t fit: `auto` scrolls when needed, `hidden` and `clip` cut it off.'
+  - "`overflow` handles content that doesn't fit: `auto` scrolls when needed, `hidden` and `clip` cut it off."
   - 'An ellipsis needs three declarations: `white-space: nowrap`, `overflow: hidden`, `text-overflow: ellipsis`.'
   - Give wide content its own scroll container; never hide the page's overflow.
 

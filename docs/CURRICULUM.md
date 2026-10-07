@@ -175,9 +175,9 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
 | C2.1 | `css.box-model` | The box model | Core | See content, padding, border, margin; size an element precisely. | — | `box-inspector` | VM, FB, RO, CH | 8 | done |
-| C2.2 | `css.box-sizing` | `box-sizing` | Core | Why every reset uses `border-box`. | ↑ | `box-inspector` (toggle) | PO | 4 | done |
+| C2.2 | `css.box-sizing` | `box-sizing` | Core | Why every reset uses `border-box`. | ↑ | `sizing-lab`: two 50% columns that fit or wrap | PO, VM, CH | 4 | done |
 | C2.3 | `css.margin-collapse` | Margin collapsing | Ext | Predict collapsed vertical margins and how flex/grid avoid it. | ↑ | `box-inspector` (two blocks) | PO | 5 | todo |
-| C2.4 | `css.units` | Units | Core | Choose `rem`, `em`, `%`, `px`, `ch`, `vw`/`dvh` deliberately. | ↑ | `unit-lab`: root font-size and viewport sliders | PO | 7 | done |
+| C2.4 | `css.units` | Units | Core | Choose `rem`, `em`, `%`, `px`, `ch`, `vw`/`dvh` deliberately. | ↑ | `unit-lab`: root font-size and viewport sliders | PO, CH | 7 | done |
 | C2.5 | `css.display` | `display` | Core | Block vs inline vs inline-block; `display: none` vs `visibility: hidden`. | ↑ | `flow-lab`: restyle phrases in a live sentence, measured boxes | PO, VM, CH | 5 | done |
 | C2.6 | `css.overflow` | Overflow | Core | Control overflow; truncate text with an ellipsis. | ↑ | `overflow-lab`: drag-resize a box across overflow modes; declaration switches for an ellipsis | VM, PO, CH | 4 | done |
 
@@ -745,3 +745,6 @@ Changes to the plan above, with the reason. Interactive elements and challenge t
 - C1.1 `css.rules`: `rule-anatomy` (a rule builder) instead of `selector-lab`, so the first CSS lesson is about the rule itself and the browser's silent error handling; `selector-lab` is introduced in C1.2. `find-bug` and `choice` challenges were added.
 - C1.3 `css.pseudo-classes`: `nth-lab` instead of a second `selector-lab` mode: the An+B formula is the hardest part, so it gets its own n-table, and state pseudo-classes are shown on a real button.
 - C1.4 `css.specificity` and C1.5 `css.inheritance`: `find-bug`/`live-code` and `choice` challenges were added to the planned `predict-output`.
+- C2.2 `css.box-sizing`: `sizing-lab` instead of a `box-inspector` toggle: two 50% columns in a fixed row wrap or fit, which shows why the reset exists rather than only what it changes. `visual-match` and `choice` challenges were added.
+- C2.4 `css.units`: two `choice` challenges were added (the user's text-size setting, line length in `ch`).
+- C2.5 `css.display` and C2.6 `css.overflow`: dedicated visualizers (`flow-lab`, `overflow-lab`) instead of the generic live editor, so the learner changes one property and sees measured boxes. Each got a third challenge type (`choice`; `predict-output` for `hidden` vs `clip`).
