@@ -6,7 +6,13 @@ export interface VisualMatchSpec {
   starterCss: string;
   targetCss: string;
   compare: { selectors: string[]; tolerancePx: number; properties: string[] };
-  viewport: { width: number; height: number };
+  /** The page is measured at each size; one for most challenges, up to three for responsive ones. */
+  viewports: Viewport[];
+}
+
+export interface Viewport {
+  width: number;
+  height: number;
 }
 
 /** The learner's CSS. */
@@ -59,6 +65,28 @@ export function compareLayouts(
   };
 }
 
+/**
+ * Merges one comparison per viewport. With several sizes, each detail is labelled with its width
+ * and the feedback names the first width that fails.
+ */
+export function combineViewports(
+  results: { viewport: Viewport; result: GradeResult }[],
+): GradeResult {
+  const only = results[0];
+  if (results.length === 1 && only) return only.result;
+  const details = results.flatMap(({ viewport, result }) =>
+    (result.details ?? []).map((d) => ({ ...d, label: `${viewport.width}px · ${d.label}` })),
+  );
+  const failed = results.find((r) => !r.result.passed);
+  if (!failed) return { passed: true, feedback: 'Matches the target at every width.', details };
+  const passing = results.filter((r) => r.result.passed).length;
+  return {
+    passed: false,
+    feedback: `Matches at ${passing} of ${results.length} widths. At ${failed.viewport.width}px: ${failed.result.feedback}`,
+    details,
+  };
+}
+
 export default defineChallengeType<VisualMatchSpec, VisualMatchAnswer>({
   type: 'visual-match',
   label: 'Match the design',
@@ -67,16 +95,26 @@ export default defineChallengeType<VisualMatchSpec, VisualMatchAnswer>({
     const runner = await ctx.runners.get('web-sandbox');
     if (!runner) return { passed: false, feedback: 'The web sandbox is not available.' };
     const measure = { selectors: spec.compare.selectors, properties: spec.compare.properties };
-    const page = (style: string) => ({
+    const page = (style: string, viewport: Viewport) => ({
       files: { 'index.html': spec.html, 'style.css': style },
       measure,
-      viewport: spec.viewport,
+      viewport,
     });
-    const [target, learner] = await Promise.all([
-      runner.run(page(spec.targetCss)),
-      runner.run(page(css)),
-    ]);
-    return compareLayouts(target.measurements ?? {}, learner.measurements ?? {}, spec.compare);
+    const results = await Promise.all(
+      spec.viewports.map(async (viewport) => {
+        const [target, learner] = await Promise.all([
+          runner.run(page(spec.targetCss, viewport)),
+          runner.run(page(css, viewport)),
+        ]);
+        const result = compareLayouts(
+          target.measurements ?? {},
+          learner.measurements ?? {},
+          spec.compare,
+        );
+        return { viewport, result };
+      }),
+    );
+    return combineViewports(results);
   },
   View: () => import('./View.tsx'),
 });

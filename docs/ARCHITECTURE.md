@@ -614,7 +614,7 @@ Hints, reveal and XP live in the shared `ChallengeShell`, so views only collect 
 | `find-bug` | `code`, `bugLines`, `fix.choices` or `fix.accept`, optional `tests` | Line selection, then fix. With `tests`, the build proves the correct fix passes and every distractor fails. |
 | `reorder` | `items` (correct order), `distractors?`, `alternatives?` (other valid orders) | Order equality against any accepted order. |
 | `live-code` | `runner`, `files` (+ `editable`), `tests`, `solution` | Runs tests in the runner; build proves solution passes and starter fails. |
-| `visual-match` | `html`, `starterCss`, `targetCss`, `compare: { selectors, tolerancePx, properties? }` | Renders learner and target in identical sandboxes; compares element boxes (`getBoundingClientRect`) within tolerance and listed computed styles. No pixel diffs (fonts/antialiasing make them flaky). A ghost overlay shows the target. |
+| `visual-match` | `html`, `starterCss`, `targetCss`, `compare: { selectors, tolerancePx, properties? }`, `viewport?` or `viewports?` (2–3 sizes) | Renders learner and target in identical sandboxes; compares element boxes (`getBoundingClientRect`) within tolerance and listed computed styles. No pixel diffs (fonts/antialiasing make them flaky). A ghost overlay shows the target. With `viewports`, the page must match at every size; a width switch picks the size shown. |
 | `trace` | `visualizer`, `props`, `expect?` | Steps checked against the visualizer's own trace; first wrong step is highlighted. |
 | `choice` | `options: { text, correct?, why }[]`, `multiple?` | Exact set match; each option explains itself. |
 
