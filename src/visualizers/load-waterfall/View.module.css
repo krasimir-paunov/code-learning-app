@@ -1,0 +1,221 @@
+.frame {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.head {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--code-bg);
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.tag {
+  flex: 1 1 16rem;
+  min-inline-size: 0;
+  font-size: var(--fs-code);
+  overflow-wrap: anywhere;
+}
+
+.select {
+  padding: var(--space-1) var(--space-2);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-1);
+  color: var(--text-1);
+  /* Below 16px, iOS Safari zooms the page when the field gets focus. */
+  font-size: var(--fs-base);
+}
+
+.moves {
+  display: inline-flex;
+  gap: var(--space-1);
+
+  & button {
+    display: grid;
+    place-items: center;
+    inline-size: var(--touch-target);
+    block-size: var(--touch-target);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-2);
+    color: var(--text-1);
+    cursor: pointer;
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.35;
+    }
+  }
+
+  & svg {
+    inline-size: 16px;
+    block-size: 16px;
+  }
+}
+
+.chart {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-1);
+}
+
+.lanes {
+  position: relative;
+  display: grid;
+  gap: var(--space-1);
+}
+
+.lane {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-xs);
+}
+
+.laneLabel {
+  overflow: hidden;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.track {
+  position: relative;
+  block-size: 1.25rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+}
+
+.track > span {
+  position: absolute;
+  inset-block: 0;
+  border-radius: var(--radius-sm);
+}
+
+.parse {
+  background: var(--info);
+  opacity: 0.55;
+}
+
+.blocked {
+  background: repeating-linear-gradient(135deg, var(--danger) 0 4px, transparent 4px 8px);
+}
+
+.download {
+  background: var(--text-3);
+  opacity: 0.6;
+
+  &[data-kind='css'] {
+    background: var(--warning);
+  }
+}
+
+.run {
+  background: var(--success);
+}
+
+.markers {
+  position: absolute;
+  inset-block: 0;
+  inset-inline: calc(7.5rem + var(--space-2)) 0;
+  pointer-events: none;
+}
+
+.marker {
+  position: absolute;
+  inset-block: 0;
+  border-inline-start: 2px dashed var(--accent);
+
+  &[data-marker='dcl'] {
+    border-inline-start-color: var(--text-1);
+  }
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin-block-start: var(--space-2);
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+
+  & span::before {
+    content: '';
+    display: inline-block;
+    inline-size: 0.9rem;
+    block-size: 0.6rem;
+    margin-inline-end: var(--space-1);
+    border-radius: 2px;
+    vertical-align: middle;
+  }
+
+  & [data-legend='download']::before {
+    background: var(--text-3);
+  }
+
+  & [data-legend='run']::before {
+    background: var(--success);
+  }
+
+  & [data-legend='blocked']::before {
+    background: var(--danger);
+  }
+
+  & [data-legend='paint']::before {
+    border-inline-start: 2px dashed var(--accent);
+    border-radius: 0;
+    inline-size: 0;
+  }
+
+  & [data-legend='dcl']::before {
+    border-inline-start: 2px dashed var(--text-1);
+    border-radius: 0;
+    inline-size: 0;
+  }
+}
+
+.summary {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  font-size: var(--fs-sm);
+
+  & div {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+
+  & dt {
+    color: var(--text-2);
+  }
+
+  & dd {
+    margin: 0;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+}
+
+.note {
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+}
