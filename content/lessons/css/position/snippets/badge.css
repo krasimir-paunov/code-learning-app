@@ -1,0 +1,14 @@
+.card {
+  position: relative;
+}
+
+.card .badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+}

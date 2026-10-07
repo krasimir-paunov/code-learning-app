@@ -1,0 +1,19 @@
+<div class="panel">
+  <div class="toast">Saved</div>
+</div>
+<style>
+  body {
+    margin: 0;
+  }
+  .panel {
+    margin-top: 100px;
+    transform: translateZ(0);
+  }
+  .toast {
+    position: fixed;
+    top: 0;
+  }
+</style>
+<script>
+  console.log(document.querySelector('.toast').getBoundingClientRect().top);
+</script>

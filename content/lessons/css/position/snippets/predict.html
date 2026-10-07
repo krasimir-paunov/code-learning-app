@@ -1,0 +1,24 @@
+<div class="outer">
+  <div class="inner">
+    <span class="badge"></span>
+  </div>
+</div>
+<style>
+  body {
+    margin: 0;
+  }
+  .outer {
+    position: relative;
+    margin-top: 40px;
+  }
+  .inner {
+    padding-top: 30px;
+  }
+  .badge {
+    position: absolute;
+    top: 10px;
+  }
+</style>
+<script>
+  console.log(document.querySelector('.badge').getBoundingClientRect().top);
+</script>

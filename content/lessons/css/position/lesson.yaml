@@ -1,0 +1,149 @@
+id: css.position
+version: 1
+title: Positioning
+summary: Choose relative, absolute, fixed or sticky, and always know which box the offsets are measured from.
+minutes: 8
+tags: [position, relative, absolute, fixed, sticky, containing block]
+
+concept:
+  title: Where is it measured from?
+  body: |
+    `position` decides what `top`, `right`, `bottom` and `left` do:
+
+    - `static` (the default): in the flow; offsets do nothing.
+    - `relative`: shifts from its own spot, and the space stays reserved. Its other job: it
+      becomes the reference for absolute children.
+    - `absolute`: taken out of the flow and placed against its **containing block**, the
+      nearest positioned ancestor, or else the page.
+    - `fixed`: placed against the viewport, so it stays put while the page scrolls.
+    - `sticky`: scrolls normally, then sticks at its offset while its parent is on screen.
+  code:
+    caption: A corner badge and a sticky header
+    tabs:
+      - lang: css
+        file: snippets/badge.css
+
+playground:
+  visualizer: position-lab
+  props:
+    target: .badge
+    offsets: 'top: 8px; right: 8px;'
+    height: 300
+    ancestors:
+      - { id: card, selector: .card }
+      - { id: section, selector: .section }
+    html: |
+      <section class="section">
+        <h2>Trails near you</h2>
+        <article class="card">
+          <span class="badge">New</span>
+          <h3>Ridgeline loop</h3>
+          <p>12 km over the ridge, with views of three lakes. Start early: the top has no shade.</p>
+          <p>The descent is loose scree, so bring poles.</p>
+        </article>
+        <p class="more">More trails below. Scroll down…</p>
+        <div class="filler"></div>
+      </section>
+    css: |
+      .section { margin: 12px; padding: 12px 16px; background: #eef1f5; }
+      .section h2 { margin: 0 0 8px; font-size: 18px; }
+      .card { padding: 4px 16px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
+      .card h3 { margin: 8px 0 0; }
+      .badge { padding: 2px 8px; border-radius: 999px; background: #c2410c; color: #fff; font-size: 12px; font-weight: 700; }
+      .filler { height: 500px; }
+  prompt: |
+    Set the badge to `absolute`. With no positioned ancestor it jumps to the corner of the whole
+    page. Now give `.card` `position: relative`.
+  explore:
+    - Try `fixed` and scroll inside the page. Then switch on the transform on `.card`.
+    - Try `sticky` and scroll. Why does it stop where the card ends?
+
+challenges:
+  - id: corner-badge
+    type: visual-match
+    prompt: Pin the "New" badge 8px from the top-right corner of the card, on top of its content.
+    html: { file: snippets/corner.html }
+    starterCss: { file: snippets/corner.starter.css }
+    targetCss: { file: snippets/corner.target.css }
+    compare:
+      selectors: [.badge, .card]
+      tolerancePx: 1
+    viewport: { width: 340, height: 220 }
+    hints:
+      - 'The badge needs `position: absolute` with `top` and `right`.'
+      - Absolute against what? The card has to become its containing block.
+    explanation: "`position: relative` on the card makes it the containing block, so `top: 8px; right: 8px` on the absolute badge are measured from the card's corner."
+
+  - id: nearest-positioned
+    type: predict-output
+    prompt: The page has no margin. What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: '50'
+    choices: ['50', '80', '10', '40']
+    verify: browser
+    hints:
+      - "`.inner` isn't positioned. Which ancestor is?"
+      - Offsets are measured from the containing block's padding edge, not from its content.
+    explanation: |
+      The nearest positioned ancestor is `.outer`, which starts 40px down. The badge sits 10px
+      below its top edge: 50px. The padding on `.inner` doesn't matter; `.inner` isn't the
+      containing block.
+
+  - id: sticky-not-sticking
+    type: choice
+    prompt: "`position: sticky` on a table header does nothing at all. What's most likely missing?"
+    options:
+      - text: 'An offset, such as `top: 0`'
+        correct: true
+        why: Sticky needs to know where to stick; without an offset it behaves like relative.
+      - text: '`z-index`'
+        why: That controls what paints on top, not whether it sticks.
+      - text: '`position: relative` on the table'
+        why: Sticky doesn't use a positioned ancestor; it sticks inside the nearest scrolling box.
+      - text: '`display: block` on the header'
+        why: Table cells can be sticky as they are.
+    explanation: Sticky needs an offset. The other usual culprit is an ancestor with `overflow` set, which becomes the box it sticks inside.
+
+production:
+  - title: A transform traps fixed elements
+    body: |
+      A `transform` on any ancestor makes that ancestor the containing block for `fixed`
+      descendants. A "fixed" toast inside an animated panel then moves with the panel.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/trap.html
+          output: '100'
+          verify: browser
+  - title: Sticky table headers
+    body: 'Long tables keep their header row visible with `position: sticky` on the header cells.'
+    code:
+      tabs:
+        - lang: css
+          file: snippets/sticky-th.css
+
+mistake:
+  title: An absolute badge with no positioned parent
+  body: |
+    The badge is meant for the card's corner, but nothing up the tree is positioned, so it is
+    measured from the page instead: 8px from the top of the page, far from its card.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/corner.bad.html
+        output: '8'
+        verify: browser
+  fix: 'Give the card `position: relative`, which makes it the containing block.'
+  good:
+    tabs:
+      - lang: html
+        file: snippets/corner.good.html
+        output: '48'
+        verify: browser
+
+recap:
+  - 'relative shifts in place; absolute is placed against its containing block; fixed against the viewport; sticky sticks while scrolling.'
+  - "An absolute element's containing block is its nearest positioned ancestor, so put `position: relative` on the parent."
+  - Absolute and fixed leave the flow; the content around them closes up.
+
+related: [css.stacking, css.box-model, css.overflow]

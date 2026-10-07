@@ -1,0 +1,19 @@
+<article class="card"><span class="badge">New</span></article>
+<style>
+  body {
+    margin: 0;
+  }
+  .card {
+    position: relative;
+    margin-top: 40px;
+    height: 100px;
+  }
+  .badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+</style>
+<script>
+  console.log(document.querySelector('.badge').getBoundingClientRect().top);
+</script>

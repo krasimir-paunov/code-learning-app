@@ -1,0 +1,11 @@
+.card {
+  width: 260px;
+  margin: 20px;
+  padding: 16px;
+  border: 1px solid #5d6e87;
+}
+.badge {
+  padding: 2px 8px;
+  background: #c2410c;
+  color: #fff;
+}
