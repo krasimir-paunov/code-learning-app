@@ -1,0 +1,132 @@
+.frame {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: end;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--touch-target);
+  padding: 0 var(--space-3);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+
+  & svg {
+    inline-size: 16px;
+    block-size: 16px;
+  }
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+@container (min-width: 720px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.stage {
+  overflow: hidden;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.title {
+  font-size: var(--fs-base);
+  font-weight: 700;
+}
+
+.issues {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  & > li {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-3);
+    border: var(--border-width) solid var(--border);
+    border-inline-start: 3px solid var(--warning);
+    border-radius: var(--radius-md);
+    background: var(--bg-2);
+    font-size: var(--fs-sm);
+  }
+
+  & > li[data-ok] {
+    border-inline-start-color: var(--success);
+  }
+}
+
+.issue {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--touch-target);
+  cursor: pointer;
+
+  & input {
+    flex: none;
+    accent-color: var(--accent);
+  }
+}
+
+.fixLabel {
+  color: var(--text-2);
+}
+
+.finding {
+  display: flex;
+  gap: var(--space-2);
+  color: var(--text-2);
+
+  & svg {
+    flex: none;
+    inline-size: 16px;
+    block-size: 16px;
+    margin-block-start: 2px;
+  }
+}
+
+[data-ok] .finding svg {
+  color: var(--success);
+}
+
+li:not([data-ok]) .finding svg {
+  color: var(--warning);
+}
+
+.code {
+  margin: 0;
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--code-bg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-code);
+  white-space: pre-wrap;
+}
