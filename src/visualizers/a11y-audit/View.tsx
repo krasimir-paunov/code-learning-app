@@ -83,18 +83,20 @@ export default function A11yAuditView({ props }: VisualizerViewProps<A11yAuditPr
       </div>
 
       <div className={styles.layout}>
-        <ShadowStage
-          html={`<div class="page">${props.html}</div>`}
-          css={css}
-          className={styles.stage}
-          label="The page"
-          noNavigation
-          onRender={(r) => {
-            setRoot((c) => (c === r ? c : r));
-            const next = audit(r, props.issues);
-            setFindings((f) => (JSON.stringify(f) === JSON.stringify(next) ? f : next));
-          }}
-        />
+        {/* The page fails on purpose until the learner fixes it. */}
+        <div data-a11y-demo className={styles.stage}>
+          <ShadowStage
+            html={`<div class="page">${props.html}</div>`}
+            css={css}
+            label="The page"
+            noNavigation
+            onRender={(r) => {
+              setRoot((c) => (c === r ? c : r));
+              const next = audit(r, props.issues);
+              setFindings((f) => (JSON.stringify(f) === JSON.stringify(next) ? f : next));
+            }}
+          />
+        </div>
 
         <section className={styles.panel} aria-label="Audit">
           <h3 className={styles.title}>Audit</h3>
