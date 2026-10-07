@@ -1,0 +1,142 @@
+id: css.typography
+version: 1
+title: Typography
+summary: Choose a font stack, set line-height that scales, and make headings grow with the screen without ignoring the reader.
+minutes: 7
+tags: [font-family, line-height, clamp, fluid type, ch, web fonts]
+
+concept:
+  title: Type is a few decisions
+  body: |
+    - `font-family` is a list: your web font, fallbacks, then a generic family such as
+      `sans-serif`. The browser uses the first one it has.
+    - `line-height: 1.5` without a unit is a multiplier: every element applies it to its own
+      font-size. With a unit, one fixed height is inherited by big headings too.
+    - `max-width: 65ch` keeps lines short enough to read.
+    - `clamp(1.75rem, 1rem + 3vw, 3rem)` grows with the screen between a minimum and a maximum.
+      The `rem` part keeps it following the reader's text-size setting.
+  code:
+    caption: A body text setup and a fluid heading
+    tabs:
+      - lang: css
+        file: snippets/type.css
+
+playground:
+  visualizer: type-lab
+  props:
+    presets: ['4vw', 'clamp(1.75rem, 1rem + 3vw, 3rem)', '2rem']
+    heading: Trail report
+    viewport: 1280
+    lineHeights: ['1.5', '24px']
+    article: |
+      <article>
+        <h2>Ridgeline loop reopens after the spring storms</h2>
+        <p>The trail climbs 600 metres through pine forest before it opens onto the ridge.</p>
+      </article>
+  prompt: |
+    `4vw` follows only the screen. Drag across the graph from phone to desktop and watch the
+    heading. Then pick the `clamp()` preset and drag again.
+  explore:
+    - 'With `4vw`, switch **Browser text size** to 24px. Does the heading grow? Now try the `clamp()` preset.'
+    - 'In the article, switch `line-height` to `24px`. What happens to the heading''s two lines?'
+
+challenges:
+  - id: inherited-line-height
+    type: predict-output
+    prompt: Each article sets `line-height` differently. What does this print for the 32px headings?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      48px
+      24px
+      24px
+    choices:
+      - |
+        48px
+        24px
+        24px
+      - |
+        48px
+        24px
+        48px
+      - |
+        24px
+        24px
+        24px
+      - |
+        48px
+        48px
+        48px
+    verify: browser
+    hints:
+      - A unitless number is inherited as a number; each element multiplies its own font-size.
+      - A percentage is turned into pixels on the element that sets it, using that element's font-size.
+    explanation: |
+      `1.5` is inherited as 1.5, so the heading gets 1.5 × 32 = 48px. `24px` is inherited as is.
+      `150%` is resolved on the article first (150% of 16px = 24px), and the heading inherits
+      that 24px: the same trap as a fixed length.
+
+  - id: readable-measure
+    type: visual-match
+    prompt: This article sits in a narrow column. Keep its lines to about 45 characters, whatever the font size, and give the body text room between lines (line-height 1.6).
+    html: { file: snippets/article.html }
+    starterCss: { file: snippets/article.starter.css }
+    targetCss: { file: snippets/article.target.css }
+    compare:
+      selectors: [.body]
+      tolerancePx: 1
+    viewport: { width: 640, height: 400 }
+    hints:
+      - Which unit is the width of one character?
+      - '`max-width` in `ch`, and a unitless `line-height`.'
+    explanation: '`max-width: 45ch` measures in characters of the current font, so the line length stays right even when the text size changes.'
+
+  - id: why-clamp
+    type: choice
+    prompt: 'A designer wants the hero heading to scale with the screen. Why write `clamp(2rem, 1rem + 4vw, 4rem)` instead of `font-size: 6vw`?'
+    options:
+      - text: '`vw` alone ignores the reader''s text size and has no limits; the clamp keeps a `rem` part and a floor and ceiling.'
+        correct: true
+        why: Someone who sets larger text still gets a larger heading, and it never shrinks to unreadable on phones or explodes on wide screens.
+      - text: '`vw` units are not supported for `font-size`.'
+        why: They are supported everywhere; the problem is how they behave.
+      - text: '`clamp()` makes the heading load faster.'
+        why: Both are computed instantly; this is about readability and accessibility.
+      - text: '`6vw` would be too small on wide screens.'
+        why: The opposite; 6vw is 115px on a 1920px screen.
+    explanation: Fluid type mixes `rem` (the reader) with `vw` (the screen) and limits both ends with `clamp()`.
+
+production:
+  - title: Loading a web font
+    body: |
+      Serve `woff2`, and set `font-display: swap` so text shows in a fallback font while the web
+      font loads instead of staying invisible. One variable font file can cover every weight.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/font-face.css
+  - title: Or no web font at all
+    body: |
+      Many apps use `system-ui` for interface text: it is the operating system's own font, costs
+      no download and looks native on every device.
+
+mistake:
+  title: A font stack without a generic family
+  body: |
+    If Inter fails to load, or while it is still loading, the browser falls back to its default
+    font, usually a serif such as Times New Roman, so the page suddenly looks like a 1998 document.
+  bad:
+    tabs:
+      - lang: css
+        file: snippets/stack.bad.css
+  fix: End every stack with fallbacks and a generic family.
+  good:
+    tabs:
+      - lang: css
+        file: snippets/stack.good.css
+
+recap:
+  - 'End every `font-family` with a generic family; the browser uses the first font it has.'
+  - 'Use unitless `line-height` (1.5 for body text) and `max-width` in `ch` for readable lines.'
+  - 'Fluid sizes: `clamp(min, rem + vw, max)`, so headings follow both the screen and the reader.'
+
+related: [css.units, css.custom-properties, css.surfaces]

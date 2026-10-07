@@ -1,0 +1,25 @@
+<article class="a"><h2>A</h2></article>
+<article class="b"><h2>B</h2></article>
+<article class="c"><h2>C</h2></article>
+<style>
+  article {
+    font-size: 16px;
+  }
+  h2 {
+    font-size: 32px;
+  }
+  .a {
+    line-height: 1.5;
+  }
+  .b {
+    line-height: 24px;
+  }
+  .c {
+    line-height: 150%;
+  }
+</style>
+<script>
+  for (const h2 of document.querySelectorAll('h2')) {
+    console.log(getComputedStyle(h2).lineHeight);
+  }
+</script>
