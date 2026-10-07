@@ -740,7 +740,8 @@ sections:
         legacy: false                    # true → shown with a "legacy, still common" marker
 ```
 
-- Any entry that states a result must be checkable (`output` + optional hidden `check`); the same verifier as lessons runs it.
+- Any entry that states a result must be checkable (`output` + optional hidden `check`); the same verifier as lessons runs it. A CSS entry's `check` is an HTML page with a script; the entry's stylesheet is applied to it.
+- Every CSS and HTML entry also gets a static check in Chromium (`tools/verify/static-check.ts`): every declaration passes `CSS.supports`, every selector parses, every media feature is known, and every element is one the HTML parser knows. Browsers drop what they don't understand silently, so this catches typos that print nothing.
 - The Algorithms sheet uses a `table` entry kind (structure × operation → Big O, with notes) instead of snippets.
 - **Learn links** are validated at build time and rendered only when the target lesson is **published**; for planned lessons the link is hidden.
 - **Search:** one MiniSearch index over all sheets (title, explanation, code tokens, tags), built when the Cheat Sheets route loads. Prefix + fuzzy matching, results grouped by track. Filter chips for usage tag. `/` focuses the search box.
@@ -759,6 +760,8 @@ sections:
 | C# (`verify: dotnet`) | `dotnet run <file>.cs` (.NET 10 file-based apps; `#:package` / `#:sdk Microsoft.NET.Sdk.Web` directives for package and ASP.NET Core samples). Samples that only need to compile (e.g. an endpoint) declare `verify: dotnet-build`. |
 | TypeScript (`verify: tsc`) | Type-check with the TypeScript compiler (`strict`); a snippet may declare `expectErrors` (code + message) so the exact diagnostics shown to learners are the compiler's own. Runs with `verify: node` too when it also claims output. |
 | Challenges | `find-bug` fixes, `live-code` solutions/starters and `trace` expectations proven by the type's `buildCheck`. |
+| Playgrounds | A visualizer may declare `buildCheck` for its props (e.g. `responsive-checker` proves its reference solution meets every check and its starter doesn't). |
+| Cheat-sheet CSS/HTML | Static check in Chromium (see §10), plus `output` claims where an entry states a result. |
 | `verify: none` | Requires a `why` (e.g. "pseudo-output of a simulated HTTP request") and is listed in a report for human review. |
 
 Results are cached by content hash (`.cache/verify.json`) so local runs only execute changed snippets; CI restores the cache from `main` for PRs and runs everything on a nightly schedule.

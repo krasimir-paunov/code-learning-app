@@ -9,6 +9,7 @@ import type { SkillManifest } from '../../src/engine/skilltree/types.ts';
 import type { Highlighter } from './highlight.ts';
 import { CONTENT_DIR, formatZodIssues, relative, type ContentIssue } from './load.ts';
 import type { MarkdownRenderer } from './markdown.ts';
+import { STATIC_OK, staticCheckPage } from '../verify/static-check.ts';
 
 export interface SheetBuild {
   file: string;
@@ -104,13 +105,34 @@ export function compileSheets(
         }
         const verify = entry.verify;
         const buildOnly = verify === 'dotnet-build' || verify === 'tsc';
+        const { inline, lang } = entry.code;
         if (verify && verify !== 'none' && (entry.output !== undefined || buildOnly)) {
+          // CSS can't print: its `check` is a page that the stylesheet is applied to.
+          claims.push(
+            lang === 'css'
+              ? {
+                  code: `<style>\n${inline}\n</style>\n${entry.check ?? ''}`,
+                  lang: 'html',
+                  verify,
+                  expected: entry.output ?? '',
+                  where,
+                }
+              : {
+                  code: entry.check ? `${inline}\n${entry.check}` : inline,
+                  lang,
+                  verify,
+                  expected: entry.output ?? '',
+                  where,
+                },
+          );
+        }
+        if ((lang === 'css' || lang === 'html') && verify !== 'none') {
           claims.push({
-            code: entry.check ? `${entry.code.inline}\n${entry.check}` : entry.code.inline,
-            lang: entry.code.lang,
-            verify,
-            expected: entry.output ?? '',
-            where,
+            code: staticCheckPage(inline, lang),
+            lang: 'html',
+            verify: 'browser',
+            expected: STATIC_OK,
+            where: `${where} (static check)`,
           });
         }
         return {
