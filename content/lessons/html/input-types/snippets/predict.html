@@ -1,0 +1,9 @@
+<input type="number" id="qty" value="2">
+<input type="email" id="email" value="ana(at)example.com">
+<script>
+  const qty = document.querySelector('#qty');
+  const email = document.querySelector('#email');
+  console.log(qty.value + 1);
+  console.log(qty.valueAsNumber + 1);
+  console.log(email.validity.typeMismatch);
+</script>

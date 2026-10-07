@@ -1,0 +1,189 @@
+id: html.input-types
+version: 1
+title: Input types
+summary: Choose the input type that brings the right keyboard, checks and autofill, and keep codes out of type=number.
+minutes: 6
+tags: [input, type, inputmode, autocomplete, mobile]
+
+concept:
+  title: The type decides the keyboard, the checks and the value
+  body: |
+    The `type` of an input changes three things:
+
+    - **the phone keyboard**: `email` adds @, `tel` shows a keypad, `number` shows digits;
+    - **the checks**: `email` and `url` reject badly formed values, `number` respects `min`
+      and `max`;
+    - **the controls**: `date` opens a date picker, `checkbox` toggles.
+
+    `inputmode` changes only the keyboard. `autocomplete` tells the browser and password
+    manager what to fill in (`email`, `tel`, `one-time-code`).
+
+    `type="number"` is for quantities you count. Phone numbers, codes and card numbers are
+    digits, not quantities.
+  code:
+    caption: Three common fields done right
+    tabs:
+      - lang: html
+        file: snippets/types.html
+
+playground:
+  visualizer: input-gallery
+  props:
+    needs:
+      - label: Email address
+        name: email
+        best: { type: email, autocomplete: email }
+        why: The phone shows @ and . keys, the browser checks the format, and autofill offers the user's address.
+        pitfalls:
+          text: Any text is accepted, nothing checks the format, and the phone shows no @ key.
+      - label: Phone number
+        name: phone
+        best: { type: tel, autocomplete: tel }
+        why: A phone keypad, and autofill offers the user's number. Formats differ by country, so the browser doesn't check them.
+        pitfalls:
+          number: A phone number isn't a quantity. A leading + makes the value invalid, and spin buttons appear that add or subtract 1.
+      - label: Code from an SMS
+        name: code
+        best: { type: text, inputmode: numeric, autocomplete: one-time-code }
+        why: 'Digits only on the keyboard, and Safari on iPhone offers the code from the SMS just received. It stays text, so a leading 0 is kept.'
+        pitfalls:
+          number: A code isn't a quantity. Its number value drops leading zeros, and spin buttons appear.
+      - label: Number of tickets
+        name: tickets
+        best: { type: number, attrs: 'min="1" max="8"' }
+        why: A real quantity. The keyboard shows digits, and the browser checks min and max for you.
+      - label: Date of the hike
+        name: date
+        best: { type: date }
+        why: 'A date picker on every platform, and the value is always YYYY-MM-DD, whatever format the user reads.'
+        pitfalls:
+          text: 'People type dates in many formats. Is 07/10 July or October?'
+      - label: Your website
+        name: website
+        best: { type: url, autocomplete: url }
+        why: The keyboard has / and .com keys, and the browser checks that the value is a full URL.
+      - label: Your password
+        name: password
+        best: { type: password, autocomplete: current-password }
+        why: Hidden while typing, and password managers know to fill in the saved password.
+        pitfalls:
+          text: The password shows on screen for anyone looking over the user's shoulder.
+      - label: Accept the terms
+        name: terms
+        best: { type: checkbox }
+        why: A yes-or-no choice. There is nothing to type.
+  prompt: |
+    Pick **Phone number**, then try `text`, `number` and `tel`. Watch the phone keyboard change
+    and read why only one of them fits.
+  explore:
+    - Pick **Code from an SMS** and choose `number`. Why is it not the best fit, although a code is all digits?
+    - Pick **Date of the hike** and choose `date`, then click the field.
+
+challenges:
+  - id: checkout-contact
+    type: live-code
+    prompt: |
+      Fix the checkout's contact fields: email and phone should use the right types, and all
+      three fields should tell autofill what they hold.
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/contact.starter.html }
+    solution:
+      index.html: { file: snippets/contact.solution.html }
+    tests: { file: snippets/contact.test.js }
+    hints:
+      - '`type="email"` and `type="tel"`.'
+      - 'The autocomplete values are `name`, `email` and `tel`.'
+    explanation: |
+      Phones now show the right keyboards, the email is checked before the form is sent, and
+      autofill can complete all three fields in one tap.
+
+  - id: values-are-strings
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      21
+      3
+      true
+    choices:
+      - |
+        21
+        3
+        true
+      - |
+        3
+        3
+        true
+      - |
+        21
+        3
+        false
+      - |
+        3
+        21
+        false
+    verify: browser
+    hints:
+      - What type is `value`, for every kind of input?
+      - '`(at)` is not an `@`.'
+    explanation: |
+      `value` is always a string, so `"2" + 1` is `"21"`. Number inputs also have `valueAsNumber`,
+      which is a real number. The email has no `@`, so `typeMismatch` is `true`.
+
+  - id: sms-code
+    type: choice
+    prompt: A login asks for the 6-digit code sent by SMS. Which input fits best?
+    options:
+      - text: '`<input type="text" inputmode="numeric" autocomplete="one-time-code">`'
+        correct: true
+        why: Digits on the keyboard, a code kept as text (leading zeros survive), and the phone can offer the code from the SMS.
+      - text: '`<input type="number">`'
+        why: A code isn't a quantity; the input adds spin buttons and its number value drops leading zeros.
+      - text: '`<input type="tel">`'
+        why: The keypad works, but it means phone number, so autofill may offer the user's phone number instead.
+      - text: '`<input type="password">`'
+        why: Hiding a short-lived code only makes it harder to type correctly.
+    explanation: Use `type` for what the value *is*, `inputmode` for the keyboard you want, and `autocomplete` for what to fill in.
+
+production:
+  - title: Autofill does most of the typing
+    body: |
+      Address and payment forms that use the standard `autocomplete` values fill in completely
+      with one tap. Password managers rely on `current-password` and `new-password`.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/autofill.html
+  - title: Label the Enter key
+    body: '`enterkeyhint` changes the label of the Enter key on phone keyboards: Search, Send, Next or Done.'
+    code:
+      tabs:
+        - lang: html
+          file: snippets/enterkeyhint.html
+
+mistake:
+  title: '`type="number"` for a card number'
+  body: |
+    A 19-digit card number is too big for a JavaScript number, so the number value is quietly
+    rounded. The field also gets spin buttons that add or subtract 1.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/card.bad.html
+        output: '6011000990139424000'
+        verify: browser
+  fix: Keep digit strings as text, with `inputmode="numeric"` for the keyboard.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/card.good.html
+        output: '6011000990139424123'
+        verify: browser
+
+recap:
+  - '`type` picks the keyboard, the built-in checks and the control; `inputmode` only the keyboard.'
+  - '`autocomplete` tells autofill and password managers what a field holds.'
+  - '`type="number"` is for quantities; codes, phones and card numbers stay text.'
+
+related: [html.form-basics, html.validation, html.select-textarea-fieldset]
