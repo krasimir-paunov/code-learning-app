@@ -1,0 +1,128 @@
+.frame {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.stage {
+  padding: var(--space-3);
+  overflow-x: hidden;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-1);
+}
+
+.summary {
+  font-size: var(--fs-sm);
+}
+
+.items {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+}
+
+.itemHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+
+.swatch {
+  flex: none;
+  inline-size: 14px;
+  block-size: 14px;
+  border-radius: var(--radius-sm);
+}
+
+.name {
+  overflow-wrap: anywhere;
+  font-weight: 700;
+}
+
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  align-items: center;
+  font-size: var(--fs-sm);
+}
+
+.field {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  & input {
+    inline-size: 5rem;
+    padding: var(--space-1) var(--space-2);
+    border: var(--border-width) solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg-1);
+    color: var(--text-1);
+    /* Below 16px, iOS Safari zooms the page when the field gets focus. */
+    font-size: var(--fs-base);
+    color-scheme: dark;
+  }
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--touch-target);
+
+  & input {
+    accent-color: var(--accent);
+  }
+}
+
+.bar {
+  display: flex;
+  block-size: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-1);
+}
+
+.basis {
+  background: var(--text-3);
+}
+
+.grew {
+  background: var(--success);
+}
+
+.held {
+  background: var(--warning);
+}
+
+.shrank {
+  background: repeating-linear-gradient(135deg, var(--danger) 0 3px, transparent 3px 6px);
+}
+
+.math {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.clamped {
+  color: var(--warning);
+  font-family: var(--font-body);
+}
+
+.browser {
+  color: var(--text-2);
+  font-family: var(--font-body);
+}
