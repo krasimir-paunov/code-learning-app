@@ -8,106 +8,638 @@ sections:
       - id: html.sheet.skeleton
         title: Page skeleton
         code:
-          {
-            lang: html,
-            inline: "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    <title>Page title</title>\n  </head>\n  <body></body>\n</html>",
-          }
+          lang: html
+          inline: |-
+            <!doctype html>
+            <html lang="en">
+              <head>
+                <meta charset="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <title>Page title</title>
+              </head>
+              <body></body>
+            </html>
         explain: '`lang` sets pronunciation for screen readers; the viewport line makes phones use the real width.'
         usage: daily
         learn: html.document-skeleton
+      - id: html.sheet.element-anatomy
+        title: Element, tag, attribute
+        code:
+          lang: html
+          inline: |-
+            <a href="/pricing" class="nav-link">Pricing</a>
+            <!-- start tag, attributes, content, end tag -->
+            <img src="logo.svg" alt="Trailhead" />
+            <!-- void element: no content, no end tag -->
+        explain: An element is the start tag, its content and the end tag. Void elements such as `img`, `input` and `br` have no end tag.
+        usage: daily
+        learn: html.what-is-html
       - id: html.sheet.landmarks
         title: Page landmarks
         code:
-          {
-            lang: html,
-            inline: "<header>…</header>\n<nav aria-label=\"Main\">…</nav>\n<main>…</main>\n<aside>…</aside>\n<footer>…</footer>",
-          }
+          lang: html
+          inline: |-
+            <header>…</header>
+            <nav aria-label="Main">…</nav>
+            <main>…</main>
+            <aside>…</aside>
+            <footer>…</footer>
         explain: Landmarks let assistive technology jump straight to each region. Use one `main` per page.
         usage: daily
+        learn: html.landmarks
+      - id: html.sheet.article-section
+        title: Article or section?
+        code:
+          lang: html
+          inline: |-
+            <article>
+              <h2>Ten quiet trails near Sofia</h2>
+              <section>
+                <h3>Vitosha</h3>
+              </section>
+            </article>
+        explain: '`article` makes sense on its own (a post, a product card); `section` is a themed part of something, usually with a heading.'
+        usage: common
         learn: html.landmarks
       - id: html.sheet.headings
         title: Heading outline
         code:
-          {
-            lang: html,
-            inline: "<h1>Recipes</h1>\n<h2>Breakfast</h2>\n<h3>Pancakes</h3>\n<h2>Dinner</h2>",
-          }
+          lang: html
+          inline: |-
+            <h1>Recipes</h1>
+            <h2>Breakfast</h2>
+            <h3>Pancakes</h3>
+            <h2>Dinner</h2>
         explain: One `h1`, then levels in order without skipping. Pick the level by structure, not size.
         usage: daily
         learn: html.headings-paragraphs
-  - id: content
-    title: Content
-    entries:
-      - id: html.sheet.img
-        title: Images without layout shift
+      - id: html.sheet.div-span
+        title: Containers with no meaning
         code:
-          {
-            lang: html,
-            inline: '<img src="chart.png" alt="Sales doubled from 2024 to 2025" width="640" height="360" loading="lazy" />',
-          }
-        explain: '`alt` says what the image means (use `alt=""` for decoration); width and height reserve space.'
+          lang: html
+          inline: |-
+            <div class="card-grid">…</div>
+            <p>Total: <span class="price">$129</span></p>
+        explain: '`div` (block) and `span` (inline) are styling hooks only. Reach for them after every semantic element has been ruled out.'
         usage: daily
-        learn: html.images
+        learn: html.div-span
+      - id: html.sheet.meta-description
+        title: Search and share metadata
+        code:
+          lang: html
+          inline: |-
+            <title>Trail maps for Bulgaria | Trailhead</title>
+            <meta name="description" content="Offline maps and routes for 4,000 hikes." />
+            <link rel="canonical" href="https://example.com/trails" />
+            <meta property="og:title" content="Trail maps for Bulgaria" />
+            <meta property="og:image" content="https://example.com/og/trails.png" />
+        explain: The title and description appear in search results; `canonical` names the one true URL; Open Graph tags shape link previews.
+        usage: common
+        learn: html.meta-seo
+  - id: text
+    title: Text
+    entries:
+      - id: html.sheet.strong-em
+        title: Importance and emphasis
+        code:
+          lang: html
+          inline: |-
+            <p><strong>Warning:</strong> the trail closes at dusk.</p>
+            <p>You <em>must</em> carry water.</p>
+        explain: '`strong` marks importance, `em` stress that changes the meaning. Use CSS, not these, when you only want bold or italic.'
+        usage: daily
+        learn: html.text-semantics
+      - id: html.sheet.time
+        title: Machine-readable dates
+        code:
+          lang: html
+          inline: <p>Updated <time datetime="2026-10-07">7 October</time></p>
+        explain: '`datetime` gives software an exact date while people read a friendly one.'
+        usage: common
+        learn: html.text-semantics
+      - id: html.sheet.code-kbd
+        title: Code, keys and abbreviations
+        code:
+          lang: html
+          inline: |-
+            <p>Run <code>npm test</code>, then press <kbd>Ctrl</kbd>+<kbd>C</kbd>.</p>
+            <pre><code>const total = 42;</code></pre>
+            <p><abbr title="Cascading Style Sheets">CSS</abbr> styles the page.</p>
+        explain: '`code` for inline code, `pre` keeps whitespace for blocks, `kbd` for keys. `abbr` with `title` expands an abbreviation.'
+        usage: common
+        learn: html.text-semantics
+      - id: html.sheet.nested-list
+        title: Navigation as a nested list
+        code:
+          lang: html
+          inline: |-
+            <nav aria-label="Main">
+              <ul>
+                <li><a href="/">Home</a></li>
+                <li>
+                  <a href="/trails">Trails</a>
+                  <ul>
+                    <li><a href="/trails/rila">Rila</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+        explain: A nested list goes inside an `li`, never directly inside a `ul`. Screen readers announce how many items each level has.
+        usage: daily
+        learn: html.lists
+      - id: html.sheet.ordered-list
+        title: Steps in order
+        code:
+          lang: html
+          inline: |-
+            <ol>
+              <li>Download the map</li>
+              <li>Turn on location</li>
+            </ol>
+        explain: Use `ol` when order matters; `start` and `reversed` change the numbering.
+        usage: common
+        learn: html.lists
+      - id: html.sheet.description-list
+        title: Term and description pairs
+        code:
+          lang: html
+          inline: |-
+            <dl>
+              <dt>Distance</dt>
+              <dd>12 km</dd>
+              <dt>Ascent</dt>
+              <dd>840 m</dd>
+            </dl>
+        explain: '`dl` suits glossaries, specs and key–value details.'
+        usage: rare
+        learn: html.lists
+  - id: links-media
+    title: Links, images and media
+    entries:
       - id: html.sheet.link-new-tab
         title: External link
         code:
-          {
-            lang: html,
-            inline: '<a href="https://example.com" target="_blank">Docs (opens in a new tab)</a>',
-          }
+          lang: html
+          inline: <a href="https://example.com" target="_blank">Docs (opens in a new tab)</a>
         explain: '`target="_blank"` implies `rel="noopener"` in modern browsers. Say that it opens a new tab.'
         usage: common
         learn: html.links
+      - id: html.sheet.link-kinds
+        title: Fragment, email and download links
+        code:
+          lang: html
+          inline: |-
+            <a href="#pricing">Jump to pricing</a>
+            <a href="mailto:help@example.com">Email us</a>
+            <a href="/maps/rila.gpx" download>Download the route</a>
+        explain: '`#id` scrolls to the element with that id; `mailto:` opens an email app; `download` saves instead of opening (same origin only).'
+        usage: common
+        learn: html.links
+      - id: html.sheet.relative-urls
+        title: How relative URLs resolve
+        code:
+          lang: js
+          inline: |-
+            const page = 'https://example.com/blog/post/';
+            console.log(new URL('img/a.png', page).href);
+            console.log(new URL('../img/a.png', page).href);
+            console.log(new URL('/img/a.png', page).href);
+        output: |
+          https://example.com/blog/post/img/a.png
+          https://example.com/blog/img/a.png
+          https://example.com/img/a.png
+        verify: node
+        explain: 'No prefix: next to the page. `../`: one folder up. `/`: from the site root. Browsers resolve `href` and `src` the same way.'
+        usage: daily
+        learn: html.urls-paths
+      - id: html.sheet.img
+        title: Images without layout shift
+        code:
+          lang: html
+          inline: <img src="chart.png" alt="Sales doubled from 2024 to 2025" width="640" height="360" loading="lazy" />
+        explain: '`alt` says what the image means (use `alt=""` for decoration); width and height reserve space.'
+        usage: daily
+        learn: html.images
+      - id: html.sheet.srcset
+        title: Let the browser pick the file size
+        code:
+          lang: html
+          inline: |-
+            <img
+              src="trail-800.jpg"
+              srcset="trail-480.jpg 480w, trail-800.jpg 800w, trail-1600.jpg 1600w"
+              sizes="(min-width: 960px) 50vw, 100vw"
+              alt="Lake below the ridge"
+              width="1600"
+              height="900"
+            />
+        explain: '`srcset` lists the files and their widths; `sizes` says how wide the image is shown. The browser downloads the smallest file that is sharp enough.'
+        usage: common
+        learn: html.responsive-images
+      - id: html.sheet.picture
+        title: Different crops or formats
+        code:
+          lang: html
+          inline: |-
+            <picture>
+              <source media="(min-width: 960px)" srcset="hero-wide.avif" type="image/avif" />
+              <source srcset="hero-tall.avif" type="image/avif" />
+              <img src="hero-tall.jpg" alt="Hikers on the ridge" width="800" height="1000" />
+            </picture>
+        explain: The first matching `source` wins; the `img` is the fallback and carries `alt`.
+        usage: rare
+        learn: html.responsive-images
+      - id: html.sheet.video
+        title: Video with captions
+        code:
+          lang: html
+          inline: |-
+            <video controls width="640" height="360" poster="intro.jpg">
+              <source src="intro.mp4" type="video/mp4" />
+              <track kind="captions" src="intro.en.vtt" srclang="en" label="English" default />
+            </video>
+        explain: "`controls` gives the native, keyboard-accessible player; a captions `track` is needed for people who can't hear the audio."
+        usage: common
+        learn: html.media-embeds
+      - id: html.sheet.iframe-title
+        title: Embedded page
+        code:
+          lang: html
+          inline: <iframe src="https://example.com/map" title="Map of the Rila trail" width="640" height="360" loading="lazy"></iframe>
+        explain: '`title` names the frame for screen readers; `loading="lazy"` waits until it is near the viewport.'
+        usage: common
+        learn: html.media-embeds
+  - id: tables
+    title: Tables
+    entries:
       - id: html.sheet.table
         title: Accessible data table
         code:
-          {
-            lang: html,
-            inline: "<table>\n  <caption>Monthly costs</caption>\n  <thead>\n    <tr><th scope=\"col\">Item</th><th scope=\"col\">Cost</th></tr>\n  </thead>\n  <tbody>\n    <tr><th scope=\"row\">Hosting</th><td>$5</td></tr>\n  </tbody>\n</table>",
-          }
+          lang: html
+          inline: |-
+            <table>
+              <caption>Monthly costs</caption>
+              <thead>
+                <tr><th scope="col">Item</th><th scope="col">Cost</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Hosting</th><td>$5</td></tr>
+              </tbody>
+            </table>
         explain: '`caption` names the table; `th` with `scope` tells screen readers which cells a header labels.'
         usage: common
         learn: html.tables
-      - id: html.sheet.details
-        title: Show and hide without JavaScript
+      - id: html.sheet.table-span
+        title: Cells that span
         code:
-          {
-            lang: html,
-            inline: "<details>\n  <summary>Shipping options</summary>\n  <p>Standard (3–5 days) or express (1 day).</p>\n</details>",
-          }
-        explain: Keyboard and screen-reader support built in.
-        usage: common
-        learn: html.native-widgets
+          lang: html
+          inline: |-
+            <tr>
+              <th scope="row" rowspan="2">Rila</th>
+              <td colspan="2">Closed in winter</td>
+            </tr>
+        explain: '`colspan` and `rowspan` merge cells. Keep data tables for data only, never for page layout.'
+        usage: rare
+        learn: html.tables
   - id: forms
     title: Forms
     entries:
       - id: html.sheet.label
         title: Label every input
         code:
-          {
-            lang: html,
-            inline: "<label for=\"email\">Email</label>\n<input id=\"email\" name=\"email\" type=\"email\" autocomplete=\"email\" required />",
-          }
+          lang: html
+          inline: |-
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required />
         explain: A connected label names the field and makes the label clickable. Placeholders are not labels.
+        usage: daily
+        learn: html.form-basics
+      - id: html.sheet.form-submit
+        title: What a form sends
+        code:
+          lang: html
+          inline: |-
+            <form action="/search" method="get">
+              <input name="q" value="trail shoes" />
+              <input type="checkbox" name="waterproof" value="yes" />
+              <input value="no name, not sent" />
+              <button>Search</button>
+            </form>
+        check: |-
+          <script>
+            const data = new FormData(document.querySelector('form'));
+            console.log(new URLSearchParams(data).toString());
+          </script>
+        output: q=trail+shoes
+        verify: browser
+        explain: 'Only fields with a `name` are sent, and an unchecked checkbox sends nothing. GET puts the pairs in the URL; use POST for anything that changes data.'
         usage: daily
         learn: html.form-basics
       - id: html.sheet.button-type
         title: Buttons inside forms
         code:
-          {
-            lang: html,
-            inline: "<button type=\"submit\">Save</button>\n<button type=\"button\">Preview</button>",
-          }
+          lang: html
+          inline: |-
+            <button type="submit">Save</button>
+            <button type="button">Preview</button>
         explain: Inside a form, a button submits unless you say `type="button"`.
         usage: daily
         learn: html.buttons
+      - id: html.sheet.button-default
+        title: The default button type
+        code:
+          lang: html
+          inline: |-
+            <form>
+              <button>Delete draft</button>
+            </form>
+        check: |-
+          <script>
+            console.log(document.querySelector('button').type);
+          </script>
+        output: submit
+        verify: browser
+        explain: A button with no `type` submits its form, which is how "Delete" ends up submitting. A link navigates; a button acts.
+        usage: common
+        learn: html.buttons
+      - id: html.sheet.input-types
+        title: Input types that help on phones
+        code:
+          lang: html
+          inline: |-
+            <input type="email" name="email" autocomplete="email" />
+            <input type="tel" name="phone" autocomplete="tel" />
+            <input type="number" name="guests" min="1" max="8" />
+            <input type="date" name="start" />
+            <input type="search" name="q" />
+        explain: The type picks the phone keyboard, adds validation and the native picker. `value` is always a string, even for numbers.
+        usage: daily
+        learn: html.input-types
+      - id: html.sheet.autocomplete
+        title: Autofill
+        code:
+          lang: html
+          inline: |-
+            <input name="name" autocomplete="name" />
+            <input name="address" autocomplete="street-address" />
+            <input name="new-password" type="password" autocomplete="new-password" />
+        explain: Standard `autocomplete` tokens let browsers and password managers fill fields correctly.
+        usage: common
+        learn: html.input-types
       - id: html.sheet.radio-group
         title: Grouped choices
         code:
-          {
-            lang: html,
-            inline: "<fieldset>\n  <legend>Plan</legend>\n  <label><input type=\"radio\" name=\"plan\" value=\"free\" checked /> Free</label>\n  <label><input type=\"radio\" name=\"plan\" value=\"pro\" /> Pro</label>\n</fieldset>",
-          }
+          lang: html
+          inline: |-
+            <fieldset>
+              <legend>Plan</legend>
+              <label><input type="radio" name="plan" value="free" checked /> Free</label>
+              <label><input type="radio" name="plan" value="pro" /> Pro</label>
+            </fieldset>
         explain: Same `name` makes one group; `fieldset` + `legend` give the group its question.
         usage: common
         learn: html.select-textarea-fieldset
+      - id: html.sheet.select
+        title: Select and textarea
+        code:
+          lang: html
+          inline: |-
+            <label for="region">Region</label>
+            <select id="region" name="region">
+              <optgroup label="Mountains">
+                <option value="rila">Rila</option>
+                <option value="pirin" selected>Pirin</option>
+              </optgroup>
+            </select>
+
+            <label for="notes">Notes</label>
+            <textarea id="notes" name="notes" rows="4"></textarea>
+        explain: '`optgroup` labels groups of options; `selected` sets the default. A `textarea` value is its content, not a `value` attribute.'
+        usage: common
+        learn: html.select-textarea-fieldset
+      - id: html.sheet.validation
+        title: Built-in validation
+        code:
+          lang: html
+          inline: |-
+            <input name="email" type="email" required value="ana(at)example.com" />
+            <input name="nights" type="number" min="1" max="14" value="20" />
+        check: |-
+          <script>
+            const [email, nights] = document.querySelectorAll('input');
+            console.log(email.validity.typeMismatch, nights.validity.rangeOverflow);
+          </script>
+        output: true true
+        verify: browser
+        explain: The browser checks the rules on submit and shows its own messages. Always validate on the server too.
+        usage: daily
+        learn: html.validation
+      - id: html.sheet.pattern
+        title: Patterns
+        code:
+          lang: html
+          inline: <input name="slug" pattern="[a-z0-9\-]+" title="Lowercase letters, digits and hyphens" />
+        check: |-
+          <script>
+            const input = document.querySelector('input');
+            for (const value of ['trail-12', 'Trail 12']) {
+              input.value = value;
+              console.log(value, input.checkValidity());
+            }
+          </script>
+        output: |
+          trail-12 true
+          Trail 12 false
+        verify: browser
+        explain: '`pattern` must match the whole value. Escape `-` inside a class: browsers compile patterns with the `v` flag and silently ignore invalid ones.'
+        usage: common
+        learn: html.validation
+      - id: html.sheet.disabled-readonly
+        title: Disabled or read-only?
+        code:
+          lang: html
+          inline: |-
+            <input name="plan" value="Pro" readonly />
+            <input name="coupon" value="SPRING" disabled />
+        check: |-
+          <script>
+            const form = document.createElement('form');
+            form.append(...document.querySelectorAll('input'));
+            console.log(new URLSearchParams(new FormData(form)).toString());
+          </script>
+        output: plan=Pro
+        verify: browser
+        explain: '`readonly` fields can be focused and are sent; `disabled` fields are skipped by Tab and not sent.'
+        usage: rare
+        learn: html.form-basics
+  - id: accessibility
+    title: Accessibility
+    entries:
+      - id: html.sheet.icon-button
+        title: Name an icon button
+        code:
+          lang: html
+          inline: |-
+            <button type="button" aria-label="Close">
+              <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M2 2l12 12M14 2L2 14" /></svg>
+            </button>
+        explain: A control with no visible text needs a name. `aria-hidden` stops the icon from being read as an unnamed image.
+        usage: daily
+        learn: html.aria-basics
+      - id: html.sheet.describedby
+        title: Hints and errors
+        code:
+          lang: html
+          inline: |-
+            <label for="pw">Password</label>
+            <input id="pw" type="password" aria-describedby="pw-hint" aria-invalid="true" />
+            <p id="pw-hint">At least 12 characters.</p>
+        explain: '`aria-describedby` reads the hint after the name; `aria-invalid` announces the field as invalid.'
+        usage: common
+        learn: html.aria-basics
+      - id: html.sheet.disclosure
+        title: Disclosure button
+        code:
+          lang: html
+          inline: |-
+            <button type="button" aria-expanded="false" aria-controls="filters">Filters</button>
+            <div id="filters" hidden>…</div>
+        explain: Flip `aria-expanded` and `hidden` together in your script, so screen readers hear "collapsed" or "expanded".
+        usage: common
+        learn: html.aria-basics
+      - id: html.sheet.live-region
+        title: Announce a change
+        code:
+          lang: html
+          inline: <p role="status">3 results</p>
+        explain: Text changes inside a `status` region are read out politely. The region must exist before the text changes.
+        usage: common
+        learn: html.aria-basics
+      - id: html.sheet.tabindex
+        title: tabindex, the only two values
+        code:
+          lang: html
+          inline: |-
+            <div tabindex="0" role="region" aria-label="Route table">…</div>
+            <h2 id="results" tabindex="-1">Results</h2>
+        explain: '`0` adds an element to the Tab order (use rarely); `-1` makes it focusable from script only. Never use positive values.'
+        usage: common
+        learn: html.keyboard-focus
+      - id: html.sheet.skip-link
+        title: Skip link
+        code:
+          lang: html
+          inline: |-
+            <a class="skip-link" href="#main">Skip to content</a>
+            <main id="main">…</main>
+        explain: The first Tab stop lets keyboard users jump past the navigation. Show it when it has focus.
+        usage: common
+        learn: html.keyboard-focus
+      - id: html.sheet.inert
+        title: Block a whole region
+        code:
+          lang: html
+          inline: <div class="page" inert>…</div>
+        explain: '`inert` removes everything inside from focus, clicks and the accessibility tree; handy behind custom overlays.'
+        usage: rare
+        learn: html.keyboard-focus
+      - id: html.sheet.first-rule-aria
+        title: Native first
+        code:
+          lang: html
+          inline: |-
+            <!-- Instead of <div role="button" tabindex="0">Save</div> -->
+            <button type="button">Save</button>
+        explain: Native elements bring keyboard support, focus and states for free. Add ARIA only when no element does the job.
+        usage: daily
+        learn: html.aria-basics
+  - id: widgets
+    title: Built-in widgets
+    entries:
+      - id: html.sheet.details
+        title: Show and hide without JavaScript
+        code:
+          lang: html
+          inline: |-
+            <details>
+              <summary>Shipping options</summary>
+              <p>Standard (3–5 days) or express (1 day).</p>
+            </details>
+        explain: Keyboard and screen-reader support built in.
+        usage: common
+        learn: html.native-widgets
+      - id: html.sheet.dialog
+        title: Modal dialog
+        code:
+          lang: html
+          inline: |-
+            <dialog id="confirm">
+              <form method="dialog">
+                <p>Delete this route?</p>
+                <button value="cancel">Cancel</button>
+                <button value="delete">Delete</button>
+              </form>
+            </dialog>
+            <script>
+              document.querySelector('#confirm').showModal();
+            </script>
+        check: |-
+          <script>
+            const dialog = document.querySelector('#confirm');
+            console.log(dialog.open, dialog.matches(':modal'));
+          </script>
+        output: true true
+        verify: browser
+        explain: '`showModal()` moves focus into the dialog, makes the page behind inert and closes on Esc. A `method="dialog"` form closes it and sets `returnValue`.'
+        usage: common
+        learn: html.native-widgets
+      - id: html.sheet.popover
+        title: Popover with no script
+        code:
+          lang: html
+          inline: |-
+            <button type="button" popovertarget="tips">Tips</button>
+            <div id="tips" popover>Start early in summer.</div>
+        explain: The button toggles the popover; it sits on the top layer and closes on Esc or an outside click. Baseline since 2024.
+        usage: rare
+        learn: html.native-widgets
+  - id: loading
+    title: Loading resources
+    entries:
+      - id: html.sheet.script-defer
+        title: Scripts that don't block
+        code:
+          lang: html
+          inline: |-
+            <script src="app.js" defer></script>
+            <script type="module" src="main.js"></script>
+            <script src="analytics.js" async></script>
+        explain: '`defer` and modules run in order after parsing; `async` runs as soon as it arrives, in any order. Use `async` only for independent scripts.'
+        usage: daily
+        learn: html.loading-resources
+      - id: html.sheet.stylesheet
+        title: Link a stylesheet
+        code:
+          lang: html
+          inline: <link rel="stylesheet" href="/styles/site.css" />
+        explain: Stylesheets in the `head` block rendering, so the page never flashes unstyled.
+        usage: daily
+        learn: css.rules
+      - id: html.sheet.preload
+        title: Fetch a critical file early
+        code:
+          lang: html
+          inline: |-
+            <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
+            <link rel="preconnect" href="https://cdn.example.com" />
+        explain: '`preload` starts a download the browser would discover late (fonts need `crossorigin`); `preconnect` opens the connection to another origin early.'
+        usage: common
+        learn: html.loading-resources
+      - id: html.sheet.fetchpriority
+        title: Prioritise the hero image
+        code:
+          lang: html
+          inline: <img src="hero.jpg" alt="Sunrise over Musala" width="1600" height="900" fetchpriority="high" />
+        explain: Raises the priority of the largest image above the fold. Never lazy-load that image.
+        usage: rare
+        learn: html.loading-resources
