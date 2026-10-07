@@ -1,0 +1,10 @@
+<form>
+  <button id="a">A</button>
+</form>
+<button id="b">B</button>
+<button id="c" type="button">C</button>
+<script>
+  for (const id of ['a', 'b', 'c']) {
+    console.log(document.getElementById(id).type);
+  }
+</script>

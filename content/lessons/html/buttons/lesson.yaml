@@ -1,0 +1,154 @@
+id: html.buttons
+version: 1
+title: Buttons vs links
+summary: A link goes somewhere, a button does something; and a button in a form submits it unless you say otherwise.
+minutes: 4
+tags: [button, a, type, keyboard, forms]
+
+concept:
+  title: Links go, buttons do
+  body: |
+    - A **link** (`<a href>`) takes the user somewhere: another page, a section, a file.
+    - A **button** (`<button>`) does something here: submits, opens, adds to the cart.
+
+    Both come with keyboard support for free. Tab reaches them; Enter activates both; Space
+    activates buttons. A `<div>` with a click handler gets none of that.
+
+    Inside a form, a `<button>` without a `type` is a **submit** button. Every button that
+    isn't meant to send the form needs `type="button"`.
+
+    Choose by what it does, not how it looks: a "button" that navigates is a link styled as a
+    button.
+  code:
+    caption: A link, an action button and a submit button
+    tabs:
+      - lang: html
+        file: snippets/buttons.html
+
+playground:
+  visualizer: activation-log
+  props:
+    href: /cart
+    labels:
+      link: View cart
+      submit: Apply coupon
+      button: Show details
+      div: Remove item
+  prompt: |
+    Click **Apply coupon**. It submits the form, although nothing on it says so. Then click
+    **Show details** and compare the log.
+  explore:
+    - Tab through the elements. Which one can you never reach?
+    - Focus **View cart** and press Space, then Enter. Which key follows a link?
+
+challenges:
+  - id: show-password
+    type: find-bug
+    prompt: Clicking "Show password" logs the user in with a half-typed password. Click the buggy line, then choose the fix.
+    code: { lang: html, file: snippets/toggle.bug.html }
+    bugLines: [4]
+    fix:
+      choices:
+        - { text: '<button type="button" class="show">Show password</button>', correct: true }
+        - { text: '<a class="show">Show password</a>' }
+        - { text: '<button type="reset" class="show">Show password</button>' }
+        - { text: '<button type="submit" class="show">Show password</button>' }
+    tests: { file: snippets/toggle.test.js }
+    hints:
+      - What is the `type` of a button that doesn't say?
+    explanation: |
+      Inside a form, `<button>` defaults to `type="submit"`, so the click also sends the form.
+      `type="button"` keeps it to your script. `type="reset"` would wipe what was typed, and a
+      link without `href` can't even be focused.
+
+  - id: default-type
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      submit
+      submit
+      button
+    choices:
+      - |
+        submit
+        submit
+        button
+      - |
+        submit
+        button
+        button
+      - |
+        button
+        button
+        button
+      - |
+        submit
+        undefined
+        button
+    verify: browser
+    hints:
+      - The default `type` doesn't depend on where the button is.
+    explanation: |
+      Every `<button>` without a `type` is a submit button, even outside a form, where it just
+      has nothing to submit. Only `type="button"` makes it a plain button.
+
+  - id: which-is-button
+    type: choice
+    prompt: Which of these should be a `<button>` rather than a link?
+    options:
+      - text: '"Add to cart", which updates the cart without leaving the page'
+        correct: true
+        why: It performs an action on the current page, so it is a button.
+      - text: '"Read the full article"'
+        why: It goes to another page, so it is a link.
+      - text: '"Next page" of search results'
+        why: It goes to another URL, which people may open in a new tab or share, so it is a link.
+      - text: '"Download the invoice (PDF)"'
+        why: It points to a file at a URL; `<a href download>` is the right element.
+    explanation: Ask "does it go somewhere?" If yes, it is a link, however it looks.
+
+production:
+  - title: Buttons that look like links, links that look like buttons
+    body: |
+      Design systems style both elements both ways. A "Start free trial" call to action that
+      opens the sign-up page is still an `<a>`, with button styles.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/link-button.html
+  - title: Icon buttons need a name
+    body: |
+      A button that shows only an icon has no text to announce. Give it an `aria-label`, and hide
+      the decorative icon from assistive technology.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/icon.html
+
+mistake:
+  title: A `<div>` as a button
+  body: |
+    It responds to the mouse, but it isn't in the Tab order, Enter and Space do nothing, and
+    screen readers don't announce it as a button. Adding all that back by hand takes `role`,
+    `tabindex` and key handlers, and is easy to get wrong.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/div.bad.html
+        output: '-1'
+        verify: browser
+  fix: Use `<button type="button">`; style it however you like.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/div.good.html
+        output: '0'
+        verify: browser
+
+recap:
+  - 'Links go somewhere (`<a href>`); buttons do something (`<button>`). Choose by behaviour, not looks.'
+  - 'A `<button>` without `type` submits its form; use `type="button"` for everything else.'
+  - 'Native elements bring focus, Enter and Space for free; a `<div>` brings none of it.'
+
+related: [html.form-basics, html.links, html.keyboard-focus]
