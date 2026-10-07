@@ -1,0 +1,27 @@
+<div class="site" data-theme="dark">
+  <div class="card" id="a">A</div>
+  <div class="promo">
+    <div class="card" id="b">B</div>
+  </div>
+</div>
+<div class="card" id="c">C</div>
+
+<style>
+  :root {
+    --surface: white;
+  }
+  [data-theme="dark"] {
+    --surface: black;
+  }
+  .promo {
+    --surface: gold;
+  }
+  .card {
+    background: var(--surface);
+  }
+</style>
+<script>
+  for (const id of ['a', 'b', 'c']) {
+    console.log(id, getComputedStyle(document.getElementById(id)).backgroundColor);
+  }
+</script>

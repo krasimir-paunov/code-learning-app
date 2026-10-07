@@ -1,0 +1,14 @@
+.plan {
+  background: #f1f5f9;
+}
+.cta {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .plan {
+  background: #1e293b;
+}
+[data-theme="dark"] .cta {
+  color: #0f172a;
+}
+/* ...and again for every component, forever. */

@@ -1,0 +1,16 @@
+/* Follow the system by default; a data-theme set by the user wins. */
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --text: #0f172a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f172a;
+    --text: #f1f5f9;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f172a;
+  --text: #f1f5f9;
+}

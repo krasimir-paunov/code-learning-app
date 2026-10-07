@@ -1,0 +1,11 @@
+.plan {
+  background: var(--surface);
+}
+.cta {
+  color: var(--on-accent);
+}
+
+[data-theme="dark"] {
+  --surface: #1e293b;
+  --on-accent: #0f172a;
+}

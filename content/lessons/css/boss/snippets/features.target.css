@@ -1,0 +1,47 @@
+:root {
+  --bg: #ffffff;
+  --tile: #f1f5f9;
+  --text: #0f172a;
+}
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --tile: #1e293b;
+  --text: #f1f5f9;
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font: 16px/1.4 system-ui, sans-serif;
+}
+.features {
+  padding: 16px;
+  background: var(--bg);
+  color: var(--text);
+}
+.heading {
+  margin: 0 0 12px;
+  font-size: 22px;
+}
+.grid {
+  display: grid;
+  gap: 12px;
+}
+.tile {
+  height: 80px;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--tile);
+}
+@media (min-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

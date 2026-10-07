@@ -1,0 +1,26 @@
+/* Tokens: the only place colours live. */
+:root {
+  --bg: #ffffff;
+  --surface: #f1f5f9;
+  --text: #0f172a;
+}
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --text: #f1f5f9;
+}
+
+/* Mobile first: one column, then more as space allows. */
+.plans {
+  display: grid;
+  gap: 16px;
+}
+@media (min-width: 600px) {
+  .plans {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.wrap {
+  max-width: 1100px;
+  margin-inline: auto;
+}

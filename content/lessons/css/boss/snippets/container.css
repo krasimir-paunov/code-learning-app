@@ -1,0 +1,15 @@
+/* The card responds to the space its container gives it, wherever it is placed. */
+.plan-slot {
+  container-type: inline-size;
+}
+
+.plan {
+  display: grid;
+  gap: 8px;
+}
+
+@container (min-width: 420px) {
+  .plan {
+    grid-template-columns: 1fr auto;
+  }
+}
