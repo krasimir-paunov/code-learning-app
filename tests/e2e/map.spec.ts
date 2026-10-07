@@ -43,6 +43,8 @@ test('the overview draws lines between tracks only for the hovered or focused mo
   test.skip(info.project.name === 'mobile', 'the overview is the desktop default');
   await page.goto('/map');
   const lines = page.locator('main svg path');
+  // The map draws lazily; take the baseline once its in-track lines are there.
+  await expect.poll(() => lines.count()).toBeGreaterThan(0);
   const resting = await lines.count();
   // The C# track's first module recommends the JavaScript fundamentals.
   const card = page.getByRole('link', { name: /The C# toolchain/ });

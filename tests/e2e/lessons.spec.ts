@@ -39,6 +39,11 @@ for (const lesson of LESSONS) {
     await expect(page.locator('#challenges')).not.toContainText('Unknown challenge type');
     await expect(page.getByText(/^loading /)).toHaveCount(0, { timeout: 15_000 });
     await expect(page.getByText('Something went wrong')).toHaveCount(0);
+    // Nothing may push the page sideways, on any screen size.
+    const sideways = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(sideways).toBeLessThanOrEqual(0);
 
     // Contrast demos fail on purpose (WCAG 1.4.3 exempts text that is part of a picture); the
     // same information is always given as readable text next to them.
