@@ -1,0 +1,25 @@
+<div class="cols">
+  <div class="col"><span class="short"></span></div>
+  <div class="col"><span class="long"></span></div>
+</div>
+<style>
+  .cols {
+    display: flex;
+    width: 600px;
+  }
+  .col {
+    flex-grow: 1;
+  }
+  span {
+    display: inline-block;
+  }
+  .short {
+    width: 100px;
+  }
+  .long {
+    width: 300px;
+  }
+</style>
+<script>
+  console.log([...document.querySelectorAll('.col')].map((c) => c.offsetWidth).join(' '));
+</script>

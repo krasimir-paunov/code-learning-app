@@ -1,0 +1,144 @@
+id: css.flex-sizing
+version: 1
+title: Flex sizing
+summary: Work out exactly how wide each flex item gets, and fix the column that refuses to shrink.
+minutes: 8
+tags: [flexbox, flex-grow, flex-shrink, flex-basis, flex, min-width]
+
+concept:
+  title: Basis first, then share what's left
+  body: |
+    1. Every item starts at its `flex-basis` (`auto` means its width, or else its content).
+    2. Free space = container − bases − gaps.
+    3. Extra space is shared by `flex-grow`. With 1 : 2, the second item gets twice as much
+       of the **extra**, not twice the width.
+    4. Missing space is taken back by `flex-shrink`, weighted by basis: bigger items give more.
+    5. By default no item shrinks below its content's minimum width, so a long URL won't
+       let its column shrink. `min-width: 0` lifts that floor.
+
+    `flex: 1` means grow 1, shrink 1, basis 0: equal columns.
+  code:
+    caption: A fixed sidebar and a main column that can shrink
+    tabs:
+      - lang: css
+        file: snippets/sizing.css
+
+playground:
+  visualizer: flex-math
+  props:
+    container: 500
+    items:
+      - { text: Trails, grow: 1, shrink: 1, basis: 100 }
+      - { text: Gear, grow: 2, shrink: 1, basis: 100 }
+      - { text: ridgeline_ultra_waterproof, grow: 0, shrink: 1, basis: 200 }
+  prompt: |
+    100px of free space is shared 1 : 2 : 0. **Gear** doesn't end up twice as wide as
+    **Trails**; it gets twice as much of the extra. Now drag the container down to 300px.
+  explore:
+    - 'Why does the long item refuse to go below its word, however small the container gets? Tick its `min-width: 0`.'
+    - Set every `flex-basis` to 0 and every `flex-grow` to 1. What do the widths become?
+
+challenges:
+  - id: grow-share
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      150
+      250
+    choices:
+      - |
+        150
+        250
+      - |
+        100
+        300
+      - |
+        200
+        200
+      - |
+        100
+        100
+    verify: browser
+    hints:
+      - Start from the bases. How much free space is left?
+      - 'The 200px of free space is shared 1 : 3.'
+    explanation: |
+      Bases 100 + 100 leave 200px free. `flex-grow` 1 : 3 shares it as 50 and 150, so the boxes
+      are 150 and 250. Grow ratios share the extra space; they don't set the size ratio.
+
+  - id: min-width-zero
+    type: find-bug
+    prompt: A long shared link makes the main column push past the 600px layout. Click the buggy line, then choose the fix.
+    code: { lang: css, file: snippets/layout.bug.css }
+    page: { file: snippets/page.html }
+    bugLines: [9]
+    fix:
+      choices:
+        - { text: "flex: 1;\nmin-width: 0;", correct: true }
+        - { text: "flex: 1;\nwidth: 100%;" }
+        - { text: "flex: 1;\nmax-width: 100%;" }
+        - { text: 'flex: 2;' }
+    tests: { file: snippets/layout.test.js }
+    hints:
+      - The column could shrink to 400px. What stops it?
+      - Flex items won't go below their content's minimum width unless you say so.
+    explanation: |
+      `min-width: auto`, the default for flex items, keeps the column as wide as its longest
+      unbreakable word. `min-width: 0` lets it shrink to the space it has; then wrap the long
+      text inside it with `overflow-wrap: anywhere`.
+
+  - id: shrink-weight
+    type: choice
+    prompt: 'Two items with `flex-shrink: 1` have bases of 300px and 100px. The container is 100px too small. How much does each give up?'
+    options:
+      - text: 75px and 25px
+        correct: true
+        why: 'Shrinking is weighted by flex-shrink × basis, 300 : 100, so the bigger item gives up three times as much.'
+      - text: 50px each
+        why: That would ignore the basis; equal shrink factors still give way in proportion to size.
+      - text: 100px from the first, nothing from the second
+        why: Both have a shrink factor of 1, so both give something up.
+      - text: Neither; the items overflow
+        why: '`flex-shrink: 1` is the default, so items do shrink until they hit their minimum size.'
+    explanation: Growing shares extra space by grow factor alone; shrinking also weighs it by basis, so small items don't vanish.
+
+production:
+  - title: Equal columns
+    body: |
+      `flex: 1` on every child gives equal columns whatever their content, because each starts
+      from a basis of 0 and gets the same share of the whole width.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/equal.css
+  - title: Fixed sidebars
+    body: |
+      `flex: 0 0 240px` (or `flex: none` with a width) keeps a sidebar exactly 240px: it neither
+      grows nor shrinks, and the main column takes the rest.
+
+mistake:
+  title: '`flex-grow: 1` when you meant equal columns'
+  body: |
+    `flex-grow: 1` alone keeps `flex-basis: auto`, so each column starts at its content width and
+    then gets an equal share of what's left. Columns with more content stay wider.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/grow.bad.html
+        output: '200 400'
+        verify: browser
+  fix: 'Use `flex: 1`, which also sets the basis to 0.'
+  good:
+    tabs:
+      - lang: html
+        file: snippets/grow.good.html
+        output: '300 300'
+        verify: browser
+
+recap:
+  - 'Items start at `flex-basis`; `flex-grow` shares the extra space, `flex-shrink` × basis takes back the overflow.'
+  - "Flex items stop at their content's minimum width; `min-width: 0` lets them shrink further."
+  - '`flex: 1` = equal columns; `flex: 0 0 240px` = a fixed column.'
+
+related: [css.flex-alignment, css.flex-wrap-patterns, css.overflow]

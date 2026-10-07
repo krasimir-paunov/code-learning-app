@@ -1,0 +1,21 @@
+<div class="row">
+  <div class="a">A</div>
+  <div class="b">B</div>
+</div>
+<style>
+  .row {
+    display: flex;
+    width: 400px;
+  }
+  .a {
+    flex: 1 1 100px;
+  }
+  .b {
+    flex: 3 1 100px;
+  }
+</style>
+<script>
+  for (const box of document.querySelectorAll('.row div')) {
+    console.log(box.getBoundingClientRect().width);
+  }
+</script>

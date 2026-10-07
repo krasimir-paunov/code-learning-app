@@ -196,7 +196,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 |---|---|---|---|---|---|---|---|---|---|
 | C4.1 | `css.flex-axes` | Flex axes | Core | Main vs cross axis; `flex-direction` flips them. | — | `axis-compass`: pick `flex-direction` on a compass, see both axes drawn over a live container | VM, PO, CH | 6 | done |
 | C4.2 | `css.flex-alignment` | Aligning with Flexbox | Core | `justify-content`, `align-items`, `gap`, auto margins. | ↑ | `align-pad`: click where the items should go and get the declarations; spread, gap and auto-margin controls | VM, FB, CH | 6 | done |
-| C4.3 | `css.flex-sizing` | Flex sizing | Core | How `flex-grow`/`shrink`/`basis` split space; the `min-width: 0` fix. | ↑ | `flex-math`: free space distribution shown as numbers | PO, BUG | 8 | todo |
+| C4.3 | `css.flex-sizing` | Flex sizing | Core | How `flex-grow`/`shrink`/`basis` split space; the `min-width: 0` fix. | ↑ | `flex-math`: free space distribution shown as numbers, next to the browser's measured widths | PO, BUG, CH | 8 | done |
 | C4.4 | `css.flex-wrap-patterns` | Wrapping and patterns | Core | `flex-wrap`; build a nav bar, media object and card row. | ↑ | `flex-sandbox` | VM | 6 | todo |
 
 ### C5 · Grid — Entry: C4.4
