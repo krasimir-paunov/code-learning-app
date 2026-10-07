@@ -1,0 +1,16 @@
+.cards {
+  display: grid;
+  gap: 16px;
+}
+
+@media (width >= 40rem) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 64rem) {
+  .cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

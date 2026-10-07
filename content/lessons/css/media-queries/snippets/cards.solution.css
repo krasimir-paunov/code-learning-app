@@ -1,0 +1,15 @@
+.cards {
+  display: grid;
+  gap: 16px;
+}
+
+@media (width >= 40rem) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.cards article {
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+}

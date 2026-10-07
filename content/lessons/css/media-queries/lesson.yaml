@@ -1,0 +1,169 @@
+id: css.media-queries
+version: 1
+title: Media queries
+summary: Write the phone layout first, then add layout at breakpoints where your content needs it, using the range syntax and rem.
+minutes: 6
+tags: [media queries, responsive, mobile-first, breakpoints, range syntax]
+
+concept:
+  title: Start small, then add
+  body: |
+    A media query applies CSS only when the viewport matches, such as
+    `@media (width >= 40rem) { … }`.
+
+    Write the phone layout first, outside any query, then add layout as the screen gets
+    wider. That is **mobile-first**: small screens apply the least CSS, and every query only
+    adds.
+
+    - Put breakpoints where *your content* breaks, not at device sizes.
+    - Use `rem`: `40rem` follows the browser's text size, so people with large text get the
+      narrow layout sooner.
+    - `width >= 40rem` is the modern range syntax; `min-width: 40rem` is the classic form.
+  code:
+    caption: One column, then two, then three
+    tabs:
+      - lang: css
+        file: snippets/mobile-first.css
+
+playground:
+  visualizer: viewport-lab
+  props:
+    start: 375
+    height: 300
+    html: |
+      <h1>Trails near you</h1>
+      <div class="cards">
+        <article>Ridgeline loop</article><article>Lake loop</article><article>Summit</article>
+        <article>Pine trail</article><article>River crossing</article><article>Old mill</article>
+      </div>
+    variants:
+      - name: mobile-first
+        css: |
+          body { margin: 0; padding: 12px; font: 15px/1.4 system-ui, sans-serif; }
+          h1 { margin: 0 0 12px; font-size: 20px; }
+          .cards { display: grid; gap: 10px; }
+          .cards article { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; }
+
+          @media (width >= 40rem) {
+            .cards { grid-template-columns: repeat(2, 1fr); }
+          }
+
+          @media (width >= 56rem) {
+            h1 { font-size: 26px; }
+            .cards { grid-template-columns: repeat(3, 1fr); }
+          }
+      - name: desktop-first
+        css: |
+          body { margin: 0; padding: 12px; font: 15px/1.4 system-ui, sans-serif; }
+          h1 { margin: 0 0 12px; font-size: 26px; }
+          .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+          .cards article { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; }
+
+          @media (max-width: 55.99rem) {
+            h1 { font-size: 20px; }
+            .cards { grid-template-columns: repeat(2, 1fr); }
+          }
+
+          @media (max-width: 39.99rem) {
+            .cards { grid-template-columns: 1fr; }
+          }
+  prompt: |
+    This is a phone-sized viewport. Drag its edge to the right and watch the queries switch on
+    at 640px and 896px.
+  explore:
+    - Switch to **desktop-first**. The page looks the same at every width. What does the CSS have to undo?
+    - Stop exactly on a breakpoint. Which side does it belong to?
+
+challenges:
+  - id: mobile-first-cards
+    type: live-code
+    prompt: |
+      These cards are always two columns, even on a phone. Make the layout mobile-first: one
+      column by default, two columns from 40rem up.
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/cards.html, editable: false }
+      style.css: { file: snippets/cards.starter.css }
+    solution:
+      index.html: { file: snippets/cards.html }
+      style.css: { file: snippets/cards.solution.css }
+    tests: { file: snippets/cards.test.js }
+    hints:
+      - Remove the columns from the base rule; a grid with no columns is one column.
+      - 'Add `@media (width >= 40rem) { .cards { grid-template-columns: repeat(2, 1fr); } }`.'
+    explanation: |
+      Phones now get the simple one-column layout with no query at all, and wider screens add
+      the second column.
+
+  - id: rem-breakpoints
+    type: choice
+    prompt: Why write breakpoints in rem (`40rem`) rather than px (`640px`)?
+    options:
+      - text: They follow the browser's text-size setting, so the layout switches sooner for people with larger text.
+        correct: true
+        why: At a 24px text size, 40rem is 960px, so a two-column layout only starts when the text still fits.
+      - text: Browsers evaluate rem queries faster.
+        why: There is no speed difference.
+      - text: rem breakpoints change with the page's root font-size.
+        why: In media queries, rem uses the browser's text size, not your `html { font-size }`.
+      - text: px is not allowed in media queries.
+        why: It is allowed; it just ignores the reader's text size.
+    explanation: Breakpoints in rem keep the layout tied to how big the text really is.
+
+  - id: where-to-break
+    type: choice
+    prompt: A product page's two-column layout gets cramped below about 700px. Where should its breakpoint go?
+    options:
+      - text: Around where it breaks, about 44rem
+        correct: true
+        why: Breakpoints serve the content. This layout needs about 700px, so that's where it should switch.
+      - text: At 768px, because that's the iPad width
+        why: Device sizes change every year, and the layout doesn't care which device it's on.
+      - text: At 1024px, to be safe
+        why: That forces one column on screens with plenty of room for two.
+      - text: Nowhere; let it squeeze
+        why: Cramped columns are hard to read; this is exactly what a breakpoint is for.
+    explanation: Drag the window until the layout looks wrong, and put the breakpoint there.
+
+production:
+  - title: Custom properties don't work in media queries
+    body: |
+      A query is evaluated before any element's styles exist, so `var()` can't be used in it.
+      With `--bp` set to 1px, the `var()` query still doesn't match while the plain one does.
+      Teams keep breakpoints as constants in their build tool or design tokens instead.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/no-vars.html
+          output: |
+            false
+            true
+          verify: browser
+  - title: Queries for more than width
+    body: Media queries also test input and preferences, such as whether the device can hover, or whether the user asked for less motion.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/features.css
+
+mistake:
+  title: No viewport meta tag
+  body: |
+    Without it, phones lay the page out on a virtual 980px screen and zoom out. Every
+    `width >= 40rem` query matches, and visitors get the shrunken desktop layout.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/viewport.bad.html
+  fix: Add the viewport meta tag to every page.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/viewport.good.html
+
+recap:
+  - 'Mobile-first: phone layout with no query, then `@media (width >= …)` adds layout.'
+  - Put breakpoints where your content breaks, and write them in rem.
+  - Media queries need the viewport meta tag on phones, and can't use `var()`.
+
+related: [css.grid-auto, css.units, html.document-skeleton]

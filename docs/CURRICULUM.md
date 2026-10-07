@@ -222,7 +222,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| C7.1 | `css.media-queries` | Media queries | Core | Mobile-first breakpoints with `min-width` and range syntax. | — | `viewport-lab`: drag the viewport edge | VM | 6 | todo |
+| C7.1 | `css.media-queries` | Media queries | Core | Mobile-first breakpoints with `min-width` and range syntax. | — | `viewport-lab`: drag a real viewport edge; breakpoints ruler, live query status, mobile- vs desktop-first | LC, CH | 6 | done |
 | C7.2 | `css.container-queries` | Container queries | Ext | Components that adapt to their container, not the viewport (`@container`, `cqi`). | ↑ | `viewport-lab` (container mode) | VM | 7 | todo |
 | C7.3 | `css.intrinsic-layout` | Responsive without breakpoints | Ext | `min()`, `max()`, `clamp()` and intrinsic sizing. | ↑ | `viewport-lab` | VM | 6 | todo |
 | C7.4 | `css.user-preferences` | User preferences | Ext | Respect `prefers-color-scheme` and `prefers-reduced-motion`. | ↑ | `pref-emulator` | LC | 5 | todo |

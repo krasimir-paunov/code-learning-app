@@ -1,0 +1,10 @@
+<style>
+  :root {
+    --bp: 1px;
+  }
+</style>
+<script>
+  // Every viewport is at least 1px wide, so a working query would match.
+  console.log(matchMedia('(min-width: var(--bp))').matches);
+  console.log(matchMedia('(min-width: 1px)').matches);
+</script>
