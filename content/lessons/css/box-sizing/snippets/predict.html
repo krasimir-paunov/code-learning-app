@@ -1,0 +1,16 @@
+<div class="a">A</div>
+<div class="b">B</div>
+<style>
+  .a, .b {
+    width: 200px;
+    padding: 20px;
+    border: 5px solid;
+  }
+  .b {
+    box-sizing: border-box;
+  }
+</style>
+<script>
+  console.log(document.querySelector('.a').offsetWidth);
+  console.log(document.querySelector('.b').offsetWidth);
+</script>

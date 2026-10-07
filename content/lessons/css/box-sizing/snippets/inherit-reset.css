@@ -1,0 +1,9 @@
+/* A variant: components can switch back by setting box-sizing on themselves */
+html {
+  box-sizing: border-box;
+}
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}

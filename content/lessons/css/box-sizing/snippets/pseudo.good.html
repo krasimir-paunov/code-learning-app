@@ -1,0 +1,15 @@
+<p class="note">Read this</p>
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  .note::before {
+    content: "!";
+  }
+</style>
+<script>
+  const note = document.querySelector('.note');
+  console.log(getComputedStyle(note, '::before').boxSizing);
+</script>

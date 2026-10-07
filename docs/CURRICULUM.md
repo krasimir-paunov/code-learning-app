@@ -175,7 +175,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
 | C2.1 | `css.box-model` | The box model | Core | See content, padding, border, margin; size an element precisely. | — | `box-inspector` | VM, FB, RO, CH | 8 | done |
-| C2.2 | `css.box-sizing` | `box-sizing` | Core | Why every reset uses `border-box`. | ↑ | `box-inspector` (toggle) | PO | 4 | todo |
+| C2.2 | `css.box-sizing` | `box-sizing` | Core | Why every reset uses `border-box`. | ↑ | `box-inspector` (toggle) | PO | 4 | done |
 | C2.3 | `css.margin-collapse` | Margin collapsing | Ext | Predict collapsed vertical margins and how flex/grid avoid it. | ↑ | `box-inspector` (two blocks) | PO | 5 | todo |
 | C2.4 | `css.units` | Units | Core | Choose `rem`, `em`, `%`, `px`, `ch`, `vw`/`dvh` deliberately. | ↑ | `unit-lab`: root font-size and viewport sliders | PO | 7 | todo |
 | C2.5 | `css.display` | `display` | Core | Block vs inline vs inline-block; `display: none` vs `visibility: hidden`. | ↑ | `live-editor` | PO, VM | 5 | todo |
