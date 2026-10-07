@@ -1,0 +1,113 @@
+.frame {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+@container (min-width: 620px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+}
+
+.stage {
+  overflow: hidden;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.side {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+}
+
+.compass {
+  display: grid;
+  grid-template:
+    '. up .' auto
+    'left center right' auto
+    '. down .' auto / auto auto auto;
+  place-items: center;
+  gap: var(--space-1);
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  inline-size: var(--touch-target);
+  block-size: var(--touch-target);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg-2);
+  color: var(--text-1);
+  cursor: pointer;
+
+  &[data-arrow='up'] {
+    grid-area: up;
+  }
+
+  &[data-arrow='left'] {
+    grid-area: left;
+  }
+
+  &[data-arrow='right'] {
+    grid-area: right;
+  }
+
+  &[data-arrow='down'] {
+    grid-area: down;
+  }
+
+  &[aria-pressed='true'] {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--bg-0);
+  }
+}
+
+.center {
+  grid-area: center;
+  min-inline-size: 8.5rem;
+  text-align: center;
+  font-size: var(--fs-sm);
+}
+
+.legend {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--fs-sm);
+
+  & li::before {
+    content: '';
+    display: inline-block;
+    inline-size: 1.5rem;
+    margin-inline-end: var(--space-2);
+    vertical-align: middle;
+    border-block-start: 3px solid var(--warning);
+  }
+
+  & [data-axis='cross']::before {
+    border-block-start: 3px dashed var(--success);
+  }
+}
+
+.result {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.controls {
+  display: grid;
+  gap: var(--space-3);
+}
