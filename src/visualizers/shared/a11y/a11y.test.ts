@@ -163,3 +163,12 @@ describe('accessibleDescription', () => {
     expect(input && accessibleDescription(input)).toBe('');
   });
 });
+
+describe('states: invalid', () => {
+  it('reports aria-invalid as an invalid entry', () => {
+    document.body.innerHTML = '<input aria-invalid="true"><input aria-invalid="false">';
+    const [bad, good] = document.querySelectorAll('input');
+    expect(bad && states(bad)).toContain('invalid entry');
+    expect(good && states(good)).not.toContain('invalid entry');
+  });
+});

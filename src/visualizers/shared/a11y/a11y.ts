@@ -277,6 +277,7 @@ export function states(element: Element): string[] {
   if (aria('pressed') === 'true') out.push('pressed');
   if (aria('current') && aria('current') !== 'false') out.push('current');
   if (element.hasAttribute('required') || aria('required') === 'true') out.push('required');
+  if (aria('invalid') && aria('invalid') !== 'false') out.push('invalid entry');
   if (element.hasAttribute('disabled') || aria('disabled') === 'true') out.push('unavailable');
   if (aria('invalid') === 'true') out.push('invalid');
   return out;
