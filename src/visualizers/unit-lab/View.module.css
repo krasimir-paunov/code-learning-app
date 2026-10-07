@@ -1,0 +1,130 @@
+.frame {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.controls {
+  display: grid;
+  gap: var(--space-2) var(--space-5);
+}
+
+@container (min-width: 640px) {
+  .controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.bars {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr) 4.5rem;
+  grid-template-areas:
+    'value track px'
+    '. depends depends';
+  align-items: center;
+  column-gap: var(--space-2);
+}
+
+.value {
+  grid-area: value;
+  color: var(--code-string);
+  font-size: var(--fs-sm);
+}
+
+.track {
+  position: relative;
+  grid-area: track;
+  block-size: 1.25rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+}
+
+.bar {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  transition: inline-size var(--dur-fast) var(--ease-out);
+
+  .row[data-unit='px'] & {
+    background: var(--text-3);
+  }
+
+  .row[data-unit='rem'] & {
+    background: var(--success);
+  }
+
+  .row[data-unit='em'] & {
+    background: var(--warning);
+  }
+
+  .row[data-unit='vw'] & {
+    background: var(--reward);
+  }
+
+  .row[data-unit='ch'] & {
+    background: var(--info);
+  }
+}
+
+.parentMark {
+  position: absolute;
+  inset-block: -3px;
+  border-inline-start: 2px dashed var(--text-1);
+}
+
+.px {
+  grid-area: px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-align: end;
+}
+
+.depends {
+  grid-area: depends;
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+}
+
+.legend {
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+}
+
+.nesting {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+}
+
+.nestingHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.title {
+  font-size: var(--fs-sm);
+}
+
+.levels {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: Georgia, serif;
+  line-height: 1.4;
+}
