@@ -1,0 +1,201 @@
+id: html.boss
+version: 1
+title: 'Boss: accessible sign-up page'
+summary: Turn a page of anonymous divs into a semantic, keyboard-friendly, validated sign-up form, checked item by item against a spec.
+minutes: 10
+tags: [boss, forms, semantics, accessibility, validation]
+
+concept:
+  title: Everything from the HTML track, on one page
+  body: |
+    A good form page is the HTML track in miniature:
+
+    - **Structure**: a `<header>`, the form inside `<main>`, one `<h1>`.
+    - **Fields**: a visible `<label>` for each, the right `type`, `autocomplete` for autofill,
+      `required` where it is.
+    - **Groups**: radios share a `name` and sit in a `<fieldset>` with a `<legend>`.
+    - **Actions**: a real `<button>` submits; `method="post"` when data changes.
+    - **Keyboard**: the HTML order is the Tab order; no positive `tabindex`.
+
+    Native elements do most of this for you. You mostly have to not undo it.
+  code:
+    caption: The shape of the page
+    tabs:
+      - lang: html
+        file: snippets/checklist.html
+
+playground:
+  visualizer: spec-checker
+  props:
+    starter: |
+      <div class="header"><b>Trailhead</b></div>
+      <div class="content">
+        <div class="title">Create your account</div>
+        <form action="/signup">
+          <input name="email" placeholder="Email">
+          <input type="password" name="password" placeholder="Password">
+          <div>Plan</div>
+          <input type="radio" value="free"> Free
+          <input type="radio" value="pro"> Pro
+          <div class="btn" tabindex="1">Sign up</div>
+        </form>
+      </div>
+    css: |
+      form { display: grid; gap: 8px; max-width: 320px; }
+      form > * { justify-self: start; }
+      form > input:not([type="radio"]) { justify-self: stretch; }
+      input:not([type="radio"]) { padding: 6px 8px; border: 1px solid #64748b; border-radius: 4px; font: inherit; }
+      fieldset { border: 1px solid #94a3b8; border-radius: 6px; }
+      button, .btn { justify-self: start; padding: 8px 14px; border: 0; border-radius: 4px; background: #1d4ed8; color: #fff; font: inherit; }
+    checks:
+      - { kind: exists, label: 'The site name is in a <header>', selector: header }
+      - { kind: exists, label: 'The form is inside <main>', selector: main form }
+      - { kind: count, label: 'One <h1>: the page title', selector: h1, count: 1 }
+      - { kind: attr, label: 'The form posts its data', selector: form, attr: method, value: post }
+      - {
+          kind: labelled,
+          label: 'Every text field has a visible <label>',
+          selector: 'input:not([type="radio"])',
+        }
+      - {
+          kind: attr,
+          label: 'The email field is type="email"',
+          selector: 'input[name="email"]',
+          attr: type,
+          value: email,
+        }
+      - {
+          kind: attr,
+          label: 'Autofill knows the email field',
+          selector: 'input[name="email"]',
+          attr: autocomplete,
+          value: email,
+        }
+      - {
+          kind: attr,
+          label: "Password managers know it's a new password",
+          selector: 'input[name="password"]',
+          attr: autocomplete,
+          value: new-password,
+        }
+      - {
+          kind: attr,
+          label: 'Email and password are required',
+          selector: 'input[name="email"], input[name="password"]',
+          attr: required,
+        }
+      - {
+          kind: exists,
+          label: 'The plan choice is a <fieldset> with a <legend>',
+          selector: 'fieldset > legend',
+        }
+      - {
+          kind: attr,
+          label: 'Both plans share name="plan"',
+          selector: 'input[type="radio"]',
+          attr: name,
+          value: plan,
+        }
+      - { kind: labelled, label: 'Each plan has its own label', selector: 'input[type="radio"]' }
+      - {
+          kind: exists,
+          label: 'A real button submits the form',
+          selector: 'form button:not([type="button"])',
+        }
+      - {
+          kind: absent,
+          label: 'No positive tabindex',
+          selector: '[tabindex]:not([tabindex="0"]):not([tabindex="-1"])',
+        }
+  prompt: |
+    The page looks fine and works for almost no one. Edit the markup and watch the spec tick
+    off item by item. Start with the structure, then the fields.
+  explore:
+    - Which items could a sighted mouse user never notice were missing?
+    - Tab through the finished page in your head. Where does focus go after the password?
+
+challenges:
+  - id: book-a-hike
+    type: live-code
+    prompt: |
+      Rebuild the booking page so it meets the same standards: a header, the form in `<main>`
+      under one `<h1>`, posted; labelled fields of the right types (date, and 1 to 8 people),
+      all required; the experience choice as one radio group in a fieldset; a real button.
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/booking.starter.html }
+    solution:
+      index.html: { file: snippets/booking.solution.html }
+    tests: { file: snippets/booking.test.js }
+    hints:
+      - 'Structure first: `<header>`, `<main>`, `<h1>`, then `method="post"`.'
+      - '`type="date"`, and `type="number"` with `min="1" max="8"`.'
+      - 'The radios need one shared `name`, a `<label>` each, and a `<fieldset>` with `<legend>Experience</legend>`.'
+    explanation: |
+      Each fix came from an earlier lesson: landmarks and headings, labels and input types,
+      built-in validation, radio groups, and buttons that submit. Together they make a form
+      that works for keyboards, screen readers, autofill and phones.
+
+  - id: broken-label
+    type: find-bug
+    prompt: Clicking the word "Email" doesn't focus the field, and screen readers announce it without a name. Click the buggy line, then choose the fix.
+    code: { lang: html, file: snippets/label.bug.html }
+    bugLines: [4]
+    fix:
+      choices:
+        - { text: '<label for="email">Email</label>', correct: true }
+        - { text: '<label>Email</label>' }
+        - { text: '<label id="email">Email</label>' }
+        - { text: '<label for="mail">Email:</label>' }
+    tests: { file: snippets/label.test.js }
+    hints:
+      - Compare the label's `for` with the field's `id`.
+    explanation: '`for` must match the field''s `id` exactly. "mail" points at nothing, so the label is just text.'
+
+  - id: checks-pass
+    type: choice
+    prompt: The page passes every automated accessibility check. What does that tell you?
+    options:
+      - text: The basics machines can detect are right; people still need to try it with a keyboard and a screen reader.
+        correct: true
+        why: Tools catch missing names and invalid ARIA, but not whether labels make sense or the flow works.
+      - text: The page is fully accessible.
+        why: Automated checks can't judge meaning, order or usability.
+      - text: Nothing; automated checks are unreliable.
+        why: They reliably catch a useful set of real problems; they just can't catch everything.
+      - text: It will pass a legal audit.
+        why: Audits include manual testing that tools can't replace.
+    explanation: Use automated checks as a floor, then test the real experience.
+
+production:
+  - title: Test it the way people use it
+    body: |
+      Before shipping a form, fill it in with only the keyboard, then with a screen reader
+      (VoiceOver on macOS and iOS, NVDA on Windows). Most problems show up within a minute.
+  - title: It works before the JavaScript arrives
+    body: |
+      A real `<form>` with a real `<button>` submits even if a script fails to load. Scripts can
+      then improve it, for example by sending with `fetch`, without being required.
+
+mistake:
+  title: Rebuilding native elements with ARIA
+  body: |
+    A form of divs with roles and `aria-label`s announces the right words, but nothing works:
+    no submission, no Enter key, no validation, no autofill. Each of those has to be rebuilt by
+    hand, and usually isn't.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/aria-divs.bad.html
+  fix: Use the native elements; they come with all of it.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/aria-divs.good.html
+
+recap:
+  - 'Structure (header, main, one h1), labelled fields of the right type, grouped radios, a real button.'
+  - Native elements bring keyboard support, validation and autofill; ARIA can't add those back.
+  - Automated checks are the floor; test with a keyboard and a screen reader too.
+
+related: [html.form-basics, html.keyboard-focus, html.aria-basics]

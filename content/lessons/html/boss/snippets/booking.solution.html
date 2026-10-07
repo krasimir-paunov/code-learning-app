@@ -1,0 +1,25 @@
+<header>Trailhead</header>
+<main>
+  <h1>Book a guided hike</h1>
+  <form action="/book" method="post">
+    <label for="name">Your name</label>
+    <input id="name" name="name" autocomplete="name" required>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" autocomplete="email" required>
+
+    <label for="date">Date</label>
+    <input type="date" id="date" name="date" required>
+
+    <label for="group">People</label>
+    <input type="number" id="group" name="group" min="1" max="8" required>
+
+    <fieldset>
+      <legend>Experience</legend>
+      <label><input type="radio" name="experience" value="new"> New to hiking</label>
+      <label><input type="radio" name="experience" value="regular"> Regular hiker</label>
+    </fieldset>
+
+    <button>Book</button>
+  </form>
+</main>

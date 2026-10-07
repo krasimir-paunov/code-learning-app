@@ -151,7 +151,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| H8.1 | `html.boss` | Boss: accessible sign-up page | Core | Build a semantic, keyboard-usable, validated form page from a spec. | — | `live-editor` + automated a11y checks | LC, BUG | 10 | todo |
+| H8.1 | `html.boss` | Boss: accessible sign-up page | Core | Build a semantic, keyboard-usable, validated form page from a spec. | — | `spec-checker`: edit the page, the spec ticks off item by item | LC, BUG, CH | 10 | done |
 
 ---
 
