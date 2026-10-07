@@ -1,15 +1,20 @@
 .layout {
   container-type: inline-size;
   display: grid;
+  /* A zero minimum, so the previews measure the space they get instead of claiming their own. */
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
 
   @container (min-width: 760px) {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: start;
+    &:not([data-wide]) {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+    }
   }
 }
 
 .previews {
+  min-inline-size: 0;
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
@@ -30,11 +35,17 @@
 /* Learner pages render on the browser's default white canvas, at the exact grading size. */
 .stage {
   position: relative;
-  max-inline-size: 100%;
   overflow: hidden;
   border: var(--border-width) solid var(--border-strong);
   border-radius: var(--radius-sm);
   background: var(--canvas-page);
+}
+
+.scaler {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  transform-origin: top left;
 }
 
 .layer {

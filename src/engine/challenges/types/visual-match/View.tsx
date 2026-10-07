@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Slider } from '../../../../components/Slider.tsx';
 import { Toggle } from '../../../../components/Toggle.tsx';
 import { CodeEditor } from '../../../../components/code-editor/CodeEditor.tsx';
@@ -10,6 +10,8 @@ import type { VisualMatchAnswer, VisualMatchSpec } from './index.ts';
 import local from './View.module.css';
 
 const PREVIEW_DELAY_MS = 400;
+/** Wider pages get the full width under the editor instead of a column beside it. */
+const WIDE_VIEWPORT = 400;
 
 /** A live, isolated render of the challenge HTML with the given CSS. */
 function Preview({
@@ -49,6 +51,46 @@ function Preview({
   );
 }
 
+/**
+ * The page at its exact grading size, scaled down (never up) to fit narrow screens. Grading runs
+ * in its own sandbox at full size, so the scale only changes what the learner sees.
+ */
+function Stage({
+  spec,
+  scale,
+  children,
+}: {
+  spec: VisualMatchSpec;
+  scale: number;
+  children: ReactNode;
+}) {
+  const { width, height } = spec.viewport;
+  return (
+    <div className={local.stage} style={{ inlineSize: width * scale, blockSize: height * scale }}>
+      <div
+        className={local.scaler}
+        style={{ inlineSize: width, blockSize: height, transform: `scale(${scale})` }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/** The element's content width, kept current with a ResizeObserver (attached by a callback ref). */
+function useWidth() {
+  const [width, setWidth] = useState<number | null>(null);
+  const ref = (element: HTMLDivElement | null) => {
+    if (!element) return;
+    const observer = new ResizeObserver(([entry]) => {
+      if (entry) setWidth(entry.contentRect.width);
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  };
+  return [ref, width] as const;
+}
+
 export default function VisualMatchView({
   spec,
   state,
@@ -59,10 +101,13 @@ export default function VisualMatchView({
   const [overlay, setOverlay] = useState(false);
   const [opacity, setOpacity] = useState(50);
   const failing = (state.lastResult?.details ?? []).filter((d) => !d.passed);
+  const [previewsRef, available] = useWidth();
+  const scale = available ? Math.min(1, available / spec.viewport.width) : 1;
+  const scaled = scale < 1 ? ` (shown at ${Math.round(scale * 100)}%)` : '';
 
   return (
     <div className={styles.stack}>
-      <div className={local.layout}>
+      <div className={local.layout} data-wide={spec.viewport.width > WIDE_VIEWPORT || undefined}>
         <div className={styles.stack}>
           <CodeEditor
             value={css}
@@ -79,13 +124,13 @@ export default function VisualMatchView({
           </details>
         </div>
         <div className={styles.stack}>
-          <div className={local.previews}>
+          <div ref={previewsRef} className={local.previews}>
             <figure className={local.figure}>
-              <figcaption>Your result{overlay && ' with the target overlaid'}</figcaption>
-              <div
-                className={local.stage}
-                style={{ inlineSize: spec.viewport.width, blockSize: spec.viewport.height }}
-              >
+              <figcaption>
+                Your result{overlay && ' with the target overlaid'}
+                {scaled}
+              </figcaption>
+              <Stage spec={spec} scale={scale}>
                 <Preview spec={spec} css={css} title="Your result" className={local.layer} />
                 {overlay && (
                   <div
@@ -101,22 +146,22 @@ export default function VisualMatchView({
                     />
                   </div>
                 )}
-              </div>
+              </Stage>
             </figure>
             {!overlay && (
               <figure className={local.figure}>
-                <figcaption>Target</figcaption>
-                <div
-                  className={local.stage}
-                  style={{ inlineSize: spec.viewport.width, blockSize: spec.viewport.height }}
-                >
+                <figcaption>
+                  Target
+                  {scaled}
+                </figcaption>
+                <Stage spec={spec} scale={scale}>
                   <Preview
                     spec={spec}
                     css={spec.targetCss}
                     title="Target design"
                     className={local.layer}
                   />
-                </div>
+                </Stage>
               </figure>
             )}
           </div>
