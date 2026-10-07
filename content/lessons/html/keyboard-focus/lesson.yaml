@@ -1,0 +1,155 @@
+id: html.keyboard-focus
+version: 1
+title: Keyboard and focus
+summary: Keep a tab order that follows the page, use tabindex 0 and -1 only, and never hide where focus is.
+minutes: 6
+tags: [keyboard, focus, tabindex, focus-visible, accessibility]
+
+concept:
+  title: Tab follows the HTML
+  body: |
+    Many people move through a page with Tab and Shift+Tab. Focus visits every link, button
+    and form control in **document order**, so:
+
+    - Write the HTML in the order people should meet things. Don't let CSS (`order`,
+      `row-reverse`, positioning) shuffle what they see away from that order.
+    - `tabindex="0"` adds an element to the order where it sits; `tabindex="-1"` makes it
+      focusable by script only.
+    - Never use a positive `tabindex`. It puts that element ahead of the whole page.
+    - Never remove the focus ring without a better one. Style `:focus-visible`.
+  code:
+    caption: A clear focus ring for keyboard users
+    tabs:
+      - lang: css
+        file: snippets/focus.css
+
+playground:
+  visualizer: focus-path
+  props:
+    html: |
+      <header class="top">
+        <a href="/" class="logo">Trailhead</a>
+        <nav class="nav"><a href="/trails">Trails</a><a href="/gear">Gear</a><a href="/maps">Maps</a></nav>
+      </header>
+      <form class="search"><label for="q">Search</label><input id="q" type="search"><button class="go" type="button">Go</button></form>
+      <article>
+        <h2>Ridgeline loop</h2>
+        <p>A 12 km loop over the ridge. <a href="/ridgeline">Read more</a></p>
+        <div class="btn" data-clickable>Add to favourites</div>
+      </article>
+    css: |
+      .top { display: flex; gap: 24px; align-items: center; }
+      .logo { font-weight: 700; }
+      .nav { display: flex; gap: 24px; }
+      .search { display: flex; gap: 8px; align-items: center; }
+      h2 { margin: 0; font-size: 18px; }
+      p { margin: 0; }
+      .btn { display: inline-block; padding: 6px 12px; border-radius: 4px; background: #1d4ed8; color: #fff; cursor: pointer; }
+    toggles:
+      - kind: attr
+        label: 'Give the Go button tabindex="1"'
+        selector: .go
+        attr: tabindex
+        value: '1'
+      - kind: css
+        label: 'Reverse the menu on screen (flex-direction: row-reverse)'
+        css: '.nav { flex-direction: row-reverse; justify-content: flex-end; }'
+      - kind: attr
+        label: 'Give the favourites div tabindex="0"'
+        selector: .btn
+        attr: tabindex
+        value: '0'
+  prompt: |
+    The numbers are the path a keyboard user takes. Switch on `tabindex="1"` for the Go button
+    and see where the path starts now.
+  explore:
+    - Reverse the menu on screen. Which steps turn red, and why?
+    - '"Add to favourites" is never reached. Give it `tabindex="0"`. Is it a real button now?'
+
+challenges:
+  - id: positive-tabindex
+    type: find-bug
+    prompt: Someone "helped" keyboard users by making Log in reachable first. Now Tab skips the email and password fields. Click the buggy line, then choose the fix.
+    code: { lang: html, file: snippets/login.bug.html }
+    bugLines: [6]
+    fix:
+      choices:
+        - { text: '<button>Log in</button>', correct: true }
+        - { text: '<button tabindex="0" type="button">Log in</button>' }
+        - { text: '<button tabindex="2">Log in</button>' }
+        - { text: '<div tabindex="0">Log in</div>' }
+    tests: { file: snippets/login.test.js }
+    hints:
+      - The HTML order is already the right order.
+      - Positive tabindex values always go first, whatever the number.
+    explanation: |
+      Any positive `tabindex` jumps ahead of every element without one, so focus went to Log in
+      before the fields above it. Without it, Tab follows the form top to bottom.
+
+  - id: spa-focus
+    type: choice
+    prompt: A single-page app swaps in a new view when a link is clicked. Where should keyboard focus go?
+    options:
+      - text: 'To the new view''s main heading, made focusable with `tabindex="-1"`'
+        correct: true
+        why: Screen readers announce the new page's title, and the next Tab continues from the top of the new content.
+      - text: It should stay on the link that was clicked
+        why: The link may no longer exist, and focus is left in the old view's position.
+      - text: 'To the first link on the page, via `tabindex="1"`'
+        why: A positive tabindex breaks the order of the whole page.
+      - text: Nowhere; the browser resets focus by itself
+        why: Browsers only do that on a full page load, not when a script replaces content.
+    explanation: '`tabindex="-1"` is for exactly this: focus that a script moves on purpose, without adding a Tab stop.'
+
+  - id: order-mismatch
+    type: choice
+    prompt: "A designer wants the filters to appear before the results on wide screens, but they come after the results in the HTML, so `order: -1` moves them. What's the problem?"
+    options:
+      - text: Tab still visits the results first, so focus jumps backwards and forwards across the screen.
+        correct: true
+        why: Focus follows the HTML, not the visual order that `order` creates.
+      - text: "`order` doesn't work in Flexbox."
+        why: It works; it just doesn't change the focus order.
+      - text: Nothing; screen readers follow the visual order.
+        why: Screen readers follow the HTML order too.
+      - text: The filters can no longer be focused.
+        why: They stay focusable, only in a different place in the sequence.
+    explanation: When the visual order matters, put the HTML in that order and let CSS lay it out.
+
+production:
+  - title: A skip link
+    body: |
+      The first focusable element on most sites is a "Skip to content" link, hidden until it is
+      focused, so keyboard users don't tab through the whole header on every page.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/skip.html
+  - title: Moving focus after a view change
+    body: Single-page apps (this one included) move focus to the new view's heading after navigation.
+    code:
+      tabs:
+        - lang: js
+          file: snippets/route.js
+
+mistake:
+  title: Removing the focus ring
+  body: |
+    `outline: none` on `:focus` makes the page look cleaner to mouse users and leaves keyboard
+    users guessing where they are.
+  bad:
+    tabs:
+      - lang: css
+        file: snippets/outline.bad.css
+  fix: 'Style `:focus-visible`: browsers show it for keyboard focus and not for mouse clicks on buttons.'
+  good:
+    tabs:
+      - lang: css
+        file: snippets/outline.good.css
+
+recap:
+  - 'Tab follows the HTML order; keep what people see in the same order.'
+  - '`tabindex="0"` adds an element to the order, `tabindex="-1"` makes it script-focusable; never use positive values.'
+  - 'Always show focus: style `:focus-visible` instead of removing outlines.'
+
+related: [html.buttons, html.aria-basics, css.accessible-styling]

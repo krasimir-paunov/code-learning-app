@@ -136,7 +136,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
 | H6.1 | `html.a11y-tree` | The accessibility tree | Ext | Every control has a name, role and state; see how HTML maps to them. | — | `a11y-tree`: DOM and accessibility tree side by side | PO | 6 | todo |
-| H6.2 | `html.keyboard-focus` | Keyboard and focus | Core | Keep a logical tab order; `tabindex` 0 and -1 only, never positive. | ↑ | `focus-path`: numbered tab path drawn over the page | BUG | 6 | todo |
+| H6.2 | `html.keyboard-focus` | Keyboard and focus | Core | Keep a logical tab order; `tabindex` 0 and -1 only, never positive. | ↑ | `focus-path`: numbered tab path drawn over the page, with switches for the classic mistakes | BUG, CH | 6 | done |
 | H6.3 | `html.aria-basics` | ARIA, carefully | Core | First rule of ARIA; `aria-label(ledby)`, `aria-describedby`, `aria-expanded`, `aria-live`. | ↑ | `a11y-tree` + `sr-preview` | BUG, FB | 7 | todo |
 | H6.4 | `html.native-widgets` | Native interactive elements | Ext | Use `dialog`, `details`/`summary` and the `popover` attribute instead of custom JS widgets. | ↑ | `live-editor` | LC | 6 | todo |
 
