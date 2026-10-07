@@ -97,9 +97,10 @@ export default function SelectorLabView({ props }: VisualizerViewProps<SelectorL
             inert
           />
         </section>
-        <section className={styles.panel} aria-label="DOM tree">
+        <section className={styles.panel}>
           <h3 className={styles.panelTitle}>DOM tree</h3>
-          <div className={styles.treeBox}>
+          {/* Deep trees scroll; the box is a Tab stop so keyboard users can scroll it too. */}
+          <div className={styles.treeBox} role="region" aria-label="DOM tree" tabIndex={0}>
             <Tree element={body} matches={result.ok ? result.elements : new Set()} />
           </div>
         </section>

@@ -172,9 +172,9 @@ export default function ListShaperView({ props }: VisualizerViewProps<ListShaper
               <Summary summary={summary} />
             </ul>
           </section>
-          <section className={styles.output} aria-label="Markup">
+          <section className={styles.output}>
             <h3 className={styles.outputTitle}>Markup</h3>
-            <pre className={styles.markup}>
+            <pre className={styles.markup} role="region" aria-label="Markup" tabIndex={0}>
               <code>{html}</code>
             </pre>
           </section>

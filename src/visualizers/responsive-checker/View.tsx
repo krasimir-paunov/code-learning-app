@@ -162,11 +162,11 @@ export default function ResponsiveCheckerView({
         </div>
       </div>
 
-      <section className={styles.spec} aria-labelledby={`${id}-spec`}>
+      <section className={styles.spec}>
         <h3 id={`${id}-spec`} className={styles.title}>
           The spec: {measured ? `${done} of ${outcomes.length} checks pass` : 'measuring…'}
         </h3>
-        <div className={styles.scroll}>
+        <div className={styles.scroll} role="region" aria-labelledby={`${id}-spec`} tabIndex={0}>
           <table className={styles.table}>
             <thead>
               <tr>
