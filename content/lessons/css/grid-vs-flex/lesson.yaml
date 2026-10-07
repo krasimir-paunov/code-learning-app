@@ -1,0 +1,202 @@
+id: css.grid-vs-flex
+version: 1
+title: Grid or Flexbox?
+summary: Choose between Grid and Flexbox by asking two questions, and combine them where each fits.
+minutes: 5
+tags: [grid, flexbox, layout, decisions]
+
+concept:
+  title: One direction or two?
+  body: |
+    **Flexbox** lays items out in one direction, and the sizes come from the **content**: each
+    item asks for what it needs, and wrapped lines don't line up with each other. Use it for
+    toolbars, nav bars, tag lists and button rows.
+
+    **Grid** lays items out in two directions at once, and the sizes come from the
+    **layout**: you draw the tracks and the items fit into them, so rows and columns line up.
+    Use it for pages, card grids, forms and dashboards.
+
+    Two questions settle most cases. Should these line up in columns as well as rows? Grid.
+    Should each item be as big as its content? Flexbox. They also combine: a grid of cards,
+    each card a flex column.
+  code:
+    caption: Grid for the cards, Flexbox inside each card
+    tabs:
+      - lang: css
+        file: snippets/both.css
+
+playground:
+  visualizer: layout-chooser
+  props:
+    width: { min: 240, max: 720, start: 560 }
+    scenarios:
+      - name: Card grid
+        html: |
+          <div class="cards">
+            <article class="card">Ridgeline loop</article>
+            <article class="card">Lake loop, a flat walk</article>
+            <article class="card">Summit</article>
+            <article class="card">Pine trail</article>
+            <article class="card">River crossing</article>
+          </div>
+        base: |
+          .card { padding: 12px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
+        flex: |
+          .cards { display: flex; flex-wrap: wrap; gap: 12px; }
+          .card { flex: 1 1 150px; }
+        grid: |
+          .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+        better: grid
+        why: Rows and columns line up, and every card is the same width, the last ones too.
+        instead: Each wrapped line is laid out on its own, so the cards on the last line stretch to fill it and nothing lines up in columns.
+      - name: Toolbar
+        html: |
+          <div class="toolbar">
+            <button>Bold</button><button>Italic</button><button>Insert link</button>
+            <button>Undo</button><button>Share with your team</button>
+          </div>
+        base: |
+          button { padding: 6px 10px; border: 1px solid #94a3b8; border-radius: 4px; background: #fff; font: inherit; white-space: nowrap; overflow: hidden; }
+        flex: |
+          .toolbar { display: flex; flex-wrap: wrap; gap: 6px; }
+        grid: |
+          .toolbar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+        better: flex
+        why: Each button is as wide as its label, and they wrap onto a new line when space runs out.
+        instead: Every button gets the same width, so short labels waste space and long ones get cut off.
+      - name: Tag list
+        html: |
+          <div class="tags">
+            <span>css</span><span>layout</span><span>grid</span><span>accessibility</span><span>ux</span><span>performance</span>
+          </div>
+        base: |
+          .tags span { padding: 2px 10px; border-radius: 999px; background: #dbeafe; color: #1e3a8a; }
+        flex: |
+          .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        grid: |
+          .tags { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 6px; }
+        better: flex
+        why: Tags stay the size of their words and flow like text.
+        instead: Short tags stretch into wide pills and long ones are squeezed into columns they don't need.
+      - name: Page layout
+        html: |
+          <div class="page">
+            <header>Header</header><nav>Menu</nav><main>Main content</main><footer>Footer</footer>
+          </div>
+        base: |
+          .page > * { padding: 12px; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; }
+          main { min-height: 120px; }
+        flex: |
+          .page { display: flex; flex-wrap: wrap; gap: 8px; }
+          header, footer { flex-basis: 100%; }
+          nav { flex: 0 0 120px; }
+          main { flex: 1; }
+        grid: |
+          .page { display: grid; grid-template-columns: 120px 1fr; grid-template-areas: "header header" "nav main" "footer footer"; gap: 8px; }
+          header { grid-area: header; } nav { grid-area: nav; } main { grid-area: main; } footer { grid-area: footer; }
+        better: grid
+        why: The layout sets the sizes in both directions, and a new map can rearrange it for small screens.
+        instead: It works with wrapping tricks such as 100% bases, but the rows and columns aren't real, so any change to the layout means changing several rules.
+  prompt: |
+    Look at the card grid with Flexbox, then switch to Grid. Then try the toolbar both ways.
+    Which version fits each job?
+  explore:
+    - Drag the width down on **Card grid** in both layouts. Where do the last cards go?
+    - Which jobs ask for sizes to come from the content?
+
+challenges:
+  - id: line-up
+    type: predict-output
+    prompt: Both containers are 250px wide and wrap four items onto two lines. Does the fourth item sit directly under the second? What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      false
+      true
+    choices:
+      - |
+        false
+        true
+      - |
+        true
+        true
+      - |
+        true
+        false
+      - |
+        false
+        false
+    verify: browser
+    hints:
+      - In Flexbox, each wrapped line is laid out on its own.
+      - In Grid, both lines share the same column tracks.
+    explanation: |
+      Flexbox lines don't know about each other: the second line starts with a 100px item, so the
+      fourth item lands at 100px, not under the second at 80px. Grid items sit in shared columns,
+      so the second and fourth start at the same line.
+
+  - id: product-list
+    type: choice
+    prompt: A shop shows 12 product cards that must line up in neat rows and columns at every width. Which fits best?
+    options:
+      - text: 'Grid, with `repeat(auto-fill, minmax(…, 1fr))`'
+        correct: true
+        why: The cards line up in both directions, and the column count adapts by itself.
+      - text: Flexbox with `flex-wrap`
+        why: Wrapped lines don't line up in columns, and an incomplete last line stretches.
+      - text: A table
+        why: Tables are for tabular data, not for laying out cards.
+      - text: 'Floats'
+        why: Floats are a pre-Flexbox workaround; modern layouts don't need them.
+    explanation: Alignment in two directions is Grid's job.
+
+  - id: breadcrumbs
+    type: choice
+    prompt: 'A breadcrumb trail shows links of very different lengths: Home › Trails › Alps › Ridgeline loop. Which fits best?'
+    options:
+      - text: Flexbox, so each link is as wide as its text
+        correct: true
+        why: It's a single line of items sized by their content, which is exactly what Flexbox does.
+      - text: Grid with one equal column per link
+        why: Equal columns would waste space on "Home" and squeeze "Ridgeline loop".
+      - text: Grid with template areas
+        why: There is no two-dimensional layout to draw here.
+      - text: Either; they behave the same here
+        why: Grid sizes from the tracks you draw, Flexbox from the content, and here that difference shows.
+    explanation: One direction, content-sized items, so Flexbox.
+
+production:
+  - title: Both in the same component
+    body: |
+      Real interfaces nest them: a Grid page layout, a Grid of cards inside the main area, a
+      Flexbox row of buttons inside each card. Each level uses whichever fits that level.
+  - title: Ask the two questions in code review
+    body: |
+      "Do these line up in columns as well as rows?" and "Should each item size to its content?"
+      catch most layouts built with the less suitable tool.
+
+mistake:
+  title: Grid columns for a row of buttons
+  body: |
+    With `repeat(4, 1fr)` the widths come from the columns, not the labels. A `1fr` column
+    won't shrink below its content, so the long label keeps its 140px and the other three get
+    equal shares of what's left, however short their labels are.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/toolbar.bad.html
+        output: '87 140 87 87'
+        verify: browser
+  fix: 'A row of content-sized items is a Flexbox job: `display: flex` with a `gap`.'
+  good:
+    tabs:
+      - lang: html
+        file: snippets/toolbar.good.html
+        output: '40 140 60 80'
+        verify: browser
+
+recap:
+  - 'Flexbox: one direction, sizes from the content. Toolbars, nav bars, tags.'
+  - 'Grid: two directions, sizes from the layout. Pages, card grids, dashboards.'
+  - Combine them freely; pick per level by asking about columns and content sizes.
+
+related: [css.flex-wrap-patterns, css.grid-auto, css.grid-areas]

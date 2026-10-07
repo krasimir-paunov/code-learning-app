@@ -1,0 +1,28 @@
+<div class="flex"><div class="a"></div><div class="b" id="f2"></div><div class="c"></div><div class="d" id="f4"></div></div>
+<div class="grid"><div></div><div id="g2"></div><div></div><div id="g4"></div></div>
+<style>
+  .flex, .grid {
+    position: relative;
+    width: 250px;
+  }
+  .flex {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .flex div, .grid div {
+    height: 20px;
+  }
+  .a { width: 80px; }
+  .b { width: 140px; }
+  .c { width: 100px; }
+  .d { width: 60px; }
+</style>
+<script>
+  const left = (id) => document.getElementById(id).offsetLeft;
+  console.log(left('f2') === left('f4'));
+  console.log(left('g2') === left('g4'));
+</script>

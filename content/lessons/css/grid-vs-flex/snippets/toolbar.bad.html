@@ -1,0 +1,19 @@
+<div class="toolbar"><div><span class="w40"></span></div><div><span class="w140"></span></div><div><span class="w60"></span></div><div><span class="w80"></span></div></div>
+<style>
+  .toolbar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 400px;
+  }
+  span {
+    display: inline-block;
+    height: 20px;
+  }
+  .w40 { width: 40px; }
+  .w140 { width: 140px; }
+  .w60 { width: 60px; }
+  .w80 { width: 80px; }
+</style>
+<script>
+  console.log([...document.querySelectorAll('.toolbar > div')].map((b) => b.offsetWidth).join(' '));
+</script>

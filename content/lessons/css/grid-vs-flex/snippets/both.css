@@ -1,0 +1,15 @@
+/* Grid lays out the cards in rows and columns… */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+/* …and each card is a flex column, with its button at the bottom. */
+.card {
+  display: flex;
+  flex-direction: column;
+}
+.card .buy {
+  margin-block-start: auto;
+}
