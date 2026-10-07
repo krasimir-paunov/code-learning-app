@@ -1,0 +1,90 @@
+.frame {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-3);
+  min-inline-size: 0;
+}
+
+.title {
+  font-size: var(--fs-md);
+  font-weight: 700;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  align-items: end;
+}
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  & button {
+    display: grid;
+    place-items: center;
+    inline-size: var(--touch-target);
+    block-size: var(--touch-target);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-2);
+    color: var(--text-1);
+    cursor: pointer;
+
+    &:disabled {
+      cursor: default;
+      opacity: 0.4;
+    }
+  }
+
+  & svg {
+    inline-size: 16px;
+    block-size: 16px;
+  }
+
+  & output {
+    min-inline-size: 2ch;
+    font-weight: 700;
+    text-align: center;
+  }
+}
+
+.stepLabel {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.area {
+  min-inline-size: 0;
+  overflow: hidden;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-1);
+}
+
+.stage {
+  inline-size: max-content;
+  max-inline-size: 100%;
+
+  .panel:last-child & {
+    inline-size: auto;
+    overflow: hidden;
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-md);
+  }
+}
+
+.readout {
+  font-size: var(--fs-sm);
+}
+
+.browser {
+  color: var(--text-2);
+}
