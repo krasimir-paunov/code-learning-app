@@ -1,0 +1,205 @@
+id: css.flex-wrap-patterns
+version: 1
+title: Wrapping and patterns
+summary: Let flex items wrap onto new lines, and build the nav bar, media object and card row you'll make on every project.
+minutes: 6
+tags: [flexbox, flex-wrap, patterns, nav bar, media object, cards]
+
+concept:
+  title: Let items wrap
+  body: |
+    Flex items stay on one line by default: they shrink, then stick out. `flex-wrap: wrap`
+    moves them onto a new line when there's no more room. With a `flex-basis`, that gives
+    layouts that adapt to any width without media queries.
+
+    - **Nav bar**: a wrapping row with `gap`; the call to action pushed right with an auto
+      margin.
+    - **Media object**: an image that never shrinks (`flex: none`) beside text that takes the
+      rest (`flex: 1`).
+    - **Card row**: wrapping cards with `flex: 1 1 200px` fit as many 200px-plus cards on a
+      line as there's room for, and stretch to fill it.
+  code:
+    caption: The three patterns
+    tabs:
+      - lang: css
+        file: snippets/patterns.css
+
+playground:
+  visualizer: pattern-lab
+  props:
+    width: { min: 240, max: 720, start: 720 }
+    patterns:
+      - name: Card row
+        container: .cards
+        items: .card
+        html: |
+          <div class="cards">
+            <article class="card"><h3>Ridgeline</h3><p>12 km loop</p></article>
+            <article class="card"><h3>Lake loop</h3><p>5 km, flat</p></article>
+            <article class="card"><h3>Summit</h3><p>18 km, steep</p></article>
+            <article class="card"><h3>Pine trail</h3><p>8 km</p></article>
+          </div>
+        base: |
+          .cards { display: flex; gap: 12px; }
+          .card { padding: 12px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
+          .card h3 { margin: 0 0 4px; font-size: 16px; }
+          .card p { margin: 0; color: #475569; }
+        toggles:
+          - selector: .cards
+            declaration: 'flex-wrap: wrap'
+            without: the cards stay on one line, squeeze, and then stick out.
+          - selector: .card
+            declaration: 'flex: 1 1 180px'
+            without: each card is only as wide as its text, leaving a ragged gap at the end of each line.
+      - name: Nav bar
+        container: .nav
+        items: .nav a
+        html: |
+          <nav class="nav">
+            <a class="logo" href="#">Trailhead</a>
+            <a href="#">Trails</a><a href="#">Gear</a><a href="#">Maps</a><a href="#">Community</a>
+            <a class="cta" href="#">Log in</a>
+          </nav>
+        base: |
+          .nav { display: flex; align-items: center; gap: 8px 16px; padding: 8px 12px; background: #0f172a; }
+          .nav a { color: #e2e8f0; text-decoration: none; white-space: nowrap; }
+          .logo { font-weight: 700; }
+          .cta { padding: 6px 12px; border-radius: 4px; background: #2563eb; }
+        toggles:
+          - selector: .nav
+            declaration: 'flex-wrap: wrap'
+            without: on a narrow screen the links run off the edge.
+          - selector: .cta
+            declaration: 'margin-inline-start: auto'
+            without: Log in sits right after the links instead of at the far end.
+      - name: Media object
+        container: .media
+        items: .media > *
+        html: |
+          <article class="media">
+            <div class="thumb"></div>
+            <div class="body">
+              <h3>Ridgeline loop reopens</h3>
+              <p>The ridge path reopened on Monday after the spring storms. Expect mud on the lower switchbacks.</p>
+            </div>
+          </article>
+        base: |
+          .media { display: flex; gap: 12px; align-items: start; }
+          .thumb { width: 96px; height: 96px; border-radius: 8px; background: linear-gradient(135deg, #1e3a8a, #93c5fd); }
+          .body h3 { margin: 0 0 4px; font-size: 16px; }
+          .body p { margin: 0; }
+        toggles:
+          - selector: .thumb
+            declaration: 'flex: none'
+            without: the picture gets squeezed narrower than 96px to make room for the text.
+          - selector: .media
+            declaration: 'flex-wrap: wrap'
+            without: on a narrow screen the text gets a sliver next to the picture.
+          - selector: .body
+            declaration: 'flex: 1 1 220px'
+            without: the text never drops below the picture, however narrow it gets.
+  prompt: |
+    The four cards are squeezed onto one line. Switch on `flex-wrap: wrap`, then the
+    `flex` basis, and drag the width down.
+  explore:
+    - Open **Media object** and drag the width down with no switches on. Watch the picture.
+    - In **Nav bar**, which switch keeps Log in at the far right even after the links wrap?
+
+challenges:
+  - id: card-wrap
+    type: visual-match
+    prompt: The three cards should wrap onto new lines, each at least 140px wide, and stretch to fill each line.
+    html: { file: snippets/cards.html }
+    starterCss: { file: snippets/cards.starter.css }
+    targetCss: { file: snippets/cards.target.css }
+    compare:
+      selectors: [.one, .two, .three]
+      tolerancePx: 1
+    viewport: { width: 380, height: 200 }
+    hints:
+      - One property on the container allows new lines.
+      - '`flex: 1 1 140px` on the cards: a 140px starting point that can grow.'
+    explanation: |
+      Two 140px cards plus the gap fit in 340px, so they share the first line and stretch to
+      fill it. The third card wraps and, alone on its line, stretches across the whole width.
+
+  - id: wrap-or-not
+    type: predict-output
+    prompt: Each item is a fixed 150px (it won't shrink) in a 400px row. What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      0
+      20
+    choices:
+      - |
+        0
+        20
+      - |
+        20
+        20
+      - |
+        0
+        0
+      - |
+        20
+        0
+    verify: browser
+    hints:
+      - Without `flex-wrap`, everything stays on one line, even if it doesn't fit.
+    explanation: |
+      Three 150px items need 450px. In the first row they stay on one line and stick out, so
+      the third item's top is 0. The second row wraps, and the third item moves to a second
+      line, 20px down.
+
+  - id: phone-nav
+    type: choice
+    prompt: On phones, the site's nav links run off the right edge of the screen. What's the Flexbox fix?
+    options:
+      - text: '`flex-wrap: wrap` on the nav'
+        correct: true
+        why: The links move onto a second line when there's no room, and every link stays reachable.
+      - text: '`overflow: hidden` on the nav'
+        why: That hides the extra links; people can no longer reach them.
+      - text: '`flex-shrink: 0` on the links'
+        why: Links that can't shrink stick out even more.
+      - text: '`justify-content: space-between` on the nav'
+        why: That spreads the links out but keeps them on one line.
+    explanation: Wrapping is how a single row of items adapts to narrow screens without losing any of them.
+
+production:
+  - title: Tag lists and chip rows
+    body: Filters, tags and chips are wrapping flex rows with a small `gap`; they reflow to any width and never need a media query.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/tags.css
+  - title: When it's really a grid
+    body: |
+      Flexbox lays out each line on its own, so cards on different lines don't line up in
+      columns. When they should, reach for CSS Grid, which comes next.
+
+mistake:
+  title: The lonely card on the last line
+  body: |
+    With `flex: 1 1 200px`, two cards fill the first line of a 500px row, and the third wraps
+    alone and stretches across the whole line, twice as wide as the others.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/orphan.bad.html
+        output: '500'
+        verify: browser
+  fix: 'When cards must line up in columns, use a grid: `repeat(auto-fill, minmax(200px, 1fr))`.'
+  good:
+    tabs:
+      - lang: html
+        file: snippets/orphan.good.html
+        output: '250'
+        verify: browser
+
+recap:
+  - '`flex-wrap: wrap` lets items move onto new lines instead of squeezing or sticking out.'
+  - 'Patterns: nav bar (wrap + auto margin), media object (`flex: none` + `flex: 1`), card row (wrap + basis).'
+  - 'Flex lines are independent; when items must line up in columns, use Grid.'
+
+related: [css.flex-sizing, css.flex-alignment, css.grid-basics]

@@ -1,0 +1,11 @@
+<div class="cards"><div class="card"></div><div class="card"></div><div class="card" id="last"></div></div>
+<style>
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    width: 500px;
+  }
+</style>
+<script>
+  console.log(document.getElementById('last').offsetWidth);
+</script>

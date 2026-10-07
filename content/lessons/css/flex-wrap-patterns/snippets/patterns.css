@@ -1,0 +1,32 @@
+/* Nav bar */
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+.nav .cta {
+  margin-inline-start: auto;
+}
+
+/* Media object */
+.media {
+  display: flex;
+  gap: 12px;
+}
+.media .thumb {
+  flex: none;
+}
+.media .body {
+  flex: 1;
+}
+
+/* Card row */
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.card {
+  flex: 1 1 200px;
+}
