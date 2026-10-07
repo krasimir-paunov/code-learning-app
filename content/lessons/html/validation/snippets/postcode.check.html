@@ -1,0 +1,8 @@
+<input id="postcode" pattern="[[pattern]]">
+<script>
+  const input = document.querySelector('#postcode');
+  for (const value of ['12345', '1234', '123456', '12a45']) {
+    input.value = value;
+    console.log(value, input.validity.patternMismatch ? 'rejected' : 'accepted');
+  }
+</script>

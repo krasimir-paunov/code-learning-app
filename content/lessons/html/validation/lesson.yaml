@@ -1,0 +1,172 @@
+id: html.validation
+version: 1
+title: Built-in validation
+summary: Let the browser check fields before it sends them, and show errors only after people have had a chance to type.
+minutes: 6
+tags: [validation, required, pattern, minlength, min, max, user-invalid, ValidityState]
+
+concept:
+  title: The browser checks before it sends
+  body: |
+    Add constraints to an input and the browser checks them when the form is submitted. It
+    shows a message and refuses to send until every field passes.
+
+    - `required`, `minlength`, `maxlength`
+    - `pattern`: a regular expression the **whole** value must match
+    - `min`, `max`, `step` on numbers and dates; the format of `type="email"` and `"url"`
+
+    Each failed constraint sets one flag on `input.validity`; `valid` is `true` only when none
+    is set.
+
+    Style errors with `:user-invalid`. It matches only after the user has changed the field;
+    `:invalid` is red before anyone has typed. And check again on the server: people can
+    switch the browser's checks off.
+  code:
+    caption: Constraints and an error style that waits for the user
+    tabs:
+      - lang: html
+        file: snippets/constraints.html
+
+playground:
+  visualizer: validation-lab
+  props:
+    fields:
+      - label: Username
+        name: user
+        type: text
+        constraints:
+          - { attr: required }
+          - { attr: minlength, value: '3' }
+          - { attr: pattern, value: '[a-z0-9\-]+' }
+      - label: Email
+        name: email
+        type: email
+        constraints:
+          - { attr: required }
+      - label: Tickets
+        name: tickets
+        type: number
+        constraints:
+          - { attr: required }
+          - { attr: min, value: '1' }
+          - { attr: max, value: '8' }
+  prompt: |
+    Switch the error style to `:invalid`: the empty field is red before you have touched it.
+    Switch back to `:user-invalid`, type **Al** and click outside the field.
+  explore:
+    - Type **Al!** and read which flags are true. Then switch off `pattern`.
+    - Empty the field and press **Send**. What does the browser do?
+    - Pick **Tickets** and type 12.
+
+challenges:
+  - id: postcode-pattern
+    type: fill-blank
+    prompt: Postcodes here are exactly five digits. Write the `pattern`.
+    code: { lang: html, file: snippets/postcode.html }
+    blanks:
+      pattern:
+        accept: ['[0-9]{5}', '\d{5}', '[0-9][0-9][0-9][0-9][0-9]']
+        label: the pattern
+    check:
+      file: snippets/postcode.check.html
+      output: |
+        12345 accepted
+        1234 rejected
+        123456 rejected
+        12a45 rejected
+      verify: browser
+    hints:
+      - '`[0-9]` matches one digit.'
+      - '`{5}` repeats the thing before it exactly five times. No `^` or `$` needed: the whole value must match anyway.'
+    explanation: '`[0-9]{5}` (or `\d{5}`) means five digits. The browser anchors `pattern` to the whole value, so six digits fail too.'
+
+  - id: signup-rules
+    type: live-code
+    prompt: |
+      Add the sign-up rules: every field is required, usernames are 3 to 20 characters, the email
+      must be a valid address, and people must be at least 16. Show errors with a red border, but
+      only after the user has changed a field.
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/signup.starter.html }
+    solution:
+      index.html: { file: snippets/signup.solution.html }
+    tests: { file: snippets/signup.test.js }
+    hints:
+      - '`required`, `minlength`/`maxlength`, `type="email"` and `min`.'
+      - 'Add a `<style>` with `input:user-invalid { border-color: … }`.'
+    explanation: |
+      The browser now blocks bad submissions and explains why, with no script at all. The
+      red border appears only once someone has had a chance to fill a field in.
+
+  - id: trust-the-browser
+    type: choice
+    prompt: The form validates every field in the browser. Can the server skip checking the data?
+    options:
+      - text: No. Requests can come from anywhere, with any data.
+        correct: true
+        why: Anyone can switch off the checks, edit the HTML in DevTools, or send a request without a browser at all.
+      - text: Yes, as long as every field has a constraint.
+        why: Constraints only run in a browser that respects them; the server receives whatever is sent.
+      - text: Yes, if the form uses POST.
+        why: The method changes where the data travels, not whether it can be faked.
+      - text: Only for `type="email"` fields.
+        why: Every field can arrive with any value.
+    explanation: Browser validation is for people, to catch mistakes early. The server validates for safety.
+
+production:
+  - title: Your own rules with `setCustomValidity`
+    body: |
+      Some rules need a script, like "the passwords match". A non-empty custom message marks the
+      field invalid, and the browser blocks the submit and shows your text.
+    code:
+      tabs:
+        - lang: js
+          file: snippets/custom.js
+  - title: Escape `-` inside brackets in a pattern
+    body: |
+      Browsers compile `pattern` with the regular expression `v` flag, which rejects an unescaped
+      `-` at the end of a character class. An invalid pattern is ignored without a word, so the
+      field accepts anything. Write `\-` instead.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/escape.html
+          output: |
+            a false
+            b true
+          verify: browser
+  - title: Connecting custom error messages
+    body: |
+      Apps that show their own error text link it to the field with `aria-describedby` and mark the
+      field with `aria-invalid`, so screen readers read the message with the field.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/described.html
+
+mistake:
+  title: Error styles on `:invalid`
+  body: |
+    An empty required field is invalid from the moment the page loads, so every required field
+    starts out red and the form scolds people before they have typed anything.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/invalid.bad.html
+        output: 'true'
+        verify: browser
+  fix: 'Use `:user-invalid`: it matches only after the user has changed the field or tried to submit.'
+  good:
+    tabs:
+      - lang: html
+        file: snippets/invalid.good.html
+        output: 'false'
+        verify: browser
+
+recap:
+  - '`required`, `pattern`, `minlength`/`maxlength`, `min`/`max` and email/url types are checked before submit.'
+  - 'Each failed rule sets one flag on `input.validity`; `validationMessage` explains it.'
+  - 'Style errors with `:user-invalid`, and always validate again on the server.'
+
+related: [html.form-basics, html.input-types, css.pseudo-classes]

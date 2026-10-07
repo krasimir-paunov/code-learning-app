@@ -1,0 +1,14 @@
+<form action="/signup" method="post">
+  <label for="user">Username</label>
+  <input id="user" name="user" required minlength="3" pattern="[a-z0-9\-]+">
+
+  <label for="age">Age</label>
+  <input type="number" id="age" name="age" min="16" max="120">
+
+  <button>Sign up</button>
+</form>
+<style>
+  input:user-invalid {
+    border-color: #b91c1c;
+  }
+</style>

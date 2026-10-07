@@ -1,0 +1,7 @@
+<input id="a" pattern="[a-z0-9-]+" value="Al!">
+<input id="b" pattern="[a-z0-9\-]+" value="Al!">
+<script>
+  for (const id of ['a', 'b']) {
+    console.log(id, document.getElementById(id).validity.patternMismatch);
+  }
+</script>
