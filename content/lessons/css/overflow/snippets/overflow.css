@@ -1,0 +1,14 @@
+.table-wrap {
+  overflow-x: auto;
+}
+
+.chat-log {
+  max-height: 20rem;
+  overflow-y: auto;
+}
+
+.product-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

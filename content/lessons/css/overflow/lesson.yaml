@@ -1,0 +1,138 @@
+id: css.overflow
+version: 1
+title: Overflow
+summary: Decide what happens to content that doesn't fit its box, and cut a long title with an ellipsis.
+minutes: 4
+tags: [overflow, scroll, clip, text-overflow, ellipsis]
+
+concept:
+  title: When content doesn't fit
+  body: |
+    A box with a fixed `height` (or `width`) can't grow, so extra content overflows.
+    `overflow` decides what happens to it:
+
+    - `visible` (default): it spills out over whatever comes next.
+    - `auto`: the box scrolls, with scrollbars only when needed. Your usual choice.
+    - `scroll`: the box scrolls and always keeps its scrollbars.
+    - `hidden`: cut off. Users can't scroll to it, but focus and scripts can.
+    - `clip`: cut off, and nothing can scroll it.
+
+    `overflow-x` and `overflow-y` set one direction. Often the better fix is no fixed height at
+    all, so the box grows with its content.
+  code:
+    caption: Overflow where it belongs
+    tabs:
+      - lang: css
+        file: snippets/overflow.css
+
+playground:
+  visualizer: overflow-lab
+  props:
+    content: |
+      <p>Our trail shoes are light, waterproof and grippy on wet rock. The sole is recycled rubber
+      with 5mm lugs, and the upper dries in under an hour after a river crossing.</p>
+      <p>Every pair is tested for 500km before it reaches the shop.</p>
+    next: Next section
+    size: { width: 280, height: 110 }
+    title: Ridgeline Ultra Waterproof Trail Running Shoe
+  prompt: |
+    The text doesn't fit its 110px-high box, so it spills over the next section. Switch
+    `overflow` to `auto`. Then drag the round handle to resize the box.
+  explore:
+    - Make the box tall enough for everything. Which value still reserves room for scrollbars?
+    - In **Truncating a title**, tick only `text-overflow` first. Why does nothing happen?
+
+challenges:
+  - id: truncate-title
+    type: visual-match
+    prompt: Keep the product title on one line and cut it with "…" where it reaches the card's edge.
+    html: { file: snippets/title.html }
+    starterCss: { file: snippets/title.starter.css }
+    targetCss: { file: snippets/title.target.css }
+    compare:
+      selectors: [.title, .card]
+      tolerancePx: 1
+      properties: [white-space, overflow-x, text-overflow]
+    viewport: { width: 300, height: 160 }
+    hints:
+      - An ellipsis only marks text that overflows sideways. Is the title overflowing, or wrapping?
+      - 'Three declarations: no wrapping, clip the overflow with `overflow: hidden`, then mark it.'
+    explanation: '`white-space: nowrap` forces one line, `overflow: hidden` cuts what sticks out, and `text-overflow: ellipsis` draws the "…" at the cut.'
+
+  - id: hidden-vs-clip
+    type: predict-output
+    prompt: Both boxes cut off their content. What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      80
+      0
+    choices:
+      - |
+        80
+        0
+      - |
+        0
+        0
+      - |
+        80
+        80
+      - |
+        0
+        80
+    verify: browser
+    hints:
+      - Which of the two is still a scroll container?
+    explanation: |
+      `hidden` hides the scrollbars but the box still scrolls, so a script can move it to 80.
+      `clip` makes no scroll container at all, so `scrollTop` stays 0.
+
+  - id: wide-table
+    type: choice
+    prompt: A size chart table is wider than a phone screen and makes the whole page scroll sideways. What is the best fix?
+    options:
+      - text: 'Wrap the table in a `div` with `overflow-x: auto`'
+        correct: true
+        why: Only the table scrolls; the rest of the page stays put and every column is still reachable.
+      - text: 'Add `overflow-x: hidden` to `body`'
+        why: The sideways scroll is gone, but so are the columns past the edge; nobody can reach them.
+      - text: 'Add `overflow: hidden` to the table'
+        why: The table's own overflow isn't the problem; its width is. The extra columns still stretch the page or get cut off.
+      - text: Shrink the table's font until it fits
+        why: It would need unreadably small text on narrow phones, and breaks again when the user enlarges text.
+    explanation: Give wide content its own scroll container instead of letting it scroll, or break, the page.
+
+production:
+  - title: Scrollable regions need keyboard access
+    body: |
+      A scrolling wrapper should be focusable so keyboard users can scroll it with the arrow keys.
+      Give it `tabindex="0"`, and a role and name so screen readers announce what it is.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/table-wrap.html
+  - title: Overflow also clips what you don't expect
+    body: |
+      `overflow: hidden` on a card, often added to round the corners of an image, also cuts off a
+      dropdown menu that opens past the card's edge, and the parts of focus outlines drawn outside it.
+
+mistake:
+  title: Hiding the page's sideways scroll
+  body: |
+    Something is wider than the screen, so the page scrolls sideways on phones. `overflow-x: hidden`
+    on `body` removes the scrollbar, but the wide content is still cut off and now unreachable.
+  bad:
+    tabs:
+      - lang: css
+        file: snippets/page.bad.css
+  fix: Find the wide element in DevTools and make it fit, or give it its own scroll container.
+  good:
+    tabs:
+      - lang: css
+        file: snippets/page.good.css
+
+recap:
+  - '`overflow` handles content that doesn''t fit: `auto` scrolls when needed, `hidden` and `clip` cut it off.'
+  - 'An ellipsis needs three declarations: `white-space: nowrap`, `overflow: hidden`, `text-overflow: ellipsis`.'
+  - Give wide content its own scroll container; never hide the page's overflow.
+
+related: [css.display, css.box-model, css.units]

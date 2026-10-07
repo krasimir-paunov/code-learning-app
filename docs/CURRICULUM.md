@@ -179,7 +179,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 | C2.3 | `css.margin-collapse` | Margin collapsing | Ext | Predict collapsed vertical margins and how flex/grid avoid it. | ↑ | `box-inspector` (two blocks) | PO | 5 | todo |
 | C2.4 | `css.units` | Units | Core | Choose `rem`, `em`, `%`, `px`, `ch`, `vw`/`dvh` deliberately. | ↑ | `unit-lab`: root font-size and viewport sliders | PO | 7 | done |
 | C2.5 | `css.display` | `display` | Core | Block vs inline vs inline-block; `display: none` vs `visibility: hidden`. | ↑ | `flow-lab`: restyle phrases in a live sentence, measured boxes | PO, VM, CH | 5 | done |
-| C2.6 | `css.overflow` | Overflow | Core | Control overflow; truncate text with an ellipsis. | ↑ | `live-editor` | VM | 4 | todo |
+| C2.6 | `css.overflow` | Overflow | Core | Control overflow; truncate text with an ellipsis. | ↑ | `overflow-lab`: drag-resize a box across overflow modes; declaration switches for an ellipsis | VM, PO, CH | 4 | done |
 
 ### C3 · Color, type and surfaces — Entry: C2.6
 

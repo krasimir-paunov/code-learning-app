@@ -1,0 +1,12 @@
+.card {
+  width: 220px;
+  padding: 12px;
+  border: 1px solid #5d6e87;
+}
+.title {
+  margin: 0;
+  font-size: 18px;
+}
+.price {
+  margin: 4px 0 0;
+}

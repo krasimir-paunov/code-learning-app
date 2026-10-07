@@ -1,0 +1,22 @@
+<div class="box hidden"><div class="tall"></div></div>
+<div class="box clip"><div class="tall"></div></div>
+<style>
+  .box {
+    height: 100px;
+  }
+  .tall {
+    height: 300px;
+  }
+  .hidden {
+    overflow: hidden;
+  }
+  .clip {
+    overflow: clip;
+  }
+</style>
+<script>
+  for (const box of document.querySelectorAll('.box')) {
+    box.scrollTop = 80;
+    console.log(box.scrollTop);
+  }
+</script>
