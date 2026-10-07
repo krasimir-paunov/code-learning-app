@@ -25,7 +25,11 @@ for (const lesson of LESSONS) {
     page.on('console', (message) => {
       if (message.type() === 'error') errors.push(message.text());
     });
-    await seedProgress(page, freeRoamProgress());
+    // Desktop uses the largest editor font a learner can pick, so long code lines overflow on
+    // every platform and editor scroll areas are always checked.
+    const progress = freeRoamProgress();
+    if (info.project.name === 'desktop') progress.settings.editorFontSize = 24;
+    await seedProgress(page, progress);
     await page.goto(`/learn/${lesson.id}`);
     await expect(
       page.getByRole('heading', { level: 1, name: lesson.title.replaceAll('`', '') }),
@@ -55,6 +59,19 @@ for (const lesson of LESSONS) {
       .exclude('[data-a11y-demo]')
       .analyze();
     expect(results.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+
+    // WCAG 1.4.12 text spacing widens text much as other platforms' fonts do. Whatever then
+    // scrolls must stay reachable from the keyboard, and the page must still not scroll sideways.
+    await page.addStyleTag({
+      content:
+        '* { letter-spacing: 0.12em !important; word-spacing: 0.16em !important; line-height: 1.5 !important; }',
+    });
+    const spaced = await new AxeBuilder({ page })
+      .include('main')
+      .exclude('iframe')
+      .withRules(['scrollable-region-focusable'])
+      .analyze();
+    expect(spaced.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
     expect(errors).toEqual([]);
   });
 }
