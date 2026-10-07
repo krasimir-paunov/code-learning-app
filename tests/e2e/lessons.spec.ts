@@ -46,11 +46,13 @@ for (const lesson of LESSONS) {
     expect(sideways).toBeLessThanOrEqual(0);
 
     // Contrast demos fail on purpose (WCAG 1.4.3 exempts text that is part of a picture); the
-    // same information is always given as readable text next to them.
+    // same information is always given as readable text next to them. ARIA demos start broken
+    // on purpose too (a nameless icon button): the lesson is about fixing them.
     const results = await new AxeBuilder({ page })
       .include('main')
       .exclude('iframe')
       .exclude('[data-contrast-demo]')
+      .exclude('[data-a11y-demo]')
       .analyze();
     expect(results.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
     expect(errors).toEqual([]);

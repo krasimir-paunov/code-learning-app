@@ -144,13 +144,16 @@ export default function AriaWorkbenchView({ props }: VisualizerViewProps<AriaWor
       </fieldset>
 
       <div className={styles.layout}>
-        <ShadowStage
-          html={html}
-          css={PAGE_CSS}
-          className={styles.stage}
-          label="The widget"
-          onRender={(r) => setRoot((c) => (c === r ? c : r))}
-        />
+        {/* The widgets start broken on purpose (a button with no name); the lesson is fixing them. */}
+        <div data-a11y-demo>
+          <ShadowStage
+            html={html}
+            css={PAGE_CSS}
+            className={styles.stage}
+            label="The widget"
+            onRender={(r) => setRoot((c) => (c === r ? c : r))}
+          />
+        </div>
         <section className={styles.panel} aria-label="What assistive technology gets">
           <h3 className={styles.title}>What assistive technology gets</h3>
           {info && (
