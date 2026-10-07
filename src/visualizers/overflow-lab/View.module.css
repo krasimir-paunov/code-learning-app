@@ -1,0 +1,117 @@
+.frame {
+  container-type: inline-size;
+}
+
+.layout {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@container (min-width: 760px) {
+  .layout {
+    grid-template-columns: 3fr 2fr;
+    align-items: start;
+  }
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-3);
+  min-inline-size: 0;
+}
+
+.title {
+  font-size: var(--fs-md);
+  font-weight: 700;
+}
+
+.stageWrap {
+  position: relative;
+}
+
+.stage {
+  /* Spilled content stays inside the stage instead of covering the controls below. */
+  overflow: clip;
+  padding: var(--space-4);
+  border: var(--border-width) dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-1);
+  font-size: var(--fs-sm);
+}
+
+.panel:last-child .stage {
+  font-size: var(--fs-md);
+}
+
+.handle {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  inline-size: 28px;
+  block-size: 28px;
+  translate: -50% -50%;
+  padding: 0;
+  border: var(--border-width) solid var(--accent);
+  border-radius: var(--radius-pill);
+  background: var(--bg-2);
+  color: var(--accent);
+  cursor: nwse-resize;
+  touch-action: none;
+
+  & svg {
+    inline-size: 16px;
+    block-size: 16px;
+  }
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  font-size: var(--fs-sm);
+
+  & dt {
+    color: var(--text-3);
+  }
+
+  & dd {
+    margin: 0;
+    font-weight: 700;
+  }
+}
+
+.result {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.rule {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.selector {
+  float: inline-start;
+  margin-block-end: var(--space-1);
+  padding: 0;
+}
+
+.declaration {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-inline-start: var(--space-4);
+  cursor: pointer;
+
+  & input {
+    accent-color: var(--accent);
+  }
+}
