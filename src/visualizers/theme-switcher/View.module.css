@@ -104,7 +104,7 @@
 }
 
 .idle {
-  color: var(--text-3);
+  color: var(--text-2);
   font-family: var(--font-body);
   font-size: var(--fs-xs);
 }
@@ -121,7 +121,7 @@
   }
 
   & [data-off] {
-    color: var(--text-3);
+    color: var(--text-2);
     text-decoration: line-through;
   }
 }
@@ -138,6 +138,7 @@
     background: var(--code-bg);
     font-family: var(--font-mono);
     font-size: var(--fs-code);
-    overflow-x: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
 }
