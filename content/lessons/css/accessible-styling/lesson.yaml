@@ -1,0 +1,172 @@
+id: css.accessible-styling
+version: 1
+title: Accessible styling
+summary: Keep focus visible, text readable and information in more than colour, and hide text from sight without hiding it from screen readers.
+minutes: 6
+tags: [accessibility, focus-visible, contrast, visually-hidden, colour]
+
+concept:
+  title: Styles can lock people out
+  body: |
+    - **Focus**: every control shows where keyboard focus is. Style `:focus-visible`; never
+      remove outlines without a clearer replacement.
+    - **Contrast**: 4.5:1 for text, 3:1 for large text and the parts of controls.
+    - **Colour alone**: errors, states and links need a second cue, such as text, an icon or
+      an underline.
+    - **Hiding text**: `display: none` hides it from everyone, screen readers included. A
+      visually-hidden class hides it only from the eye.
+    - **Text that grows**: people enlarge text. Size in rem and avoid fixed heights on boxes
+      that hold text.
+  code:
+    caption: Three helpers almost every stylesheet has
+    tabs:
+      - lang: css
+        file: snippets/a11y.css
+
+playground:
+  visualizer: a11y-audit
+  props:
+    focusTarget: .subscribe
+    html: |
+      <header class="bar">
+        <span class="logo">Trailhead</span>
+        <button class="icon-btn"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M11 11l4 4" stroke="currentColor" stroke-width="2"/></svg><span class="label">Search</span></button>
+      </header>
+      <p class="muted">Updated 3 days ago</p>
+      <form class="signup">
+        <label for="email">Email</label>
+        <input id="email" class="field invalid" value="ana(at)example.com">
+        <p class="error-text">Enter an address like ana@example.com</p>
+        <button class="subscribe">Subscribe</button>
+      </form>
+    css: |
+      .bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; margin: -16px -16px 12px; background: #0f172a; color: #fff; }
+      .logo { font-weight: 700; }
+      .icon-btn { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 6px; background: #1e293b; color: #fff; }
+      .icon-btn svg { width: 18px; height: 18px; }
+      .icon-btn .label { display: none; }
+      .muted { margin: 0 0 12px; color: #9ca3af; font-size: 14px; }
+      .signup { display: grid; gap: 6px; justify-items: start; }
+      .field { padding: 6px 8px; border: 2px solid #94a3b8; border-radius: 4px; font: inherit; }
+      .field.invalid { border-color: #dc2626; }
+      .error-text { display: none; }
+      .subscribe { margin-top: 6px; padding: 8px 14px; border: 0; border-radius: 4px; background: #1d4ed8; color: #fff; font: inherit; }
+      .subscribe:focus { outline: none; }
+    issues:
+      - title: The "Updated" text is too faint
+        fix: '.muted { color: #4b5563; }'
+        check: { kind: contrast, selector: .muted, min: 4.5 }
+      - title: The search button has no name
+        fix: '.icon-btn .label { display: block; position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }'
+        check: { kind: name, selector: .icon-btn }
+      - title: The error is shown by colour alone
+        fix: |
+          .error-text { display: block; margin: 0; color: #b91c1c; font-size: 14px; }
+          .error-text::before { content: "⚠ "; }
+        check:
+          {
+            kind: look,
+            how: 'switch the view to "without colour". Can you still tell the field is wrong?',
+          }
+      - title: Keyboard focus is invisible
+        fix: '.subscribe:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 2px; }'
+        check:
+          {
+            kind: look,
+            how: 'press "Move keyboard focus to the button". Can you see where focus is?',
+          }
+  prompt: |
+    The page looks tidy and fails four people. Read the audit, then switch on each fix and
+    watch it pass. Use the two views to see the problems the tools can't measure.
+  explore:
+    - Before fixing the error message, switch to **without colour**. What tells you the email is wrong?
+    - 'Why does the search fix hide the label with clipping rather than `display: none`?'
+
+challenges:
+  - id: colour-only-link
+    type: find-bug
+    prompt: In body text, the link differs from the words around it by colour alone. Click the buggy line, then choose the fix.
+    code: { lang: css, file: snippets/links.bug.css }
+    page: { file: snippets/page.html }
+    bugLines: [6]
+    fix:
+      choices:
+        - { text: '  text-decoration: underline;', correct: true }
+        - { text: '  text-decoration: none; font-weight: 700;' }
+        - { text: '  text-decoration: none; color: #000;' }
+        - { text: '  text-decoration: overline;' }
+    tests: { file: snippets/links.test.js }
+    hints:
+      - Which cue, besides colour, has always said "this is a link"?
+    explanation: The underline marks the link for people who can't tell the two colours apart. Bold text is easily mistaken for emphasis.
+
+  - id: hide-for-eyes
+    type: choice
+    prompt: An icon button needs the word "Search" for screen readers but not on screen. How do you hide the word?
+    options:
+      - text: With a visually-hidden class (a 1px clipped box)
+        correct: true
+        why: It stays in the accessibility tree, so the button is named "Search", but takes no visible space.
+      - text: '`display: none`'
+        why: That removes it from the accessibility tree too, so the button has no name.
+      - text: '`visibility: hidden`'
+        why: Also removed from the accessibility tree, and it still takes up space.
+      - text: '`color: transparent`'
+        why: The text still takes space and shows up when people select it or use high-contrast modes.
+    explanation: 'Hide from the eye with clipping; hide from everyone with `display: none`.'
+
+  - id: required-star
+    type: choice
+    prompt: Required fields are marked only by turning their label red. What's the most robust fix?
+    options:
+      - text: Add the word "required" (or an asterisk explained above the form) and the `required` attribute
+        correct: true
+        why: Text works for everyone who can't see the red, and `required` tells assistive technology and the browser.
+      - text: Use a darker red
+        why: Colour is still the only cue, whatever the shade.
+      - text: Make the label bold as well
+        why: Bold could mean anything; it doesn't say "required".
+      - text: Add `aria-required` and keep the red
+        why: That helps screen readers, but sighted people who can't see red still get nothing.
+    explanation: Pair every colour cue with something visible that isn't colour.
+
+production:
+  - title: Forced colours keep outlines, not shadows
+    body: |
+      In Windows contrast themes, browsers replace colours and drop box shadows. A focus ring
+      drawn only with `box-shadow` vanishes, so teams pair it with a transparent outline, which
+      the theme turns into a visible one.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/forced.css
+  - title: Automated contrast checks in CI
+    body: |
+      Tools such as axe flag low contrast and missing names on every build. They can't judge
+      colour-only cues or whether a focus ring is easy to see, so those stay part of review.
+
+mistake:
+  title: Fixed heights on boxes that hold text
+  body: |
+    The card fits its text at the default size. When someone enlarges the text, the words
+    overflow the fixed height and run into whatever comes next.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/zoom.bad.html
+        output: 'true'
+        verify: browser
+  fix: 'Use `min-height`, so the box can grow with its text.'
+  good:
+    tabs:
+      - lang: html
+        file: snippets/zoom.good.html
+        output: 'false'
+        verify: browser
+
+recap:
+  - 'Visible `:focus-visible` styles, 4.5:1 text contrast, and a second cue beside colour.'
+  - 'Hide text from the eye with a visually-hidden class; `display: none` hides it from everyone.'
+  - 'Let text grow: rem sizes, `min-height` rather than `height`.'
+
+related: [css.colors, html.keyboard-focus, html.aria-basics]

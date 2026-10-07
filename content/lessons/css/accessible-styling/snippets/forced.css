@@ -1,0 +1,5 @@
+/* box-shadow disappears in forced colours (Windows contrast themes); an outline doesn't. */
+.button:focus-visible {
+  outline: 3px solid transparent;
+  box-shadow: 0 0 0 3px #1d4ed8;
+}
