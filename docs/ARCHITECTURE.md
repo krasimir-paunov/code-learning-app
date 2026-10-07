@@ -104,7 +104,7 @@ content/**/*.yaml ──► vite-plugin-content ──► Zod validate ──►
                         one lazy JSON chunk per lesson / per cheat sheet
 ```
 
-- Virtual modules: `virtual:content/manifest`, `virtual:content/lessons` (one loader per published lesson), `virtual:content/lesson/<id>/data` (a lesson's chunk; the `/data` suffix keeps ids like `js.json` from being parsed as JSON) and `virtual:content/cheatsheets`. Challenge and visualizer build plugins are discovered from `src/engine/challenges/types/*/build.ts` and `src/visualizers/*/build.ts`.
+- Virtual modules: `virtual:content/manifest`, `virtual:content/lessons` (one loader per published lesson), `virtual:content/lesson/<id>/data` (a lesson's chunk; the `/data` suffix keeps ids like `js.json` from being parsed as JSON) `virtual:content/cheatsheets` (the sheet index and one loader per sheet) and `virtual:content/cheatsheet/<track>/data` (a sheet's chunk). Challenge and visualizer build plugins are discovered from `src/engine/challenges/types/*/build.ts` and `src/visualizers/*/build.ts`.
 - The **manifest** is loaded eagerly (map, search, unlock logic). Lesson bodies are loaded with `import()` when opened, and prefetched when a map node is hovered/focused.
 - Prose fields accept a restricted Markdown subset (emphasis, inline code, links, lists, fenced code). Raw HTML is rejected at build time.
 - Every reference is resolved at build time: snippet paths, visualizer ids, challenge types, `learn:` links, prerequisite ids. A broken reference fails the build with the file and path of the error.
@@ -775,10 +775,10 @@ Results are cached by content hash (`.cache/verify.json`) so local runs only exe
 | `/` | Landing + DigitalRain (canvas) |
 | `/map` | Map (manifest, layout, Motion) |
 | `/learn/:lessonId` | LessonPlayer shell; lesson JSON, visualizer, challenge views and CodeMirror each lazy |
-| `/cheatsheets`, `/cheatsheets/:track` | Sheets + MiniSearch |
+| `/cheatsheets`, `/cheatsheets/:track` | Page + MiniSearch; every sheet's chunk loads in parallel (search spans all sheets) and is modulepreloaded by the route shell |
 | `/profile` | Stats, settings, export/import |
 
-Budgets (gzip, enforced by `tools/check-budgets.ts` in `npm run build`): initial route JS ≤ 150 KB; lesson JSON ≤ 30 KB; a visualizer ≤ 60 KB; CodeMirror loaded only when an editor is on screen. Lighthouse performance ≥ 90 on the map and a reference lesson (mobile profile). Fonts subset to Latin, preloaded for the reading font only.
+Budgets (gzip, enforced by `tools/check-budgets.ts` in `npm run build`): initial route JS ≤ 150 KB; lesson JSON ≤ 30 KB; a cheat sheet's JSON ≤ 40 KB; a visualizer ≤ 60 KB; CodeMirror loaded only when an editor is on screen. Lighthouse performance ≥ 90 on the map and a reference lesson (mobile profile). Fonts subset to Latin, preloaded for the reading font only.
 
 **First load.** Each route shell `modulepreload`s that route's lazy chunks (and, for a lesson, its content chunk), and `main.tsx` loads the initial route before the first render, so the first screen never suspends (a suspended initial route is held back by React's ~300 ms reveal throttle even when the chunk is cached). Below-the-fold lesson views mount when near the viewport or idle; CodeMirror loads only when an editor nears the viewport. Measured at the end of Phase 1 (Lighthouse 12, mobile, local preview): landing 94, map 93, both reference lessons 93, cheat sheets 94, profile 94; accessibility, best practices and SEO 100.
 

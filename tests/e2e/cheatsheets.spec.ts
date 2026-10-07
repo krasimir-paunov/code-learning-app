@@ -51,3 +51,12 @@ test('cheat sheets have no axe violations', async ({ page }) => {
     expect(results.violations, url).toEqual([]);
   }
 });
+
+test('opening the sheets from another page loads every sheet before search', async ({ page }) => {
+  await page.goto('/map');
+  await page.getByRole('navigation').getByRole('link', { name: 'Cheat sheets' }).first().click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Cheat sheets' })).toBeVisible();
+  const search = page.getByRole('searchbox', { name: 'Search all cheat sheets' });
+  await search.fill('popover');
+  await expect(page.getByRole('heading', { name: 'Popover with no script' })).toBeVisible();
+});

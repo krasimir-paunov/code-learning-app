@@ -19,6 +19,7 @@ const KB = 1024;
 const BUDGETS = {
   initialRouteJs: 150 * KB,
   lessonJson: 30 * KB,
+  sheetJson: 40 * KB,
   visualizer: 60 * KB,
 };
 
@@ -71,6 +72,8 @@ for (const [key, chunk] of Object.entries(manifest)) {
     check(`visualizer ${chunk.src}`, total(own), BUDGETS.visualizer);
   } else if (chunk.src.includes('virtual:content/lesson/')) {
     check(`lesson ${chunk.src.split('/').at(-2)}`, gzipSize(chunk.file), BUDGETS.lessonJson);
+  } else if (chunk.src.includes('virtual:content/cheatsheet/')) {
+    check(`cheat sheet ${chunk.src.split('/').at(-2)}`, gzipSize(chunk.file), BUDGETS.sheetJson);
   }
 }
 

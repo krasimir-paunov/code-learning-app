@@ -41,18 +41,20 @@ export async function listRoutes(options: { fixtures?: boolean } = {}): Promise<
       preload: [PAGES.profile],
     },
   ];
+  // Search spans every sheet, so each cheat-sheet route needs all the sheet chunks.
+  const sheetChunks = sheets.map((s) => `virtual:content/cheatsheet/${s.compiled.track}/data`);
   routes.push({
     path: '/cheatsheets/',
     title: 'Cheat sheets',
     description: 'Searchable, printable cheat sheets for every track.',
-    preload: [PAGES.sheets],
+    preload: [PAGES.sheets, ...sheetChunks],
   });
   for (const sheet of sheets) {
     routes.push({
       path: `/cheatsheets/${sheet.compiled.track}/`,
       title: `${sheet.compiled.title} cheat sheet`,
       description: `${sheet.compiled.title} at a glance: verified snippets with one-line explanations.`,
-      preload: [PAGES.sheets],
+      preload: [PAGES.sheets, ...sheetChunks],
     });
   }
   for (const module of Object.values(manifest.modules)) {

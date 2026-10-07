@@ -2,7 +2,8 @@
  * Serves validated content as virtual modules:
  * - virtual:content/manifest     → the skill graph with build-time layout (small, shared)
  * - virtual:content/lessons      → { [lessonId]: () => import(lesson chunk) }
- * - virtual:content/cheatsheets  → every compiled sheet (loaded by the cheat-sheet route)
+ * - virtual:content/cheatsheets  → the sheet index and { [track]: () => import(sheet chunk) }
+ * - virtual:content/cheatsheet/<track>/data → one compiled sheet (lazy JSON chunk)
  * - virtual:content/lesson/<id>/data → one compiled lesson (lazy JSON chunk). The /data suffix
  *   keeps ids like `js.json` from looking like a .json file to Vite.
  * The content tooling is loaded through tsx so it shares the app's TypeScript schemas.
@@ -65,7 +66,16 @@ export function contentPlugin({ fixtures = false }: { fixtures?: boolean } = {})
         return `export default ${JSON.stringify(runtimeManifest(bundle.manifest))};`;
       }
       if (name === 'cheatsheets') {
-        return `export default ${JSON.stringify(bundle.sheets.map((s) => s.compiled))};`;
+        // A small eager index (for the track nav) and one lazy chunk per sheet.
+        const index = bundle.sheets.map((s) => ({
+          track: s.compiled.track,
+          title: s.compiled.title,
+        }));
+        const loaders = bundle.sheets.map(
+          ({ compiled: { track } }) =>
+            `${JSON.stringify(track)}: () => import(${JSON.stringify(`${PREFIX}cheatsheet/${track}/data`)})`,
+        );
+        return `export const sheetIndex = ${JSON.stringify(index)};\nexport const sheetLoaders = {${loaders.join(',')}};`;
       }
       if (name === 'lessons') {
         // One lazy chunk per lesson, keyed by id.
@@ -74,6 +84,11 @@ export function contentPlugin({ fixtures = false }: { fixtures?: boolean } = {})
             `${JSON.stringify(l.id)}: () => import(${JSON.stringify(`${PREFIX}lesson/${l.id}/data`)})`,
         );
         return `export const lessonLoaders = {${entries.join(',')}};`;
+      }
+      const track = /^cheatsheet\/(.+)\/data$/.exec(name)?.[1];
+      if (track) {
+        const sheet = bundle.sheets.find((s) => s.compiled.track === track);
+        if (sheet) return `export default ${JSON.stringify(sheet.compiled)};`;
       }
       const lessonId = /^lesson\/(.+)\/data$/.exec(name)?.[1];
       if (lessonId) {

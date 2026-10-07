@@ -1,3 +1,4 @@
+import { loadSheets } from '../features/cheatsheets/sheet-data.ts';
 import { loadLesson } from '../features/lesson/lesson-data.ts';
 import { lazyRoute } from './lazy-route.tsx';
 
@@ -18,8 +19,9 @@ export const profile = lazyRoute(
 export const notFound = lazyRoute(() => import('./NotFoundPage.tsx'), 'NotFoundPage');
 
 /**
- * Loads what the first screen needs before the first render (route module and, for a lesson,
- * its content), so the initial page never suspends. `path` is relative to the base URL.
+ * Loads what the first screen needs before the first render (route module and, for a lesson
+ * or the cheat sheets, their content), so the initial page never suspends. `path` is relative
+ * to the base URL.
  */
 export async function preloadRoute(path: string): Promise<void> {
   const [, first = '', second] = path.split('/');
@@ -28,5 +30,6 @@ export async function preloadRoute(path: string): Promise<void> {
   await Promise.all([
     route.preload(),
     first === 'learn' && second ? loadLesson(second) : undefined,
+    first === 'cheatsheets' ? loadSheets() : undefined,
   ]);
 }

@@ -1,22 +1,54 @@
 import { Search } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { Link, NavLink, useParams } from 'react-router';
-import sheets from 'virtual:content/cheatsheets';
+import { sheetIndex } from 'virtual:content/cheatsheets';
 import { useDocumentTitle } from '../../app/use-document-title.ts';
 import { EmptyState } from '../../components/EmptyState.tsx';
+import { ErrorScreen } from '../../components/ErrorScreen.tsx';
 import { Kbd } from '../../components/Kbd.tsx';
 import { cx } from '../../components/cx.ts';
+import { TerminalLoader } from '../../effects/TerminalLoader.tsx';
 import { USAGE, type Usage } from '../../engine/content/cheatsheet-types.ts';
 import styles from './CheatSheets.module.css';
-import { createSheetSearch, groupByTrack, matchesUsage } from './search.ts';
+import { groupByTrack, matchesUsage } from './search.ts';
+import { cachedSheets, loadSheets, type SheetLibrary } from './sheet-data.ts';
 import { SheetEntry, UsageBadge } from './SheetEntry.tsx';
 
-const search = createSheetSearch(sheets);
-const ORDER = sheets.map((s) => s.track);
-const titleOf = (track: string) => sheets.find((s) => s.track === track)?.title ?? track;
+const ORDER = sheetIndex.map((s) => s.track);
+const titleOf = (track: string) => sheetIndex.find((s) => s.track === track)?.title ?? track;
+
+type Load = { library?: SheetLibrary; error?: boolean };
+
+/** Every sheet is its own chunk; the page waits for all of them because search spans them all. */
+export function CheatSheetsPage() {
+  const [load, setLoad] = useState<Load>(() => ({ library: cachedSheets() }));
+
+  useEffect(() => {
+    if (load.library) return;
+    let current = true;
+    loadSheets().then(
+      (library) => current && setLoad({ library }),
+      () => current && setLoad({ error: true }),
+    );
+    return () => {
+      current = false;
+    };
+  }, [load.library]);
+
+  if (load.error) {
+    return (
+      <ErrorScreen
+        title="The cheat sheets could not load"
+        message="You may be offline, or a new version was just published."
+      />
+    );
+  }
+  if (!load.library) return <TerminalLoader line="loading cheat sheets" />;
+  return <CheatSheets library={load.library} />;
+}
 
 /** Cheat sheets: never gated, instant search across every sheet, usage filter, print-friendly. */
-export function CheatSheetsPage() {
+function CheatSheets({ library: { sheets, search } }: { library: SheetLibrary }) {
   const { track } = useParams();
   const sheet = track ? sheets.find((s) => s.track === track) : undefined;
   const [query, setQuery] = useState('');

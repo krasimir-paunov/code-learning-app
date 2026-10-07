@@ -21,5 +21,10 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/test"]
+  "include": [
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/test",
+    "src/engine/content/virtual.d.ts"
+  ]
 }

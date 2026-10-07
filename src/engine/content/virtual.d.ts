@@ -13,6 +13,9 @@ declare module 'virtual:content/lessons' {
 
 declare module 'virtual:content/cheatsheets' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  const sheets: import('./cheatsheet-types.ts').CompiledSheet[];
-  export default sheets;
+  type CompiledSheet = import('./cheatsheet-types.ts').CompiledSheet;
+  /** Every sheet's track and title, in display order (eager and small). */
+  export const sheetIndex: { track: string; title: string }[];
+  /** One lazy chunk per sheet, keyed by track. */
+  export const sheetLoaders: Record<string, () => Promise<{ default: CompiledSheet }>>;
 }
