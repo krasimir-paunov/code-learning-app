@@ -1,0 +1,4 @@
+.hero {
+  min-height: 100vh;  /* fallback for very old browsers */
+  min-height: 100dvh; /* what is actually visible on phones */
+}

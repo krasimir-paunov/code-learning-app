@@ -1,0 +1,142 @@
+id: css.units
+version: 1
+title: Units
+summary: Pick each length's unit by what it should follow, whether the user's text size, the parent or the screen.
+minutes: 7
+tags: [rem, em, percent, ch, vw, dvh, px]
+
+concept:
+  title: Every unit follows something
+  body: |
+    - `px`: fixed. It ignores the user's text-size setting.
+    - `rem`: the root font-size, which is the user's browser text size (16px by default). Use it
+      for font sizes and most spacing, so everything grows when people need larger text.
+    - `em`: the element's own font-size. Good for padding that should scale with a button's
+      text; it compounds when nested elements each set `font-size` in `em`.
+    - `%`: a share of the parent (for widths).
+    - `ch`: the width of "0". `max-width: 65ch` keeps lines readable.
+    - `vw` and `dvh`: a share of the viewport. `dvh` leaves out the toolbars that cover part of
+      the screen on phones.
+  code:
+    caption: Typical units in a real stylesheet
+    tabs:
+      - lang: css
+        file: snippets/units.css
+
+playground:
+  visualizer: unit-lab
+  props:
+    lengths:
+      - { value: 240, unit: px }
+      - { value: 15, unit: rem }
+      - { value: 12, unit: em }
+      - { value: 50, unit: '%' }
+      - { value: 30, unit: ch }
+      - { value: 25, unit: vw }
+    defaults: { rootFont: 16, font: 20, parentWidth: 400, viewportWidth: 1280 }
+  prompt: |
+    Drag **Browser text size** from 16 to 24, as someone who needs larger text would. The `px`
+    bar doesn't move; the `rem` bar grows with it.
+  explore:
+    - Drag **Viewport width** to 375 (a phone). Which bar is now much shorter than the others?
+    - Switch the nesting demo between `0.8em` and `0.8rem`. Why does `em` keep shrinking?
+
+challenges:
+  - id: three-widths
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      200
+      180
+      150
+    choices:
+      - |
+        200
+        180
+        150
+      - |
+        180
+        200
+        150
+      - |
+        200
+        200
+        150
+      - |
+        160
+        180
+        50
+    verify: browser
+    hints:
+      - "`rem` uses the `html` font-size; `em` uses the element's own, which it inherits from `.card`."
+      - "`%` is a share of the parent's width."
+    explanation: |
+      `10rem` = 10 × 20px (the root). `10em` = 10 × 18px, the font-size `.b` inherits from
+      `.card`. `50%` = half of the card's 300px.
+
+  - id: user-text-size
+    type: choice
+    prompt: A user sets their browser's text size to "Very large". Which font sizes get bigger?
+    options:
+      - text: Those set in `rem` (and `em` inside them)
+        correct: true
+        why: '`rem` is relative to the root font-size, which is exactly what that setting changes.'
+      - text: Those set in `px`
+        why: '`px` is fixed; it ignores the setting (only full-page zoom would enlarge it).'
+      - text: Those set in `vw`
+        why: '`vw` follows the window width, not the text-size setting.'
+      - text: All of them, equally
+        why: Only lengths that depend on the root font-size change.
+    explanation: Set font sizes in `rem` so your type respects the reader's choice.
+
+  - id: line-length
+    type: choice
+    prompt: Body text runs across a wide screen in very long lines. Which rule keeps lines readable whatever the font size?
+    options:
+      - text: '`p { max-width: 65ch; }`'
+        correct: true
+        why: About 65 characters per line, in whatever font and size the text has.
+      - text: '`p { width: 600px; }`'
+        why: Fixed pixels give too few characters at large text sizes and break narrow screens.
+      - text: '`p { width: 50vw; }`'
+        why: Line length then depends on the window, not on the text.
+      - text: '`p { max-width: 65em; }`'
+        why: 65em is far wider than 65 characters, since most characters are narrower than 1em.
+    explanation: '`ch` measures in characters of the current font, so it is the natural unit for line length.'
+
+production:
+  - title: Type and spacing in rem
+    body: |
+      Design systems define their type scale and spacing scale in `rem`, so the whole interface
+      follows the user's text-size setting. Borders and hairlines often stay in `px`.
+  - title: Full-height sections on phones
+    body: |
+      On phones, `100vh` includes the area behind the browser's toolbars, so content gets hidden.
+      `100dvh` is the height actually visible. It is supported in all major browsers since 2022.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/dvh.css
+
+mistake:
+  title: Fixing the root font-size in pixels
+  body: |
+    `html { font-size: 16px }` makes every `rem` in the stylesheet ignore the user's text-size
+    setting. The page looks the same for you, and is too small for the people who changed it.
+  bad:
+    tabs:
+      - lang: css
+        file: snippets/root.bad.css
+  fix: Leave the root font-size alone or set it as a percentage, and size everything else in `rem`.
+  good:
+    tabs:
+      - lang: css
+        file: snippets/root.good.css
+
+recap:
+  - "`rem` for type and spacing (follows the user's setting), `em` for parts that scale with their own text."
+  - '`%` for shares of the parent, `ch` for line length, `vw`/`dvh` for the viewport.'
+  - "`px` ignores the user's text size; keep it for borders and fine details."
+
+related: [css.box-sizing, css.typography, css.intrinsic-layout]

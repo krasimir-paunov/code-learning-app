@@ -1,0 +1,17 @@
+<div class="card">
+  <div class="a"></div>
+  <div class="b"></div>
+  <div class="c"></div>
+</div>
+<style>
+  html { font-size: 20px; }
+  .card { font-size: 18px; width: 300px; }
+  .a { width: 10rem; }
+  .b { width: 10em; }
+  .c { width: 50%; }
+</style>
+<script>
+  for (const selector of ['.a', '.b', '.c']) {
+    console.log(document.querySelector(selector).offsetWidth);
+  }
+</script>
