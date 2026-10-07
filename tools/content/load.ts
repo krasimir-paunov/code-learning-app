@@ -86,6 +86,11 @@ export function discoverLessons(options: ContentOptions, issues: ContentIssue[])
           issues.push({ file: relative(file), message: `Invalid YAML: ${String(error)}` });
           continue;
         }
+        if (out.some((lesson) => lesson.id === id)) {
+          // A test fixture must never stand in for a real lesson: the e2e build would test the wrong one.
+          issues.push({ file: relative(file), message: `"${id}" already exists as a real lesson` });
+          continue;
+        }
         const declared = (data as { id?: unknown } | null)?.id;
         if (declared !== id) {
           issues.push({

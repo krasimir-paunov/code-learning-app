@@ -27,7 +27,9 @@ for (const lesson of LESSONS) {
     });
     await seedProgress(page, freeRoamProgress());
     await page.goto(`/learn/${lesson.id}`);
-    await expect(page.getByRole('heading', { level: 1, name: lesson.title })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: lesson.title.replaceAll('`', '') }),
+    ).toBeVisible();
 
     // Scroll through so every lazily mounted view loads.
     for (const id of ['playground', 'challenges', 'production', 'mistake', 'recap']) {

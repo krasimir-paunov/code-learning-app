@@ -91,13 +91,16 @@ test('hints are progressive and the solution can be revealed after a try', async
 
 test('visual-match compares the rendered layout with the target', async ({ page }) => {
   await seedProgress(page, freeRoamProgress());
-  await page.goto('/learn/css.overflow');
-  const match = challenge(page, 1);
+  await page.goto('/learn/css.box-sizing');
+  const match = challenge(page, 2);
   await match.getByRole('button', { name: 'Compare with target' }).click();
-  await expect(match).toContainText('0 of 1 elements match. .box: width is 100px, target 220px');
+  await expect(match).toContainText('0 of 2 elements match');
   await match.getByRole('textbox', { name: 'style.css editor' }).click();
   await page.keyboard.press('ControlOrMeta+A');
-  await page.keyboard.insertText('.box {\n  width: 200px;\n  padding: 10px;\n}\n');
+  await page.keyboard.insertText(
+    '.row { display: flex; flex-wrap: wrap; width: 300px; }\n' +
+      '.col { flex: none; box-sizing: border-box; width: 50%; padding: 16px; border: 2px solid; }\n',
+  );
   await match.getByRole('button', { name: 'Compare with target' }).click();
   await expect(match).toContainText('Passed');
 });
