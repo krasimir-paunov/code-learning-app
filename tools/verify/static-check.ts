@@ -13,7 +13,11 @@ export const STATIC_OK = 'static check: ok';
 const INSPECT = String.raw`
 function inspectCss(css) {
   const problems = [];
-  const text = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  // Descriptor blocks (@font-face, @property...) hold descriptors, not properties; the CSSOM
+  // walk below still checks that they parse.
+  const text = css
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/@(font-face|property|counter-style|page|font-feature-values)[^{]*\{[^}]*\}/g, '');
 
   for (const m of text.matchAll(/(--[\w-]+|[a-z-]+)\s*:\s*([^;{}]+?)\s*(?:;|(?=\}))/g)) {
     const name = m[1];
@@ -57,6 +61,8 @@ function inspectCss(css) {
         if (rule.media.mediaText === 'not all' || bad.length)
           problems.push('invalid media query: ' + rule.conditionText);
       }
+      if (rule instanceof CSSFontFaceRule && !rule.style.getPropertyValue('src'))
+        problems.push('@font-face without a valid src');
       if (rule.cssRules) walk(rule.cssRules);
     }
   };
