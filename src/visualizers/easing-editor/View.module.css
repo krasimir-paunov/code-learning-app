@@ -1,0 +1,239 @@
+.frame {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.preset {
+  min-block-size: var(--touch-target);
+  padding: 0 var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  color: var(--text-1);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+
+  &[aria-pressed='true'] {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+@container (min-width: 600px) {
+  .layout {
+    grid-template-columns: 16rem minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.graph {
+  inline-size: 100%;
+  max-inline-size: 18rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-1);
+  touch-action: none;
+}
+
+.box {
+  fill: none;
+  stroke: var(--border-strong);
+  stroke-dasharray: 3 3;
+}
+
+.arm {
+  stroke: var(--text-3);
+  stroke-width: 1.5;
+}
+
+.curve {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.handle {
+  fill: var(--bg-0);
+  stroke: var(--warning);
+  stroke-width: 3;
+  cursor: grab;
+}
+
+.axis {
+  fill: var(--text-3);
+  font-size: 10px;
+}
+
+.side {
+  display: grid;
+  gap: var(--space-3);
+  min-inline-size: 0;
+}
+
+.numbers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2) var(--space-3);
+  margin: 0;
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+
+  & legend {
+    padding-inline: var(--space-1);
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+  }
+
+  & label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  & input {
+    inline-size: 5rem;
+    padding: var(--space-1) var(--space-2);
+    border: var(--border-width) solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg-1);
+    color: var(--text-1);
+    /* Below 16px, iOS Safari zooms the page when the field gets focus. */
+    font-size: var(--fs-base);
+    color-scheme: dark;
+  }
+}
+
+.code {
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--code-bg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-code);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.strip {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+
+  & figcaption {
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+  }
+}
+
+.frames {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  & li {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr) 3rem;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+  }
+}
+
+.time {
+  color: var(--text-3);
+}
+
+.progress {
+  color: var(--text-2);
+  text-align: end;
+}
+
+.track {
+  position: relative;
+  block-size: 14px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-2);
+}
+
+.dot {
+  position: absolute;
+  inset-block: 1px;
+  inline-size: 12px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+}
+
+.demo {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.play {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-block-size: var(--touch-target);
+  padding: 0 var(--space-3);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  color: var(--text-1);
+  cursor: pointer;
+
+  & svg {
+    inline-size: 16px;
+    block-size: 16px;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+}
+
+.lane {
+  container-type: inline-size;
+  position: relative;
+  block-size: 28px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-2);
+}
+
+.ball {
+  position: absolute;
+  inset-block: 2px;
+  inset-inline-start: 2px;
+  inline-size: 24px;
+  border-radius: var(--radius-pill);
+  background: var(--warning);
+
+  &[data-moved] {
+    translate: calc(100cqi - 28px) 0;
+  }
+}
+
+.note {
+  grid-column: 1 / -1;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
