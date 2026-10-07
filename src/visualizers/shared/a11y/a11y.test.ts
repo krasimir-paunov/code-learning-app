@@ -182,3 +182,14 @@ describe('accessibleName: placeholder', () => {
     expect(b && accessibleName(b)).toBe('Only placeholder');
   });
 });
+
+describe('accessibleName: CSS-hidden text', () => {
+  it('leaves out text hidden with display: none, keeps visually hidden text', () => {
+    document.body.innerHTML =
+      '<button id="a"><span style="display: none">Search</span></button>' +
+      '<button id="b"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%)">Search</span></button>';
+    const [a, b] = document.querySelectorAll('button');
+    expect(a && accessibleName(a)).toBe('');
+    expect(b && accessibleName(b)).toBe('Search');
+  });
+});

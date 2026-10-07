@@ -158,12 +158,20 @@ export function isHidden(element: Element): boolean {
 
 const squash = (text: string) => text.replace(/\s+/g, ' ').trim();
 
+/** Hidden by CSS: browsers leave such text out of accessible names. */
+function cssHidden(element: Element): boolean {
+  if (!element.isConnected) return false;
+  const style = element.ownerDocument.defaultView?.getComputedStyle(element);
+  return style?.display === 'none' || style?.visibility === 'hidden';
+}
+
 /** Text a node contributes to a name computed from content (alt text included). */
 function textOf(node: Node): string {
   if (node.nodeType === 3) return node.textContent ?? '';
   if (node.nodeType !== 1) return '';
   const element = node as Element;
   if (element.hasAttribute('hidden') || element.getAttribute('aria-hidden') === 'true') return '';
+  if (cssHidden(element)) return '';
   const label = element.getAttribute('aria-label')?.trim();
   if (label) return ` ${label} `;
   if (element.localName === 'img') return ` ${element.getAttribute('alt') ?? ''} `;
