@@ -1,0 +1,126 @@
+.frame {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+}
+
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--touch-target);
+  padding: 0 var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  color: var(--text-1);
+  cursor: pointer;
+
+  &[aria-pressed='true'] {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+}
+
+.dot {
+  inline-size: 14px;
+  block-size: 14px;
+  border: var(--border-width) dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+@container (min-width: 700px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.column {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.hint {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.painter {
+  display: grid;
+  gap: var(--space-1);
+  touch-action: none;
+}
+
+.cell {
+  min-block-size: 3rem;
+  padding: var(--space-1);
+  overflow: hidden;
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--bg-0);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  overflow-wrap: anywhere;
+  cursor: crosshair;
+
+  &[data-empty] {
+    border: var(--border-width) dashed var(--border-strong);
+    background: var(--bg-1);
+    color: var(--text-2);
+  }
+}
+
+.preview {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+
+  & figcaption {
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+  }
+}
+
+.stage {
+  overflow: hidden;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.warning {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-inline-start: 3px solid var(--warning);
+  background: var(--bg-2);
+  font-size: var(--fs-sm);
+
+  & svg {
+    flex: none;
+    color: var(--warning);
+  }
+}
+
+.code {
+  margin: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--code-bg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-code);
+  white-space: pre-wrap;
+}
