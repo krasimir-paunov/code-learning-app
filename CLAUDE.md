@@ -33,7 +33,7 @@ Interactive learning web app (working title **Project Neon**; the name lives onl
 - `docs/DESIGN.md`: tokens, typography, motion, component inventory, where effects may and may not appear.
 - `docs/ROADMAP.md`: phases 1–8 and the lesson Definition of Done.
 
-**Current phase:** 1 (foundation) done and live at https://krasimir-paunov.github.io/code-learning-app/ (CI deploys `main`). Phase 2 starts only when the user says so.
+**Current phase:** 2 (HTML and CSS Core) built and live at https://krasimir-paunov.github.io/code-learning-app/ (CI deploys `main`); its manual screen-reader pass is still open. Phase 3 starts only when the user says so.
 
 ## Stack
 

@@ -77,6 +77,8 @@ Exit-criteria status (end of Phase 1):
 - Cheat sheets: **HTML** and **CSS** complete (they cover daily/common/rare entries regardless of tier; Learn links appear as lessons publish).
 - Exit: Core path of both tracks playable end to end; manual screen-reader pass of 5 sampled lessons.
 
+Status (2026-10-07): built. All 51 Core HTML and CSS lessons are published with their own visualizers, both cheat sheets are complete (49 and 67 entries, each linked to its lesson), and lint, unit tests, `content:check`, `verify:snippets`, the build budgets and e2e + axe pass. Open: the manual screen-reader pass of 5 sampled lessons. Changes to the plan are logged in CURRICULUM.md, "Changes during the build".
+
 ### Phase 3 (Core) · JavaScript
 
 - **48 Core lessons** (J1–J13 Core).
