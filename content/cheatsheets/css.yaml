@@ -2,117 +2,1050 @@ track: css
 title: CSS
 intro: Modern CSS for layouts that work at every width.
 sections:
+  - id: cascade
+    title: Selectors and the cascade
+    entries:
+      - id: css.sheet.rule-anatomy
+        title: Anatomy of a rule
+        code:
+          lang: css
+          inline: |-
+            /* selector    property: value; */
+            .card {
+              padding: 16px;
+              color: #1f2937;
+            }
+        explain: The selector picks elements; each declaration sets one property. An invalid declaration is dropped silently, and the rest of the rule still applies.
+        usage: daily
+        learn: css.rules
+      - id: css.sheet.selectors
+        title: Everyday selectors
+        code:
+          lang: css
+          inline: |-
+            .card {}              /* class */
+            input[type="email"] {} /* attribute */
+            nav a {}              /* any descendant */
+            ul > li {}            /* direct child */
+            h2 + p {}             /* the next sibling */
+            h2 ~ p {}             /* any later sibling */
+        explain: Classes do most of the work. Combinators describe where an element sits relative to another.
+        usage: daily
+        learn: css.selectors
+      - id: css.sheet.nth-child
+        title: Pick by position
+        code:
+          lang: css
+          inline: |-
+            li:nth-child(odd) {}     /* 1st, 3rd, 5th… */
+            li:nth-child(3n + 1) {}  /* 1st, 4th, 7th… */
+            li:first-child {}
+            li:last-child {}
+            li:not(:last-child) {}   /* all but the last */
+        check: |-
+          <ul><li>a</li><li>b</li><li>c</li><li>d</li><li>e</li></ul>
+          <style>li:nth-child(3n + 1) { color: rgb(255, 0, 0); }</style>
+          <script>
+            const red = [...document.querySelectorAll('li')].filter(
+              (li) => getComputedStyle(li).color === 'rgb(255, 0, 0)',
+            );
+            console.log(red.map((li) => li.textContent).join(' '));
+          </script>
+        output: a d
+        verify: browser
+        explain: '`An + B` counts with n = 0, 1, 2…; `3n + 1` matches items 1, 4, 7.'
+        usage: common
+        learn: css.pseudo-classes
+      - id: css.sheet.before-after
+        title: Generated content
+        code:
+          lang: css
+          inline: |-
+            .required::after {
+              content: " *";
+              color: #b91c1c;
+            }
+        explain: '`::before` and `::after` need `content`, even an empty string. Screen readers may read the text, so keep meaning in the HTML.'
+        usage: common
+        learn: css.pseudo-classes
+      - id: css.sheet.specificity
+        title: Who wins
+        kind: table
+        columns: [Selector, 'Specificity (id, class, type)']
+        rows:
+          - ['`p`', '0, 0, 1']
+          - ['`.note`', '0, 1, 0']
+          - ['`nav .link:hover`', '0, 2, 1']
+          - ['`#main p`', '1, 0, 1']
+          - ['`:where(.a, #b)`', '0, 0, 0']
+          - ['`:is(.a, #b)`', '1, 0, 0 (its most specific argument)']
+        notes:
+          - Compare left to right; the first bigger number wins. Equal specificity, the later rule wins.
+          - 'Inline styles beat all selectors, and `!important` beats both. Prefer classes and keep specificity flat.'
+        explain: Specificity decides between rules that set the same property on the same element.
+        usage: daily
+        learn: css.specificity
+      - id: css.sheet.where-is
+        title: Group selectors, control specificity
+        code:
+          lang: css
+          inline: |-
+            :where(h1, h2, h3) { margin-block: 0; }   /* easy to override */
+            :is(.card, .panel) .title { font-weight: 700; }
+        check: |-
+          <h2 class="intro">Title</h2>
+          <style>
+            .intro { margin-block: 8px; }
+          </style>
+          <script>
+            console.log(getComputedStyle(document.querySelector('h2')).marginTop);
+          </script>
+        output: 8px
+        verify: browser
+        explain: '`:where()` adds no specificity, so any later class overrides it; `:is()` takes its most specific argument.'
+        usage: common
+        learn: css.modern-selectors
+      - id: css.sheet.inheritance-keywords
+        title: Inherit, reset, revert
+        code:
+          lang: css
+          inline: |-
+            button {
+              font: inherit;   /* take the parent's font */
+              color: inherit;
+            }
+            .plain {
+              all: unset;      /* inherited props inherit, others reset */
+            }
+        check: |-
+          <div style="font-family: Georgia; font-size: 20px"><button>Save</button></div>
+          <script>
+            const b = getComputedStyle(document.querySelector('button'));
+            console.log(b.fontFamily, b.fontSize);
+          </script>
+        output: Georgia 20px
+        verify: browser
+        explain: Text properties such as `color` and `font` inherit; boxes such as `padding` don't. Form controls don't inherit fonts until you say so.
+        usage: common
+        learn: css.inheritance
+      - id: css.sheet.layers
+        title: Cascade layers
+        code:
+          lang: css
+          inline: |-
+            @layer reset, base, components, utilities;
+
+            @layer components {
+              .button { padding: 8px 16px; }
+            }
+            @layer utilities {
+              .p-0 { padding: 0; }
+            }
+        check: |-
+          <button class="button p-0" id="b">Save</button>
+          <style>
+            @layer components {
+              #b.button { padding: 8px 16px; }
+            }
+          </style>
+          <script>
+            console.log(getComputedStyle(document.querySelector('#b')).paddingTop);
+          </script>
+        output: 0px
+        verify: browser
+        explain: A later layer wins over an earlier one before specificity is compared. Styles outside any layer beat all layers.
+        usage: common
+        learn: css.cascade-layers
+      - id: css.sheet.nesting
+        title: Native nesting
+        code:
+          lang: css
+          inline: |-
+            .card {
+              padding: 16px;
+
+              & h2 { margin: 0; }
+              &:hover { border-color: #1d4ed8; }
+              .dark & { background: #1e293b; }
+            }
+        check: |-
+          <div class="card"><h2>Rila</h2></div>
+          <script>
+            console.log(getComputedStyle(document.querySelector('h2')).marginTop);
+          </script>
+        output: 0px
+        verify: browser
+        explain: '`&` is the parent selector. Keep nesting shallow; each level adds specificity. Baseline 2023.'
+        usage: common
+        learn: css.nesting
   - id: box
     title: Box model and sizing
     entries:
       - id: css.sheet.box-sizing-reset
         title: Predictable sizing
-        code: { lang: css, inline: "*,\n*::before,\n*::after {\n  box-sizing: border-box;\n}" }
+        code:
+          lang: css
+          inline: |-
+            *,
+            *::before,
+            *::after {
+              box-sizing: border-box;
+            }
         explain: Makes `width` include padding and border. Nearly every stylesheet starts with this.
         usage: daily
         learn: css.box-sizing
       - id: css.sheet.spacing-shorthand
         title: Padding and margin shorthand
         code:
-          {
-            lang: css,
-            inline: ".card {\n  padding: 16px 24px; /* top-bottom, left-right */\n  margin: 0 auto 24px; /* top, left-right, bottom */\n}",
-          }
+          lang: css
+          inline: |-
+            .card {
+              padding: 16px 24px; /* top-bottom, left-right */
+              margin: 0 auto 24px; /* top, left-right, bottom */
+            }
         explain: 'One value: all sides. Two: vertical, horizontal. Three: top, horizontal, bottom. Four: clockwise from top.'
         usage: daily
         learn: css.box-model
       - id: css.sheet.visible-width
         title: How wide is it on screen?
         code:
-          {
-            lang: css,
-            inline: "/* content-box (the default): */\n/* visible width = width + padding-left + padding-right\n                 + border-left + border-right */",
-          }
-        explain: Margin is outside the box and never part of its size.
+          lang: css
+          inline: |-
+            .box {
+              width: 200px;
+              padding: 16px;
+              border: 2px solid;
+            }
+        check: |-
+          <div class="box"></div>
+          <script>
+            console.log(document.querySelector('.box').offsetWidth);
+          </script>
+        output: '236'
+        verify: browser
+        explain: 'With the default `content-box`, the visible width is width + padding + border: 200 + 32 + 4. Margin is outside the box.'
         usage: common
         learn: css.box-model
+      - id: css.sheet.margin-collapse
+        title: Vertical margins collapse
+        code:
+          lang: css
+          inline: |-
+            .a { margin-bottom: 24px; }
+            .b { margin-top: 16px; }
+        check: |-
+          <p class="a">A</p>
+          <p class="b">B</p>
+          <script>
+            const [a, b] = document.querySelectorAll('p');
+            console.log(b.getBoundingClientRect().top - a.getBoundingClientRect().bottom);
+          </script>
+        output: '24'
+        verify: browser
+        explain: 'Adjacent vertical margins in normal flow merge into the larger one. Flex and grid items never collapse, so `gap` is easier to predict.'
+        usage: common
+        learn: css.margin-collapse
+      - id: css.sheet.units
+        title: Choosing units
+        kind: table
+        columns: [Unit, Follows, Use for]
+        rows:
+          - ['`rem`', "Root font size (the user's text setting)", 'Font sizes, most spacing']
+          - ['`em`', "The element's own font size", "Padding that scales with a button's text"]
+          - ['`%`', 'The parent (for widths)', 'Fluid widths']
+          - ['`ch`', 'Width of "0"', 'Line length: `max-width: 65ch`']
+          - ['`vw`, `dvh`', 'The viewport', 'Full-screen sections, fluid type']
+          - ['`px`', 'Nothing', 'Borders, hairlines']
+        notes:
+          - '`100dvh` follows the visible height as phone toolbars appear and hide; `100vh` can end up behind them.'
+        explain: Pick a unit by what the length should follow.
+        usage: daily
+        learn: css.units
+      - id: css.sheet.display
+        title: Block, inline, inline-block
+        code:
+          lang: css
+          inline: |-
+            .tag {
+              display: inline-block; /* in the line, but takes width and padding */
+            }
+            .hidden { display: none; }        /* gone: no space, not read out */
+            .ghost { visibility: hidden; }    /* invisible, still takes space */
+        explain: '`display: none` and `visibility: hidden` both hide from screen readers; only `visibility` keeps the space.'
+        usage: daily
+        learn: css.display
+      - id: css.sheet.ellipsis
+        title: Truncate with an ellipsis
+        code:
+          lang: css
+          inline: |-
+            .title {
+              overflow: hidden;
+              white-space: nowrap;
+              text-overflow: ellipsis;
+            }
+            .excerpt {
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 3; /* three lines, then … */
+              overflow: hidden;
+            }
+        explain: One line needs all three properties. The prefixed `line-clamp` pattern works in every modern browser.
+        usage: common
+        learn: css.overflow
+      - id: css.sheet.scroll-area
+        title: A scrolling area
+        code:
+          lang: css
+          inline: |-
+            .table-wrap {
+              overflow-x: auto;
+            }
+            .modal-body {
+              max-block-size: 70dvh;
+              overflow-y: auto;
+              overscroll-behavior: contain; /* don't scroll the page behind */
+            }
+        explain: '`auto` shows a scrollbar only when needed. Give scroll areas a name (`role="region"` + `aria-label` + `tabindex="0"`) so keyboard users can scroll them.'
+        usage: common
+        learn: css.overflow
+      - id: css.sheet.logical-properties
+        title: Logical properties
+        code:
+          lang: css
+          inline: |-
+            .card {
+              margin-inline: auto;     /* left and right in LTR */
+              padding-block: 16px;     /* top and bottom */
+              border-inline-start: 4px solid #1d4ed8;
+              inset-inline-end: 0;
+              max-inline-size: 40rem;
+            }
+        explain: '`inline` follows the text direction, `block` the flow of lines, so layouts flip correctly in right-to-left languages.'
+        usage: common
+        learn: css.logical-properties
+  - id: color-type
+    title: Colour and type
+    entries:
+      - id: css.sheet.color-notations
+        title: Colour notations
+        code:
+          lang: css
+          inline: |-
+            .a { color: #1d4ed8; }
+            .b { color: rgb(29 78 216 / 0.8); }
+            .c { color: hsl(224 76% 48%); }
+            .d { color: oklch(0.49 0.22 264); }
+        explain: 'Four ways to write a colour. `oklch()` also reaches wider-gamut colours and keeps lightness steady when you change hue, which makes palettes easier (Baseline 2023).'
+        usage: daily
+        learn: css.colors
+      - id: css.sheet.color-mix
+        title: Mix and tint colours
+        code:
+          lang: css
+          inline: |-
+            .button:hover {
+              background: color-mix(in oklch, var(--accent), black 15%);
+            }
+        explain: Darkens or tints a token without a second hand-picked colour. Baseline 2023.
+        usage: common
+        learn: css.colors
+      - id: css.sheet.contrast
+        title: Contrast minimums
+        kind: table
+        columns: [What, WCAG AA ratio]
+        rows:
+          - ['Body text', '4.5 : 1']
+          - ['Large text (24px, or 18.66px bold)', '3 : 1']
+          - ['Icons, borders of controls, focus rings', '3 : 1']
+        notes:
+          - 'Placeholder and disabled-looking text still needs 4.5 : 1 if people must read it.'
+        explain: Check every text and background pair, including hover and dark-theme states.
+        usage: daily
+        learn: css.colors
+      - id: css.sheet.custom-properties
+        title: Theme with variables
+        code:
+          lang: css
+          inline: |-
+            :root {
+              --accent: #0b6bcb;
+            }
+
+            .button {
+              background: var(--accent, blue); /* fallback if undefined */
+            }
+        explain: Custom properties inherit and can be redefined in any selector, which makes themes cheap.
+        usage: daily
+        learn: css.custom-properties
+      - id: css.sheet.theme-tokens
+        title: A dark theme in one block
+        code:
+          lang: css
+          inline: |-
+            :root {
+              --surface: #ffffff;
+              --text: #0f172a;
+            }
+            [data-theme="dark"] {
+              --surface: #0f172a;
+              --text: #f1f5f9;
+            }
+            .card {
+              background: var(--surface);
+              color: var(--text);
+            }
+        check: |-
+          <div data-theme="dark"><div class="card">Rila</div></div>
+          <script>
+            console.log(getComputedStyle(document.querySelector('.card')).backgroundColor);
+          </script>
+        output: rgb(15, 23, 42)
+        verify: browser
+        explain: Components only read tokens; a theme redefines them on a container, and everything inside follows.
+        usage: common
+        learn: css.boss
+      - id: css.sheet.font-stack
+        title: Font stacks and line height
+        code:
+          lang: css
+          inline: |-
+            body {
+              font-family: Inter, system-ui, sans-serif;
+              font-size: 1rem;
+              line-height: 1.5; /* unitless: scales with each element's size */
+            }
+        explain: Fonts are tried left to right. A unitless `line-height` is inherited as a ratio, so headings don't get cramped lines.
+        usage: daily
+        learn: css.typography
+      - id: css.sheet.font-face
+        title: Load a web font
+        code:
+          lang: css
+          inline: |-
+            @font-face {
+              font-family: "Inter";
+              src: url("/fonts/inter.woff2") format("woff2");
+              font-weight: 100 900;
+              font-display: swap;
+            }
+        explain: '`swap` shows fallback text at once and swaps in the font when it arrives. One variable font file covers every weight.'
+        usage: common
+        learn: css.typography
       - id: css.sheet.fluid-type
         title: Fluid font size
-        code: { lang: css, inline: "h1 {\n  font-size: clamp(1.75rem, 4vw + 1rem, 3rem);\n}" }
+        code:
+          lang: css
+          inline: |-
+            h1 {
+              font-size: clamp(1.75rem, 4vw + 1rem, 3rem);
+            }
         explain: '`clamp(min, preferred, max)` grows with the viewport but never leaves the range.'
         usage: common
         learn: css.typography
-  - id: layout
-    title: Layout
+      - id: css.sheet.readable-measure
+        title: Readable line length
+        code:
+          lang: css
+          inline: |-
+            .prose {
+              max-inline-size: 65ch;
+            }
+            h1 {
+              text-wrap: balance;
+            }
+        explain: '45–75 characters per line reads best. `text-wrap: balance` evens out heading lines (Baseline 2024).'
+        usage: common
+        learn: css.typography
+  - id: surfaces
+    title: Surfaces
+    entries:
+      - id: css.sheet.radius-shadow
+        title: Rounded corners and shadows
+        code:
+          lang: css
+          inline: |-
+            .card {
+              border-radius: 12px;
+              box-shadow:
+                0 1px 2px rgb(0 0 0 / 0.08),
+                0 8px 24px rgb(0 0 0 / 0.12);
+            }
+        explain: Two layered shadows (a tight one and a soft one) look more natural than one big blur.
+        usage: daily
+        learn: css.surfaces
+      - id: css.sheet.gradient
+        title: Gradients
+        code:
+          lang: css
+          inline: |-
+            .hero {
+              background:
+                linear-gradient(to bottom, rgb(0 0 0 / 0.6), transparent),
+                url("ridge.jpg") center / cover;
+            }
+        explain: The first background layer is painted on top. A dark gradient over a photo keeps white text readable.
+        usage: common
+        learn: css.surfaces
+      - id: css.sheet.aspect-ratio
+        title: Keep a shape
+        code:
+          lang: css
+          inline: |-
+            .thumb {
+              inline-size: 320px;
+              aspect-ratio: 16 / 9;
+              object-fit: cover;
+            }
+        check: |-
+          <div class="thumb"></div>
+          <script>
+            console.log(document.querySelector('.thumb').getBoundingClientRect().height);
+          </script>
+        output: '180'
+        verify: browser
+        explain: '`aspect-ratio` sets the height from the width. `object-fit: cover` crops an image to fill the box without stretching.'
+        usage: common
+        learn: css.surfaces
+  - id: flexbox
+    title: Flexbox
     entries:
       - id: css.sheet.flex-center
         title: Center anything
         code:
-          {
-            lang: css,
-            inline: ".center {\n  display: flex;\n  justify-content: center; /* main axis */\n  align-items: center; /* cross axis */\n}",
-          }
+          lang: css
+          inline: |-
+            .center {
+              display: flex;
+              justify-content: center; /* main axis */
+              align-items: center; /* cross axis */
+            }
         explain: 'Or, with Grid, `display: grid; place-items: center;`.'
         usage: daily
         learn: css.flex-alignment
+      - id: css.sheet.flex-direction
+        title: Axes
+        code:
+          lang: css
+          inline: |-
+            .stack {
+              display: flex;
+              flex-direction: column; /* main axis now runs down */
+              gap: 8px;
+            }
+        explain: '`justify-content` always works along the main axis and `align-items` across it, so a column swaps what they do on screen.'
+        usage: daily
+        learn: css.flex-axes
+      - id: css.sheet.flex-push
+        title: Push one item to the end
+        code:
+          lang: css
+          inline: |-
+            .toolbar { display: flex; gap: 8px; }
+            .toolbar .sign-in { margin-inline-start: auto; }
+        explain: An `auto` margin takes all the free space on its side.
+        usage: common
+        learn: css.flex-alignment
+      - id: css.sheet.flex-one
+        title: 'What `flex: 1` means'
+        code:
+          lang: css
+          inline: |-
+            .main { flex: 1; }
+        check: |-
+          <div style="display: flex"><div class="main">x</div></div>
+          <script>
+            const s = getComputedStyle(document.querySelector('.main'));
+            console.log(s.flexGrow, s.flexShrink, s.flexBasis);
+          </script>
+        output: 1 1 0%
+        verify: browser
+        explain: 'Grow, shrink, start from 0: items with `flex: 1` share the space equally, whatever their content.'
+        usage: daily
+        learn: css.flex-sizing
+      - id: css.sheet.min-width-zero
+        title: Let a flex item shrink
+        code:
+          lang: css
+          inline: |-
+            .message {
+              flex: 1;
+              min-width: 0; /* default is the content's width */
+            }
+            .message p {
+              overflow-wrap: anywhere;
+            }
+        explain: Flex items won't shrink below their content by default, so long URLs or code push the layout sideways.
+        usage: common
+        learn: css.flex-sizing
       - id: css.sheet.flex-row
         title: A row that wraps
         code:
-          { lang: css, inline: ".toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  gap: 8px;\n}" }
+          lang: css
+          inline: |-
+            .toolbar {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 8px;
+            }
         explain: '`gap` spaces items without margins on the outer edges.'
         usage: daily
         learn: css.flex-wrap-patterns
+  - id: grid
+    title: Grid
+    entries:
+      - id: css.sheet.grid-tracks
+        title: Columns with fr
+        code:
+          lang: css
+          inline: |-
+            .layout {
+              display: grid;
+              grid-template-columns: 200px 1fr 2fr;
+              gap: 16px;
+            }
+        check: |-
+          <div class="layout" style="width: 616px"><div>a</div><div>b</div><div>c</div></div>
+          <script>
+            const cells = [...document.querySelectorAll('.layout > div')];
+            console.log(cells.map((c) => c.getBoundingClientRect().width).join(' '));
+          </script>
+        output: 200 128 256
+        verify: browser
+        explain: '`fr` shares the space left after fixed tracks and gaps: 616 − 200 − 32 = 384px, split 1 : 2.'
+        usage: daily
+        learn: css.grid-basics
+      - id: css.sheet.grid-span
+        title: Place and span
+        code:
+          lang: css
+          inline: |-
+            .hero { grid-column: 1 / -1; }      /* first line to last line */
+            .feature { grid-column: span 2; }
+            .sidebar { grid-row: 1 / 3; }
+        explain: Lines are numbered from 1; `-1` is the last line of the explicit grid.
+        usage: common
+        learn: css.grid-placement
+      - id: css.sheet.grid-areas
+        title: Name the areas
+        code:
+          lang: css
+          inline: |-
+            .page {
+              display: grid;
+              grid-template-columns: 220px 1fr;
+              grid-template-areas:
+                "header header"
+                "nav    main"
+                "footer footer";
+            }
+            .page > header { grid-area: header; }
+            .page > nav { grid-area: nav; }
+            .page > main { grid-area: main; }
+            .page > footer { grid-area: footer; }
+        explain: The strings draw the layout. Redefine only `grid-template-areas` in a media query to rearrange the page.
+        usage: common
+        learn: css.grid-areas
       - id: css.sheet.grid-auto-fit
         title: Responsive card grid, no media queries
         code:
-          {
-            lang: css,
-            inline: ".cards {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));\n  gap: 1rem;\n}",
-          }
+          lang: css
+          inline: |-
+            .cards {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+              gap: 1rem;
+            }
         explain: As many 16rem-or-wider columns as fit; they stretch to fill the row.
         usage: common
         learn: css.grid-auto
+      - id: css.sheet.auto-fill-fit
+        title: auto-fill or auto-fit?
+        code:
+          lang: css
+          inline: |-
+            .fill { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+            .fit { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+        check: |-
+          <div class="fill" style="display: grid; width: 400px"><div>a</div><div>b</div></div>
+          <div class="fit" style="display: grid; width: 400px"><div>a</div><div>b</div></div>
+          <script>
+            for (const g of document.querySelectorAll('.fill, .fit')) {
+              console.log(g.className, g.firstElementChild.getBoundingClientRect().width);
+            }
+          </script>
+        output: |
+          fill 100
+          fit 200
+        verify: browser
+        explain: With few items, `auto-fill` keeps the empty columns; `auto-fit` collapses them so the items stretch.
+        usage: rare
+        learn: css.grid-auto
+      - id: css.sheet.subgrid
+        title: Align across cards
+        code:
+          lang: css
+          inline: |-
+            .cards {
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+            }
+            .card {
+              display: grid;
+              grid-row: span 3;
+              grid-template-rows: subgrid; /* title, body, button line up */
+            }
+        explain: The card's rows come from the parent, so titles and buttons align across a row of cards. Baseline 2023.
+        usage: rare
+        learn: css.subgrid
+      - id: css.sheet.grid-or-flex
+        title: Grid or Flexbox?
+        kind: table
+        columns: [Situation, Reach for]
+        rows:
+          - ['Items in one row or column, sized by their content', 'Flexbox']
+          - ['Rows and columns that line up', 'Grid']
+          - ['A page layout with named regions', 'Grid']
+          - ['A toolbar or nav whose items wrap', 'Flexbox']
+          - ['Cards of equal width that wrap', 'Grid with `auto-fit`']
+        notes:
+          - 'They combine: a Grid page with Flexbox inside each card is normal.'
+        explain: Flexbox flows content in one direction; Grid defines the tracks first and places items in them.
+        usage: daily
+        learn: css.grid-vs-flex
+  - id: position
+    title: Positioning and layers
+    entries:
+      - id: css.sheet.absolute-overlay
+        title: Overlay inside a box
+        code:
+          lang: css
+          inline: |-
+            .card { position: relative; }
+            .badge {
+              position: absolute;
+              inset-block-start: 8px;
+              inset-inline-end: 8px;
+            }
+        explain: 'An absolutely positioned element is placed against its nearest positioned ancestor, so give the card `position: relative`.'
+        usage: daily
+        learn: css.position
+      - id: css.sheet.sticky
+        title: Sticky header
+        code:
+          lang: css
+          inline: |-
+            .site-header {
+              position: sticky;
+              top: 0;
+              z-index: 10;
+            }
+        explain: 'Sticky needs an offset such as `top`. Inside an ancestor with `overflow: hidden`, `auto` or `scroll`, it sticks to that box instead of the viewport.'
+        usage: common
+        learn: css.position
+      - id: css.sheet.isolation
+        title: Contain z-index
+        code:
+          lang: css
+          inline: |-
+            .card {
+              isolation: isolate; /* a new stacking context */
+            }
+        explain: '`z-index` only competes within a stacking context. `opacity` below 1, a `transform` and `isolation: isolate` all start one.'
+        usage: common
+        learn: css.stacking
+      - id: css.sheet.transform
+        title: Move without reflow
+        code:
+          lang: css
+          inline: |-
+            .chip:hover {
+              translate: 0 -2px;
+              scale: 1.05;
+              rotate: 2deg;
+            }
+        explain: Transforms don't affect layout, so neighbours stay put. The individual properties combine without overwriting each other.
+        usage: common
+        learn: css.transforms
+  - id: responsive
+    title: Responsive design
+    entries:
       - id: css.sheet.media-min-width
         title: Mobile-first breakpoint
         code:
-          {
-            lang: css,
-            inline: ".sidebar {\n  display: none;\n}\n\n@media (min-width: 768px) {\n  .sidebar {\n    display: block;\n  }\n}",
-          }
+          lang: css
+          inline: |-
+            .sidebar {
+              display: none;
+            }
+
+            @media (min-width: 768px) {
+              .sidebar {
+                display: block;
+              }
+            }
         explain: Write the small-screen style first, then add to it for wider screens.
         usage: daily
         learn: css.media-queries
-  - id: theming
-    title: Theming and states
-    entries:
-      - id: css.sheet.custom-properties
-        title: Theme with variables
+      - id: css.sheet.media-range
+        title: Range syntax
         code:
-          {
-            lang: css,
-            inline: ":root {\n  --accent: #0b6bcb;\n}\n\n.button {\n  background: var(--accent, blue); /* fallback if undefined */\n}",
-          }
-        explain: Custom properties inherit and can be redefined in any selector, which makes themes cheap.
-        usage: daily
-        learn: css.custom-properties
-      - id: css.sheet.focus-visible
-        title: Visible keyboard focus
-        code:
-          {
-            lang: css,
-            inline: "button:focus-visible {\n  outline: 2px solid #0b6bcb;\n  outline-offset: 2px;\n}",
-          }
-        explain: Shows the ring for keyboard users without flashing it on every mouse click. Never remove focus styles.
-        usage: daily
-        learn: css.pseudo-classes
-      - id: css.sheet.has
-        title: Style a parent by its children
-        code: { lang: css, inline: ".field:has(input:invalid) {\n  border-color: crimson;\n}" }
-        explain: '`:has()` matches an element that contains something matching the inner selector.'
+          lang: css
+          inline: |-
+            @media (width < 600px) { .nav { display: none; } }
+            @media (600px <= width < 1000px) { .grid { columns: 2; } }
+        explain: '`min-width: 600px` and `max-width: 600px` both match at exactly 600px; strict `<` avoids the overlap. Baseline 2023.'
         usage: common
-        learn: css.modern-selectors
+        learn: css.media-queries
+      - id: css.sheet.container-queries
+        title: Respond to the container
+        code:
+          lang: css
+          inline: |-
+            .slot { container-type: inline-size; }
+
+            @container (min-width: 420px) {
+              .card { grid-template-columns: 1fr auto; }
+            }
+            .card h2 { font-size: clamp(1rem, 4cqi, 1.5rem); }
+        explain: The card adapts to the space it's given, wherever it's placed. `cqi` is 1% of the container's inline size.
+        usage: common
+        learn: css.container-queries
+      - id: css.sheet.min-max-clamp
+        title: min(), max(), clamp()
+        code:
+          lang: css
+          inline: |-
+            .wrap {
+              width: min(100% - 32px, 1100px);
+              margin-inline: auto;
+            }
+            .title {
+              font-size: clamp(1rem, 4vw, 2rem);
+            }
+        check: |-
+          <h1 class="title">Trails</h1>
+          <script>
+            console.log(getComputedStyle(document.querySelector('.title')).fontSize, innerWidth);
+          </script>
+        output: 25.6px 640
+        verify: browser
+        explain: 'At 640px wide, `4vw` is 25.6px, inside the range. `min()` and `max()` pick a size without a media query.'
+        usage: common
+        learn: css.intrinsic-layout
+      - id: css.sheet.content-width
+        title: Center the content column
+        code:
+          lang: css
+          inline: |-
+            .wrap {
+              max-inline-size: 1100px;
+              margin-inline: auto;
+              padding-inline: 16px;
+            }
+        explain: Lines stop growing on wide screens, and the padding keeps text off the edges on phones.
+        usage: daily
+        learn: css.boss
+      - id: css.sheet.fluid-media
+        title: Images that never overflow
+        code:
+          lang: css
+          inline: |-
+            img,
+            video {
+              max-inline-size: 100%;
+              block-size: auto;
+            }
+        explain: Images shrink to fit their container and keep their proportions. Part of most resets.
+        usage: daily
+        learn: css.intrinsic-layout
+  - id: motion-preferences
+    title: Motion and preferences
+    entries:
+      - id: css.sheet.transition
+        title: Transition a state change
+        code:
+          lang: css
+          inline: |-
+            .button {
+              transition: background-color 150ms ease-out;
+            }
+            .button:hover {
+              background-color: #1e40af;
+            }
+        explain: 'Name the property (never `all`). About 100–200ms for small feedback; `ease-out` for things arriving, `ease-in` for things leaving.'
+        usage: daily
+        learn: css.transitions
+      - id: css.sheet.keyframes
+        title: Keyframe animation
+        code:
+          lang: css
+          inline: |-
+            @keyframes spin {
+              to { rotate: 1turn; }
+            }
+            .spinner {
+              animation: spin 1s linear infinite;
+            }
+        explain: '`@keyframes` defines the steps; `animation` sets duration, easing and repeats. Use `linear` for constant spins.'
+        usage: common
+        learn: css.keyframes
+      - id: css.sheet.cheap-animation
+        title: Animate cheaply
+        code:
+          lang: css
+          inline: |-
+            .drawer {
+              transform: translateX(-100%);
+              transition: transform 250ms ease-out;
+            }
+            .drawer.open {
+              transform: none;
+            }
+        explain: '`transform` and `opacity` are composited without layout or paint. Animating `left`, `width` or `height` re-runs layout every frame.'
+        usage: common
+        learn: css.render-performance
       - id: css.sheet.reduced-motion
         title: Respect reduced motion
         code:
-          {
-            lang: css,
-            inline: "@media (prefers-reduced-motion: reduce) {\n  * {\n    animation-duration: 0.01ms !important;\n    transition-duration: 0.01ms !important;\n  }\n}",
-          }
+          lang: css
+          inline: |-
+            @media (prefers-reduced-motion: reduce) {
+              * {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+              }
+            }
         explain: Some people get motion sickness from animation; the OS setting tells you.
         usage: common
         learn: css.user-preferences
+      - id: css.sheet.color-scheme
+        title: Follow the system theme
+        code:
+          lang: css
+          inline: |-
+            :root {
+              color-scheme: light dark;
+            }
+            @media (prefers-color-scheme: dark) {
+              :root { --surface: #0f172a; }
+            }
+        explain: '`color-scheme` makes form controls and scrollbars match the theme; the media query switches your tokens.'
+        usage: common
+        learn: css.user-preferences
+  - id: accessibility-forms
+    title: Accessibility and forms
+    entries:
+      - id: css.sheet.focus-visible
+        title: Visible keyboard focus
+        code:
+          lang: css
+          inline: |-
+            button:focus-visible {
+              outline: 2px solid #0b6bcb;
+              outline-offset: 2px;
+            }
+        explain: Shows the ring for keyboard users without flashing it on every mouse click. Never remove focus styles.
+        usage: daily
+        learn: css.pseudo-classes
+      - id: css.sheet.visually-hidden
+        title: Hide visually, keep for screen readers
+        code:
+          lang: css
+          inline: |-
+            .visually-hidden {
+              position: absolute;
+              width: 1px;
+              height: 1px;
+              overflow: hidden;
+              clip-path: inset(50%);
+              white-space: nowrap;
+            }
+        explain: '`display: none` hides from everyone. This class hides text only from the eye, for labels of icon buttons and similar.'
+        usage: daily
+        learn: css.accessible-styling
+      - id: css.sheet.link-underline
+        title: Links need more than colour
+        code:
+          lang: css
+          inline: |-
+            .prose a {
+              text-decoration: underline;
+              text-underline-offset: 0.15em;
+            }
+        explain: People who can't tell the colours apart still see the underline. Errors and states need a second cue too, such as text or an icon.
+        usage: common
+        learn: css.accessible-styling
+      - id: css.sheet.has
+        title: Style a parent by its children
+        code:
+          lang: css
+          inline: |-
+            .field:has(input:invalid) {
+              border-color: crimson;
+            }
+        explain: '`:has()` matches an element that contains something matching the inner selector.'
+        usage: common
+        learn: css.modern-selectors
+      - id: css.sheet.user-invalid
+        title: Show errors after the user is done
+        code:
+          lang: css
+          inline: |-
+            input:user-invalid {
+              border-color: #b91c1c;
+            }
+        explain: Unlike `:invalid`, it waits until the user has changed the field or tried to submit, so an empty form doesn't start out red. Baseline 2023.
+        usage: common
+        learn: html.validation
+      - id: css.sheet.accent-color
+        title: Brand the native controls
+        code:
+          lang: css
+          inline: |-
+            :root {
+              accent-color: #1d4ed8;
+            }
+        explain: Recolours checkboxes, radios, range sliders and progress bars while keeping them native and accessible.
+        usage: common
+        learn: css.form-styling
+  - id: architecture
+    title: Organizing CSS
+    entries:
+      - id: css.sheet.bem
+        title: BEM naming
+        code:
+          lang: css
+          inline: |-
+            .card {}                /* block */
+            .card__title {}         /* element */
+            .card--sale {}          /* modifier */
+            .card--sale .card__price { color: #b91c1c; }
+        explain: Unique, flat class names keep global CSS from colliding and specificity low.
+        usage: common
+        learn: css.architecture
+      - id: css.sheet.css-modules
+        title: CSS Modules
+        code:
+          lang: css
+          inline: |-
+            /* Card.module.css: the build renames .title to something like Card_title_x7f2a */
+            .title {
+              font-size: 1.125rem;
+            }
+        explain: Plain class names, scoped to the component file by the build. Used through `styles.title` in the component.
+        usage: common
+        learn: css.architecture
+      - id: css.sheet.flat-selectors
+        title: One class, not a path
+        code:
+          lang: css
+          inline: |-
+            /* Breaks when the markup moves: */
+            .sidebar .widget ul li a { color: #1d4ed8; }
+
+            /* Survives refactors: */
+            .widget__link { color: #1d4ed8; }
+        explain: Selectors that copy the page structure are fragile and hard to override.
+        usage: common
+        learn: css.architecture
