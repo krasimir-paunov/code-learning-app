@@ -1,0 +1,149 @@
+.frame {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+}
+
+.summary {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.summary code,
+.note code {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+}
+
+.tasks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.task {
+  min-block-size: var(--touch-target);
+  padding: 0 var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+
+  &[aria-pressed='true'] {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+.files {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+}
+
+@container (min-width: 760px) {
+  .files {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+.file {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  min-inline-size: 0;
+
+  & figcaption {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+  }
+}
+
+.newFile {
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-pill);
+  background: var(--bg-3);
+  color: var(--success);
+  font-size: var(--fs-xs);
+
+  &[data-status='deleted'] {
+    color: var(--danger);
+  }
+}
+
+.code {
+  margin: 0;
+  padding: var(--space-2) 0;
+  border-radius: var(--radius-md);
+  background: var(--code-bg);
+  font-family: var(--font-mono);
+  font-size: var(--fs-code);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.line {
+  display: block;
+  padding-inline: var(--space-2) var(--space-3);
+
+  &[data-kind='add'] {
+    background: color-mix(in oklch, var(--success) 18%, transparent);
+  }
+
+  &[data-kind='del'] {
+    background: color-mix(in oklch, var(--danger) 18%, transparent);
+    text-decoration: line-through;
+  }
+}
+
+.mark {
+  display: inline-block;
+  inline-size: 1.25rem;
+  color: var(--text-3);
+}
+
+.note {
+  padding: var(--space-2) var(--space-3);
+  border-inline-start: 3px solid var(--accent);
+  background: var(--bg-2);
+  font-size: var(--fs-sm);
+}
+
+.table {
+  inline-size: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+
+  & caption {
+    margin-block-end: var(--space-1);
+    color: var(--text-2);
+    text-align: start;
+  }
+
+  & th,
+  & td {
+    padding: var(--space-1) var(--space-2);
+    border-block-end: var(--border-width) solid var(--border);
+    text-align: start;
+  }
+
+  & thead th {
+    color: var(--text-2);
+    font-weight: 600;
+  }
+
+  & tbody th {
+    font-weight: 400;
+  }
+
+  & [data-current] {
+    color: var(--accent);
+  }
+}
