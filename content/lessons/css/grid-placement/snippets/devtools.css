@@ -1,0 +1,6 @@
+/* In DevTools, click the "grid" badge next to the element
+   to draw its line numbers on the page. */
+.page {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+}

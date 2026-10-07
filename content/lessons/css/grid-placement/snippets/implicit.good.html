@@ -1,0 +1,20 @@
+<div class="grid">
+  <aside class="side"></aside>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    grid-template-rows: repeat(3, 50px);
+  }
+  .side {
+    grid-column: 1;
+    grid-row: 1 / -1;
+  }
+</style>
+<script>
+  console.log(document.querySelector('.side').offsetHeight);
+</script>

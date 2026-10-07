@@ -1,0 +1,148 @@
+id: css.grid-placement
+version: 1
+title: Placing items
+summary: Put a grid item exactly where you want it with line numbers, span and negative lines, and let the rest flow around it.
+minutes: 7
+tags: [grid, grid-column, grid-row, span, grid lines, auto-placement]
+
+concept:
+  title: Start line, end line
+  body: |
+    `grid-column: 2 / 4` puts an item from column line 2 to line 4, covering columns 2 and 3.
+    `grid-row` does the same down the rows. There are three ways to write the end:
+
+    - a line number: `2 / 4`
+    - a number of tracks: `2 / span 2`
+    - counting back from the end: `1 / -1` reaches the last line, whatever the column count
+
+    Items you don't place flow into the free cells around the ones you do, in order. A
+    `span` on its own (`grid-column: span 2`) sets only the size; the item still flows.
+  code:
+    caption: A full-width hero and a two-by-two feature
+    tabs:
+      - lang: css
+        file: snippets/placement.css
+
+playground:
+  visualizer: grid-placer
+  props:
+    cols: 4
+    rows: 3
+    feature: Feature
+    items: [A, B, C, D, E, F]
+    start:
+      from: { row: 1, col: 1 }
+      to: { row: 1, col: 1 }
+  prompt: |
+    Drag from the first cell across to the third cell of the second row. The feature now covers
+    six cells, and the CSS below says how, three ways.
+  explore:
+    - Place the feature in the middle of the grid. Where do A to F go?
+    - Make it cover the whole first row. Which of the three forms reads best?
+
+challenges:
+  - id: magazine
+    type: visual-match
+    prompt: Make the feature story cover the top-left two columns and two rows; the other stories fill in around it.
+    html: { file: snippets/magazine.html }
+    starterCss: { file: snippets/magazine.starter.css }
+    targetCss: { file: snippets/magazine.target.css }
+    compare:
+      selectors: [.feature, .a, .b, .c, .d]
+      tolerancePx: 1
+    viewport: { width: 360, height: 300 }
+    hints:
+      - Two columns means from column line 1 to line 3.
+      - '`grid-column` and `grid-row` on `.feature` only. The rest place themselves.'
+    explanation: |
+      `grid-column: 1 / 3` and `grid-row: 1 / 3` (or `span 2` for each) give the feature four
+      cells. A to D flow into the free cells in order: down the right column, then the next row.
+
+  - id: three-widths
+    type: predict-output
+    prompt: The grid has three 100px columns. What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      200
+      300
+      200
+    choices:
+      - |
+        200
+        300
+        200
+      - |
+        100
+        300
+        200
+      - |
+        200
+        200
+        200
+      - |
+        300
+        300
+        100
+    verify: browser
+    hints:
+      - Three columns have lines 1 to 4, so −1 is line 4.
+      - '`span 2` covers two tracks wherever the item lands.'
+    explanation: |
+      `2 / -1` runs from line 2 to the last line: two columns. `1 / -1` covers all three.
+      `span 2` covers two columns, starting wherever auto-placement puts the item.
+
+  - id: same-placement
+    type: choice
+    prompt: In a 4-column grid, which of these does NOT cover exactly columns 2 and 3?
+    options:
+      - text: '`grid-column: 2 / 3`'
+        correct: true
+        why: That runs from line 2 to line 3, which is column 2 only.
+      - text: '`grid-column: 2 / 4`'
+        why: Lines 2 to 4 enclose columns 2 and 3.
+      - text: '`grid-column: 2 / span 2`'
+        why: It starts at line 2 and covers two tracks, columns 2 and 3.
+      - text: '`grid-column: 2 / -2`'
+        why: Four columns have lines 1 to 5; −2 is line 4, so this also covers columns 2 and 3.
+    explanation: Grid numbers are lines, not columns. An item ends on the line after its last column.
+
+production:
+  - title: See the lines in DevTools
+    body: |
+      Every browser's DevTools can draw a grid's line numbers over the page (in Chrome, click the
+      `grid` badge next to the element). It is the fastest way to work out a placement.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/devtools.css
+  - title: '`1 / -1` for full-width rows'
+    body: |
+      Heroes, banners and section breaks use `grid-column: 1 / -1` so they keep spanning the
+      whole width when the column count changes at another breakpoint.
+
+mistake:
+  title: '`-1` in rows the grid never declared'
+  body: |
+    Negative lines count back from the end of the **explicit** grid, the tracks you listed.
+    Rows created on the fly by `grid-auto-rows` don't count, so `grid-row: 1 / -1` covers
+    only the first row.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/implicit.bad.html
+        output: '50'
+        verify: browser
+  fix: 'List the rows with `grid-template-rows`, or use `span` with a known count.'
+  good:
+    tabs:
+      - lang: html
+        file: snippets/implicit.good.html
+        output: '150'
+        verify: browser
+
+recap:
+  - '`grid-column` and `grid-row` take a start line and an end line; an item ends on the line after its last track.'
+  - 'Write the end as a number, as `span n`, or counting back from the end with `-1`.'
+  - Unplaced items flow into the free cells; negative lines only see the explicit grid.
+
+related: [css.grid-basics, css.grid-areas, css.grid-auto]
