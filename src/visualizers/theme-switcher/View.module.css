@@ -1,0 +1,143 @@
+.frame {
+  container-type: inline-size;
+}
+
+.layout {
+  display: grid;
+  gap: var(--space-5);
+}
+
+@container (min-width: 760px) {
+  .layout {
+    grid-template-columns: 3fr 2fr;
+    align-items: start;
+  }
+}
+
+.column {
+  display: grid;
+  gap: var(--space-3);
+  min-inline-size: 0;
+}
+
+.stage {
+  border: var(--border-width) dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.inspector {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.title {
+  font-size: var(--fs-md);
+  font-weight: 700;
+}
+
+.trace {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  font-size: var(--fs-sm);
+}
+
+.traceRow {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-inline-start: 3px solid var(--accent);
+  background: var(--bg-2);
+
+  &[data-kind='inherited'] {
+    border-inline-start-color: var(--info);
+  }
+
+  &[data-kind='unset'] {
+    border-inline-start-color: var(--warning);
+  }
+
+  & dd {
+    margin: 0;
+  }
+}
+
+.value {
+  color: var(--code-string);
+}
+
+.why {
+  color: var(--text-2);
+}
+
+.note {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.rule {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+
+  &[data-idle] {
+    opacity: 0.7;
+    border-style: dashed;
+  }
+}
+
+.selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  float: inline-start;
+  margin-block-end: var(--space-1);
+  padding: 0;
+}
+
+.idle {
+  color: var(--text-3);
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+}
+
+.declaration {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-inline-start: var(--space-4);
+  cursor: pointer;
+
+  & input {
+    accent-color: var(--accent);
+  }
+
+  & [data-off] {
+    color: var(--text-3);
+    text-decoration: line-through;
+  }
+}
+
+.usage {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+
+  & pre {
+    margin: 0;
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--code-bg);
+    font-family: var(--font-mono);
+    font-size: var(--fs-code);
+    overflow-x: auto;
+  }
+}
