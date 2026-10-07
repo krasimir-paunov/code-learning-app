@@ -163,11 +163,11 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| C1.1 | `css.rules` | Rules and declarations | Core | Write a rule; link a stylesheet; know selector, property, value. | — | `selector-lab`: matched elements glow as you type | LC | 5 | done |
-| C1.2 | `css.selectors` | Selectors and combinators | Core | Target by class, attribute, descendant, child and sibling. | ↑ | `selector-lab` | PO, LC | 6 | done |
-| C1.3 | `css.pseudo-classes` | Pseudo-classes and elements | Core | Use `:hover`, `:focus-visible`, `:nth-child`, `:not`, `::before`/`::after`. | ↑ | `selector-lab` with state toggles | PO, FB | 7 | done |
-| C1.4 | `css.specificity` | Specificity | Core | Predict which rule wins; why `!important` and IDs cause wars. | ↑ | `specificity-duel`: two rules fight, scores shown as (a,b,c) | PO | 7 | done |
-| C1.5 | `css.inheritance` | Inheritance and defaults | Core | Know which properties inherit; `inherit`, `initial`, `unset`, `revert`. | ↑ | `cascade-trace`: computed value with its origin chain | PO | 5 | done |
+| C1.1 | `css.rules` | Rules and declarations | Core | Write a rule; link a stylesheet; know selector, property, value. | — | `rule-anatomy`: edit a rule, matches outlined; each declaration applied or silently dropped (`CSS.supports`) | LC, BUG, CH | 5 | done |
+| C1.2 | `css.selectors` | Selectors and combinators | Core | Target by class, attribute, descendant, child and sibling. | ↑ | `selector-lab`: matches in the page and the DOM tree, selector read in plain English | PO, LC, CH | 6 | done |
+| C1.3 | `css.pseudo-classes` | Pseudo-classes and elements | Core | Use `:hover`, `:focus-visible`, `:nth-child`, `:not`, `::before`/`::after`. | ↑ | `nth-lab`: An+B formula with an n-table, `:not()` and `::after` toggles, live state strip (`:hover`, `:focus-visible`) | PO, FB, CH | 7 | done |
+| C1.4 | `css.specificity` | Specificity | Core | Predict which rule wins; why `!important` and IDs cause wars. | ↑ | `specificity-duel`: (a, b, c) scores, `!important`, inline style and order; the real render confirms the verdict | PO, BUG, CH | 7 | done |
+| C1.5 | `css.inheritance` | Inheritance and defaults | Core | Know which properties inherit; `inherit`, `initial`, `unset`, `revert`. | ↑ | `cascade-trace`: computed value and its origin chain on a plain page; `inherit`/`initial`/`unset`/`revert` | PO, LC, CH | 5 | done |
 | C1.6 | `css.cascade-layers` | Cascade layers | Ext | Order whole stylesheets with `@layer` (resets, libraries, components, utilities). | ↑ | `specificity-duel` (layer mode) | PO | 6 | todo |
 
 ### C2 · Box model and units — Entry: C1.5
@@ -742,3 +742,6 @@ Changes to the plan above, with the reason. Interactive elements and challenge t
 - H3.1 `html.links`: `link-lab` instead of a plain live editor: every kind of href is clicked and its real outcome shown (the browser's URL parser decides). Two `choice` challenges were added (implied `noopener`, link text).
 - H3.2 `html.urls-paths`: a `trace` challenge (click the folders the browser walks through) and a `choice` were added to the planned `predict-output`.
 - H3.3 `html.images`: a `choice` challenge was added. `loading="lazy"` is taught in the concept and production notes rather than in the playground, because a demo of lazy loading with local placeholder images would not behave like real network loading.
+- C1.1 `css.rules`: `rule-anatomy` (a rule builder) instead of `selector-lab`, so the first CSS lesson is about the rule itself and the browser's silent error handling; `selector-lab` is introduced in C1.2. `find-bug` and `choice` challenges were added.
+- C1.3 `css.pseudo-classes`: `nth-lab` instead of a second `selector-lab` mode: the An+B formula is the hardest part, so it gets its own n-table, and state pseudo-classes are shown on a real button.
+- C1.4 `css.specificity` and C1.5 `css.inheritance`: `find-bug`/`live-code` and `choice` challenges were added to the planned `predict-output`.
