@@ -124,8 +124,9 @@ export default function AreaPainterView({ props }: VisualizerViewProps<AreaPaint
             <TriangleAlert aria-hidden="true" />
             <span>
               {broken.map((n) => `“${n}”`).join(', ') || 'An area'} isn’t a rectangle, so the
-              browser throws away the whole <code>grid-template-areas</code> declaration and the
-              areas fall back to automatic placement.
+              browser throws away the whole <code>grid-template-areas</code> declaration. The{' '}
+              <code>grid-area</code> names now point at areas that don’t exist, so the browser
+              invents lines for them past the grid and the parts pile up in one spot.
             </span>
           </p>
         )}
