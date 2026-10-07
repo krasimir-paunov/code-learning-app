@@ -244,7 +244,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 | C9.3 | `css.logical-properties` | Logical properties | Ext | `margin-inline`, `padding-block`, `inset` for any writing direction. | ↑ | `live-editor` with RTL toggle | VM | 4 | todo |
 | C9.4 | `css.accessible-styling` | Accessible styling | Core | Visible focus styles, contrast, visually-hidden text, no info by color alone. | ↑ | `a11y-audit`: a page with four styling problems, a live audit, fixes as switches, a no-colour view | BUG, CH | 6 | done |
 | C9.5 | `css.form-styling` | Styling form controls | Ext | `accent-color`, `appearance`, consistent controls without rebuilding them. | ↑ | `live-editor` | VM | 5 | todo |
-| C9.6 | `css.architecture` | Organizing CSS | Core | BEM, utility-first (Tailwind), CSS Modules: trade-offs you will meet at work. | ↑ | `architecture-compare` (same component, three styles) | CH | 6 | todo |
+| C9.6 | `css.architecture` | Organizing CSS | Core | BEM, utility-first (Tailwind), CSS Modules: trade-offs you will meet at work. | ↑ | `architecture-compare`: the same card three ways; real change requests shown as diffs | CH | 6 | done |
 
 ### C10 · Boss — Entry: C9.6
 

@@ -1,0 +1,13 @@
+@layer reset, base, components, utilities;
+
+@layer components {
+  .card {
+    padding: 16px;
+  }
+}
+
+@layer utilities {
+  .p-0 {
+    padding: 0;
+  }
+}

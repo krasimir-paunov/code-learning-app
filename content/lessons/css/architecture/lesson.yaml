@@ -1,0 +1,299 @@
+id: css.architecture
+version: 1
+title: Organizing CSS
+summary: Compare BEM, utility-first and CSS Modules on the same component and real change requests, so you can work in any of them.
+minutes: 6
+tags: [architecture, BEM, Tailwind, utility-first, CSS Modules, cascade layers]
+
+concept:
+  title: Keeping CSS from colliding
+  body: |
+    Every large codebase fights global class names that clash, and styles nobody dares to
+    delete. Three answers you'll meet at work:
+
+    - **BEM**, a naming convention: `.card`, `.card__title`, `.card--sale`. Plain CSS; unique
+      names keep rules apart.
+    - **Utility-first**, usually Tailwind: single-purpose classes in the markup
+      (`p-4 rounded-lg`). Almost no CSS to write, but long class lists.
+    - **CSS Modules**: ordinary names in a file next to the component, renamed by the build so
+      they can't clash.
+
+    None is the right one. Teams choose per codebase, and many mix them with a small global
+    layer for tokens and resets. This app uses CSS Modules with custom properties.
+  code:
+    caption: BEM in a few lines
+    tabs:
+      - lang: css
+        file: snippets/bem.css
+
+playground:
+  visualizer: architecture-compare
+  props:
+    approaches:
+      - name: BEM
+        summary: 'A naming convention: block (`card`), element (`card__title`), modifier (`card--sale`). Plain global CSS; the names keep it from clashing.'
+        files:
+          - name: card.html
+            code: |
+              <article class="card">
+                <h3 class="card__title">Ridgeline Ultra</h3>
+                <p class="card__price">$129</p>
+                <button class="card__button">Add to cart</button>
+              </article>
+          - name: card.css
+            code: |
+              .card {
+                padding: 16px;
+                border: 1px solid #cbd5e1;
+                border-radius: 8px;
+              }
+              .card__title {
+                font-size: 18px;
+              }
+              .card__price {
+                color: #374151;
+              }
+              .card__button {
+                padding: 8px 12px;
+                background: #1d4ed8;
+                color: #fff;
+              }
+      - name: Utility-first
+        summary: 'Small single-purpose classes in the markup (Tailwind style). The framework generates only the classes you use, so you write almost no CSS.'
+        files:
+          - name: card.html
+            code: |
+              <article class="rounded-lg border border-slate-300 p-4">
+                <h3 class="text-lg font-bold">Ridgeline Ultra</h3>
+                <p class="text-gray-700">$129</p>
+                <button class="bg-blue-700 px-3 py-2 text-white">Add to cart</button>
+              </article>
+      - name: CSS Modules
+        summary: 'Plain class names in a file next to the component. The build renames them (`.title` becomes something like `Card_title_x7f2a`), so they never clash with another component.'
+        files:
+          - name: Card.module.css
+            code: |
+              .card {
+                padding: 16px;
+                border: 1px solid #cbd5e1;
+                border-radius: 8px;
+              }
+              .title {
+                font-size: 18px;
+              }
+              .price {
+                color: #374151;
+              }
+              .button {
+                padding: 8px 12px;
+                background: #1d4ed8;
+                color: #fff;
+              }
+          - name: Card.jsx
+            code: |
+              import styles from './Card.module.css';
+
+              export function Card() {
+                return (
+                  <article className={styles.card}>
+                    <h3 className={styles.title}>Ridgeline Ultra</h3>
+                    <p className={styles.price}>$129</p>
+                    <button className={styles.button}>Add to cart</button>
+                  </article>
+                );
+              }
+    tasks:
+      - label: Add a sale variant with a red price
+        changes:
+          BEM:
+            note: A modifier class on the block and one rule. Readable, but someone has to invent the name and keep the pattern consistent by hand.
+            files:
+              - name: card.html
+                code: |
+                  <article class="card card--sale">
+                    <h3 class="card__title">Ridgeline Ultra</h3>
+                    <p class="card__price">$129</p>
+                    <button class="card__button">Add to cart</button>
+                  </article>
+              - name: card.css
+                code: |
+                  .card {
+                    padding: 16px;
+                    border: 1px solid #cbd5e1;
+                    border-radius: 8px;
+                  }
+                  .card__title {
+                    font-size: 18px;
+                  }
+                  .card__price {
+                    color: #374151;
+                  }
+                  .card--sale .card__price {
+                    color: #b91c1c;
+                  }
+                  .card__button {
+                    padding: 8px 12px;
+                    background: #1d4ed8;
+                    color: #fff;
+                  }
+          Utility-first:
+            note: Swap one class in the markup, no CSS. The decision now lives in whatever template picks the class.
+            files:
+              - name: card.html
+                code: |
+                  <article class="rounded-lg border border-slate-300 p-4">
+                    <h3 class="text-lg font-bold">Ridgeline Ultra</h3>
+                    <p class="text-red-700">$129</p>
+                    <button class="bg-blue-700 px-3 py-2 text-white">Add to cart</button>
+                  </article>
+          CSS Modules:
+            note: A class in the module and a prop to switch it on. The name `sale` stays local to this component, so it can't collide with anything.
+            files:
+              - name: Card.module.css
+                code: |
+                  .card {
+                    padding: 16px;
+                    border: 1px solid #cbd5e1;
+                    border-radius: 8px;
+                  }
+                  .title {
+                    font-size: 18px;
+                  }
+                  .price {
+                    color: #374151;
+                  }
+                  .sale .price {
+                    color: #b91c1c;
+                  }
+                  .button {
+                    padding: 8px 12px;
+                    background: #1d4ed8;
+                    color: #fff;
+                  }
+              - name: Card.jsx
+                code: |
+                  import styles from './Card.module.css';
+
+                  export function Card({ onSale }) {
+                    return (
+                      <article className={onSale ? `${styles.card} ${styles.sale}` : styles.card}>
+                        <h3 className={styles.title}>Ridgeline Ultra</h3>
+                        <p className={styles.price}>$129</p>
+                        <button className={styles.button}>Add to cart</button>
+                      </article>
+                    );
+                  }
+      - label: Delete the component
+        changes:
+          BEM:
+            note: Delete the markup and the rules, if you dare. Global CSS can't tell you whether another page still uses `.card__title`, so old rules often stay forever.
+            files:
+              - name: card.html
+                code: ''
+              - name: card.css
+                code: ''
+          Utility-first:
+            note: Delete the markup. The build stops generating classes nothing uses, so no dead CSS is left behind.
+            files:
+              - name: card.html
+                code: ''
+          CSS Modules:
+            note: Delete both files. If anything still imports the component or its module, the build fails and tells you where.
+            files:
+              - name: Card.module.css
+                code: ''
+              - name: Card.jsx
+                code: ''
+  prompt: |
+    Pick **Add a sale variant with a red price**, then switch between the three approaches.
+    Where does each one put the change?
+  explore:
+    - Try **Delete the component** in each approach. Which one can't promise the CSS is unused?
+    - The table counts lines changed. Is fewer lines always better?
+
+challenges:
+  - id: two-titles
+    type: choice
+    prompt: In an app using CSS Modules, two components each define a `.title` class with different styles. What happens?
+    options:
+      - text: Nothing clashes; the build renames each module's `.title` to a unique class.
+        correct: true
+        why: Each component imports its own module, so it gets its own generated name.
+      - text: The later stylesheet wins for both components.
+        why: That's what happens with global CSS, which is the problem modules solve.
+      - text: The build fails with a duplicate-name error.
+        why: Duplicate names across modules are fine; that's the point.
+      - text: Both titles get the styles of both rules merged.
+        why: The rules end up on different generated class names, so they never meet.
+    explanation: CSS Modules scope class names to the file, without any naming convention.
+
+  - id: no-new-css
+    type: choice
+    prompt: A team wants to stop writing new CSS for every component and keep everyone on the same spacing and colour scale. Which approach fits best?
+    options:
+      - text: Utility-first, such as Tailwind
+        correct: true
+        why: Components are built from a fixed set of utilities generated from the design scale, so new CSS is rare.
+      - text: BEM
+        why: Every new block still needs its own rules, written by hand.
+      - text: CSS Modules
+        why: Each component still has its own CSS file to write.
+      - text: Inline `style` attributes
+        why: Inline styles can't use media queries or states and ignore any shared scale unless you enforce it yourself.
+    explanation: Utility-first trades long class lists for a closed set of design choices.
+
+  - id: dead-css
+    type: choice
+    prompt: In a large codebase with global CSS, why do styles for deleted components often stay in the stylesheet?
+    options:
+      - text: Nobody can be sure that no other page still uses those class names.
+        correct: true
+        why: Global class names can be used anywhere, so deleting a rule feels risky and is postponed.
+      - text: Browsers need the old rules for caching.
+        why: Caching has nothing to do with which rules a stylesheet contains.
+      - text: Removing CSS rules slows down the build.
+        why: Removing rules makes the build smaller, not slower.
+      - text: CSS can't be deleted once it's shipped.
+        why: It can; the problem is knowing that it's safe.
+    explanation: Scoped styles (modules) and generated utilities make "is this still used?" easy to answer.
+
+production:
+  - title: Cascade layers set the order of whole groups
+    body: |
+      `@layer` decides which group of rules wins before specificity is even compared, so a
+      utility layer beats a component layer however specific the component selector is.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/layers.css
+        - lang: html
+          file: snippets/layers.html
+          output: 0px
+          verify: browser
+  - title: Reading any codebase
+    body: |
+      Most projects you join will use one of these, often mixed with a global stylesheet for
+      tokens and resets. Look at a component's markup first: `card__title`, `p-4` or
+      `styles.title` tells you immediately where its styles live.
+
+mistake:
+  title: Selectors that copy the page structure
+  body: |
+    A selector like this breaks when the markup moves, matches more than intended when the
+    structure repeats, and needs ever more specific selectors to override.
+  bad:
+    tabs:
+      - lang: css
+        file: snippets/deep.bad.css
+  fix: Give the element its own class and style that one class.
+  good:
+    tabs:
+      - lang: css
+        file: snippets/deep.good.css
+
+recap:
+  - 'BEM names, utility classes and CSS Modules all stop global class names from clashing.'
+  - 'Utilities move styling into markup; modules scope plain CSS to a component; BEM relies on naming discipline.'
+  - 'Cascade layers order groups of rules; single-class selectors keep specificity flat.'
+
+related: [css.specificity, css.custom-properties, css.selectors]

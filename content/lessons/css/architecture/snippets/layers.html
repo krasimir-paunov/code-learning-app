@@ -1,0 +1,17 @@
+<article class="card p-0" id="card">Ridgeline</article>
+<style>
+  @layer components, utilities;
+  @layer utilities {
+    .p-0 {
+      padding: 0;
+    }
+  }
+  @layer components {
+    #card.card {
+      padding: 16px;
+    }
+  }
+</style>
+<script>
+  console.log(getComputedStyle(document.querySelector('#card')).paddingTop);
+</script>

@@ -1,0 +1,10 @@
+/* Block, element, modifier: the name says where a rule belongs. */
+.card {
+  padding: 16px;
+}
+.card__title {
+  font-size: 18px;
+}
+.card--sale .card__price {
+  color: #b91c1c;
+}
