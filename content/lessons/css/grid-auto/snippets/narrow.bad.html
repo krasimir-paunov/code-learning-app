@@ -1,0 +1,14 @@
+<div class="cards"><div></div><div></div></div>
+<style>
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    width: 220px;
+  }
+  .cards div {
+    height: 40px;
+  }
+</style>
+<script>
+  console.log(document.querySelector('.cards').scrollWidth);
+</script>

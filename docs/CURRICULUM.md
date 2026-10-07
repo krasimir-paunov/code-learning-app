@@ -206,7 +206,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 | C5.1 | `css.grid-basics` | Grid basics | Core | Tracks, `fr`, `gap`. | — | `track-editor`: edit tracks as chips, see line numbers over the real grid and the fr maths | VM, PO, CH | 6 | done |
 | C5.2 | `css.grid-placement` | Placing items | Core | Place items by line numbers and `span`. | ↑ | `grid-placer`: drag across cells to place an item and read the placement three ways | VM, PO, CH | 7 | done |
 | C5.3 | `css.grid-areas` | Template areas | Core | Lay out a page with `grid-template-areas`. | ↑ | `area-painter`: paint named areas onto cells, get the map and a real page laid out by it | VM, PO, CH | 6 | done |
-| C5.4 | `css.grid-auto` | Intrinsic grids | Core | `repeat(auto-fit, minmax())`, implicit tracks, `grid-auto-flow`. | ↑ | `grid-sandbox` + resizable container | VM | 7 | todo |
+| C5.4 | `css.grid-auto` | Intrinsic grids | Core | `repeat(auto-fit, minmax())`, implicit tracks, `grid-auto-flow`. | ↑ | `auto-grid-lab`: auto-fill vs auto-fit with ghost tracks at any width and item count; dense packing | VM, PO, CH | 7 | done |
 | C5.5 | `css.grid-vs-flex` | Grid or Flexbox? | Core | Decide by dimension and content-vs-layout direction. | ↑ | `layout-chooser` (same UI in both, toggle) | CH | 5 | todo |
 | C5.6 | `css.subgrid` | Subgrid | Ext | Align nested content (card rows) to a parent grid. | ↑ | `grid-sandbox` | VM | 5 | todo |
 

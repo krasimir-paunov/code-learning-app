@@ -1,0 +1,139 @@
+id: css.grid-auto
+version: 1
+title: Intrinsic grids
+summary: Let the grid choose how many columns fit with auto-fill, auto-fit and minmax(), size the rows it adds, and fill its holes.
+minutes: 7
+tags: [grid, auto-fill, auto-fit, minmax, grid-auto-rows, grid-auto-flow, dense]
+
+concept:
+  title: Let the grid decide the columns
+  body: |
+    `repeat(auto-fill, minmax(200px, 1fr))` means "as many columns as fit at 200px or more,
+    sharing what's left". The column count follows the container, with no media queries.
+
+    - `auto-fill` keeps the empty columns when there are only a few items; `auto-fit`
+      collapses them, so the items stretch across the row.
+    - Rows you didn't list are **implicit**: the grid adds them as items arrive, and
+      `grid-auto-rows` sizes them.
+    - `grid-auto-flow: dense` lets later items fill holes left by bigger ones, so the order on
+      screen no longer matches the HTML.
+  code:
+    caption: A card grid that adapts to any width
+    tabs:
+      - lang: css
+        file: snippets/auto.css
+
+playground:
+  visualizer: auto-grid-lab
+  props:
+    mins: [120, 160, 200]
+    items: 2
+    gap: 10
+    width: { min: 200, max: 720, start: 680 }
+    dense:
+      items: ['1', '2', '3', '4', '5', '6']
+      wide: ['3']
+  prompt: |
+    Two items, but room for more columns: `auto-fill` keeps the empty ones (dashed). Switch to
+    `auto-fit` and watch the two items stretch.
+  explore:
+    - Add items until they fill the row. When do auto-fill and auto-fit stop looking different?
+    - In **Filling the holes**, switch to `row dense`. Which item moves, and where to?
+
+challenges:
+  - id: gallery
+    type: visual-match
+    prompt: Make the gallery fit as many columns as there's room for, each at least 100px wide, sharing any leftover space.
+    html: { file: snippets/gallery.html }
+    starterCss: { file: snippets/gallery.starter.css }
+    targetCss: { file: snippets/gallery.target.css }
+    compare:
+      selectors: [.p1, .p2, .p3, .p4, .p5]
+      tolerancePx: 1
+    viewport: { width: 380, height: 240 }
+    hints:
+      - '`repeat()` with a keyword instead of a number.'
+      - '`minmax(100px, 1fr)`: at least 100px, plus a share of the rest.'
+    explanation: |
+      Three 100px columns plus gaps fit in 340px, so the grid makes three and stretches them to
+      fill. Items four and five go on a new, implicit row.
+
+  - id: fill-or-fit
+    type: predict-output
+    prompt: Both grids are 600px wide with two items. What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      100
+      300
+    choices:
+      - |
+        100
+        300
+      - |
+        300
+        300
+      - |
+        100
+        100
+      - |
+        300
+        100
+    verify: browser
+    hints:
+      - Six 100px columns fit in 600px. How many hold an item?
+    explanation: |
+      Both make six 100px columns. `auto-fill` keeps all six, so each item is 100px. `auto-fit`
+      collapses the four empty ones, and the two items share the full 600px.
+
+  - id: dense-catch
+    type: choice
+    prompt: "`grid-auto-flow: dense` closes the gaps in a photo wall. What's the catch?"
+    options:
+      - text: Items can appear in a different order on screen than in the HTML, which is the order keyboards and screen readers follow.
+        correct: true
+        why: Later items jump back to fill earlier holes, so the visual order and the tab order no longer match.
+      - text: It only works with `auto-fit`.
+        why: It works with any columns; it changes how items are placed, not how tracks are made.
+      - text: It makes the grid ignore `gap`.
+        why: Gaps stay exactly as set.
+      - text: Browsers don't support it yet.
+        why: It has been supported everywhere for years.
+    explanation: Use `dense` where the order doesn't matter, like a gallery of independent photos, not for content people read in sequence.
+
+production:
+  - title: Equal-height rows of cards
+    body: '`grid-auto-rows: 1fr` makes every implicit row as tall as the tallest one, so card rows line up even when one card has more text.'
+    code:
+      tabs:
+        - lang: css
+          file: snippets/rows.css
+  - title: Components that fit anywhere
+    body: |
+      Because the column count follows the container, the same card grid works in a narrow
+      sidebar and in the main column without a single media query.
+
+mistake:
+  title: A minimum wider than the screen
+  body: |
+    On a 220px-wide phone column, `minmax(250px, 1fr)` still makes one 250px column, wider
+    than the container, so the cards stick out and the page scrolls sideways.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/narrow.bad.html
+        output: '250'
+        verify: browser
+  fix: 'Cap the minimum at the container width: `minmax(min(250px, 100%), 1fr)`.'
+  good:
+    tabs:
+      - lang: html
+        file: snippets/narrow.good.html
+        output: '220'
+        verify: browser
+
+recap:
+  - '`repeat(auto-fill, minmax(…, 1fr))` makes as many columns as fit; `auto-fit` collapses the empty ones.'
+  - 'Rows the grid adds are implicit; size them with `grid-auto-rows`.'
+  - '`dense` fills holes but breaks the link between visual and reading order.'
+
+related: [css.grid-basics, css.grid-placement, css.grid-vs-flex]
