@@ -40,7 +40,13 @@ for (const lesson of LESSONS) {
     await expect(page.getByText(/^loading /)).toHaveCount(0, { timeout: 15_000 });
     await expect(page.getByText('Something went wrong')).toHaveCount(0);
 
-    const results = await new AxeBuilder({ page }).include('main').exclude('iframe').analyze();
+    // Contrast demos fail on purpose (WCAG 1.4.3 exempts text that is part of a picture); the
+    // same information is always given as readable text next to them.
+    const results = await new AxeBuilder({ page })
+      .include('main')
+      .exclude('iframe')
+      .exclude('[data-contrast-demo]')
+      .analyze();
     expect(results.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
     expect(errors).toEqual([]);
   });

@@ -97,6 +97,7 @@ export default function ColorLabView({ props }: VisualizerViewProps<ColorLabProp
           <div
             className={styles.preview}
             style={{ backgroundColor: toHex(bgRgb), color: toHex(rgb) }}
+            data-contrast-demo
           >
             <p className={styles.sample}>{props.sample}</p>
             <p className={styles.sampleSmall}>Body text has to pass 4.5:1.</p>
@@ -171,11 +172,13 @@ export default function ColorLabView({ props }: VisualizerViewProps<ColorLabProp
                     setDrafts({});
                   }}
                 >
-                  <span aria-hidden="true">Aa</span>
-                  <span className={styles.ratio} aria-hidden="true">
-                    {formatRatio(s.ratio)}
+                  <span aria-hidden="true" data-contrast-demo>
+                    Aa
                   </span>
                 </button>
+                <span className={styles.ratio} aria-hidden="true">
+                  {formatRatio(s.ratio)}
+                </span>
                 <code className={styles.swatchLabel}>h {s.h}</code>
               </li>
             ))}

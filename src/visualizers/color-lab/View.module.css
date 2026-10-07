@@ -140,8 +140,8 @@
 }
 
 .ratio {
+  color: var(--text-1);
   font-size: var(--fs-xs);
-  font-weight: 400;
 }
 
 .swatchLabel {
