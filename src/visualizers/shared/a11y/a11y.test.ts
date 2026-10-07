@@ -133,3 +133,17 @@ describe('landmarks', () => {
     ]);
   });
 });
+
+describe('inside a shadow root', () => {
+  it('finds label[for] and aria-labelledby targets in the same shadow tree', () => {
+    const host = document.createElement('div');
+    document.body.append(host);
+    const shadow = host.attachShadow({ mode: 'open' });
+    shadow.innerHTML =
+      '<label for="e">Email</label><input id="e"><span id="t">Total</span><output aria-labelledby="t"></output>';
+    const [input, output] = [shadow.querySelector('input'), shadow.querySelector('output')];
+    expect(input && accessibleName(input)).toBe('Email');
+    expect(output && accessibleName(output)).toBe('Total');
+    host.remove();
+  });
+});

@@ -173,12 +173,17 @@ function textOf(node: Node): string {
   return /^(p|div|li|h[1-6]|br|td|th|tr)$/.test(element.localName) ? ` ${inner} ` : inner;
 }
 
+/** The tree an id refers to: the document, or the shadow root the element lives in. */
+function scopeOf(element: Element): Document | ShadowRoot {
+  const root = element.getRootNode();
+  return root instanceof ShadowRoot ? root : element.ownerDocument;
+}
+
 function labelFor(element: Element): string {
-  const doc = element.ownerDocument;
   const parts: string[] = [];
   const id = element.getAttribute('id');
   if (id) {
-    for (const label of doc.querySelectorAll('label')) {
+    for (const label of scopeOf(element).querySelectorAll('label')) {
       if (label.getAttribute('for') === id) parts.push(textOf(label));
     }
   }
@@ -191,10 +196,10 @@ function labelFor(element: Element): string {
 export function accessibleName(element: Element): string {
   const labelledBy = element.getAttribute('aria-labelledby')?.trim();
   if (labelledBy) {
-    const doc = element.ownerDocument;
+    const scope = scopeOf(element);
     const text = labelledBy
       .split(/\s+/)
-      .map((id) => doc.getElementById(id))
+      .map((id) => scope.getElementById(id))
       .filter((el): el is HTMLElement => el !== null)
       .map((el) => textOf(el))
       .join(' ');
