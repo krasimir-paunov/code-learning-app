@@ -112,6 +112,9 @@ export default function CodeMirrorEditor({
           theme,
           readOnlyCompartment.current.of(EditorState.readOnly.of(readOnly)),
           EditorView.contentAttributes.of({
+            // Explicit, so the content stays a Tab stop when read-only (no contenteditable),
+            // and keyboard users can still scroll long lines.
+            tabindex: '0',
             'aria-label': label,
             ...(describedBy ? { 'aria-describedby': describedBy } : {}),
           }),
