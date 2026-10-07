@@ -1,0 +1,11 @@
+<div class="stack"></div>
+<style>
+  .stack {
+    --gap: 20;
+    display: flex;
+    gap: var(--gap)px;
+  }
+</style>
+<script>
+  console.log(getComputedStyle(document.querySelector('.stack')).rowGap);
+</script>

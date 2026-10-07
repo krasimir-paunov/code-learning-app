@@ -186,7 +186,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
 | C3.1 | `css.colors` | Color | Core | Use hex, `rgb()`, `hsl()`, `oklch()` and `color-mix()`; check contrast. | — | `color-lab`: one colour in four editable notations with live contrast; HSL vs OKLCH lightness row | LC, PO, CH | 6 | done |
-| C3.2 | `css.custom-properties` | Custom properties | Core | Build a theme with variables, fallbacks and scoping. | ↑ | `theme-switcher` sandbox | LC | 7 | todo |
+| C3.2 | `css.custom-properties` | Custom properties | Core | Build a theme with variables, fallbacks and scoping. | ↑ | `theme-switcher`: theme attribute, declaration switches, a trace of where each value comes from | PO, LC, CH | 7 | done |
 | C3.3 | `css.typography` | Typography | Core | Font stacks, web fonts, `line-height`, fluid sizes with `clamp()`. | ↑ | `type-lab` | VM | 7 | todo |
 | C3.4 | `css.surfaces` | Backgrounds, borders, shadows | Core | Style surfaces with gradients, `border-radius`, `box-shadow`. | ↑ | `live-editor` | VM | 6 | todo |
 

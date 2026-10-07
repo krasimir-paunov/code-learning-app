@@ -1,0 +1,212 @@
+id: css.custom-properties
+version: 1
+title: Custom properties
+summary: Name a value once, override it in a scope, and switch a whole theme with one attribute.
+minutes: 7
+tags: [custom properties, variables, var, theming, design tokens]
+
+concept:
+  title: Values that cascade
+  body: |
+    `--accent: oklch(55% 0.2 262)` declares a custom property. `var(--accent)` reads it
+    wherever you need that value.
+
+    Custom properties **inherit**, like `color`. Declare them on `:root` and every element can
+    read them. Redeclare one on a narrower selector, such as a component or
+    `[data-theme="dark"]`, and everything inside reads the new value. Nothing else changes.
+
+    `var(--radius, 4px)` gives a fallback, used only when the property isn't set anywhere up
+    the tree.
+
+    Unlike Sass variables, they live in the browser, so JavaScript and media queries can change
+    them while the page runs.
+  code:
+    caption: Tokens on `:root`, a dark override, and a component that reads them
+    tabs:
+      - lang: css
+        file: snippets/tokens.css
+
+playground:
+  visualizer: theme-switcher
+  props:
+    html: |
+      <div class="app">
+        <header class="bar">Trailhead</header>
+        <article class="card">
+          <h3>Ridgeline Ultra</h3>
+          <p>Waterproof trail shoe.</p>
+          <button class="buy">Add to cart</button>
+        </article>
+        <article class="card promo">
+          <h3>Summit Pack</h3>
+          <p>20% off this week.</p>
+          <button class="buy">Add to cart</button>
+        </article>
+      </div>
+    rules:
+      - selector: .app
+        declarations:
+          - { name: --surface, value: '#ffffff' }
+          - { name: --text, value: '#1f2937' }
+          - { name: --accent, value: oklch(50% 0.2 262) }
+          - { name: --radius, value: 10px }
+      - selector: .app[data-theme="dark"]
+        declarations:
+          - { name: --surface, value: '#111827' }
+          - { name: --text, value: '#e5e7eb' }
+          - { name: --accent, value: oklch(75% 0.15 262) }
+      - selector: .promo
+        declarations:
+          - { name: --accent, value: oklch(55% 0.2 25) }
+    usage: |
+      .app {
+        background: var(--surface);
+        color: var(--text);
+      }
+      .bar {
+        color: var(--accent);
+      }
+      .card {
+        border-color: var(--accent, #6b7280);
+        border-radius: var(--radius, 0);
+      }
+      .buy {
+        background: var(--accent, #6b7280);
+        color: var(--surface);
+        border-radius: var(--radius, 0);
+      }
+    baseCss: |
+      .app { display: grid; gap: 10px; padding: 12px; font-family: system-ui, sans-serif; }
+      .bar { font-weight: 700; }
+      .card { display: grid; gap: 6px; justify-items: start; padding: 12px; border: 2px solid; }
+      .card h3, .card p { margin: 0; }
+      .buy { padding: 6px 12px; border: 0; font: inherit; }
+    theme:
+      selector: .app
+      attribute: data-theme
+      values: [light, dark]
+    targets:
+      - { label: Header, selector: .bar }
+      - { label: First button, selector: .card .buy }
+      - { label: Promo button, selector: .promo .buy }
+  prompt: |
+    Switch `data-theme` to `dark`. One attribute changes three values, and every element that
+    reads them follows.
+  explore:
+    - Inspect the **Promo button**. Why is it red in both themes?
+    - 'Switch off `--accent` in `.promo`, then in the other rules too. When does the fallback `#6b7280` appear?'
+    - 'Switch off `--radius`. Why do the corners turn square instead of keeping 10px?'
+
+challenges:
+  - id: inherit-or-fallback
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      20px
+      8px
+      30px
+    choices:
+      - |
+        20px
+        8px
+        30px
+      - |
+        20px
+        20px
+        30px
+      - |
+        8px
+        8px
+        8px
+      - |
+        20px
+        8px
+        20px
+    verify: browser
+    hints:
+      - Custom properties inherit. Which paragraphs are inside `.a`?
+      - The fallback is used only when no element up the tree sets `--size`.
+    explanation: |
+      `.x` inherits 20px from `.a`. `.y` sits outside `.a`, so nothing sets `--size` and the
+      fallback 8px is used. `.z` sets its own 30px, which beats the inherited value.
+
+  - id: dark-theme
+    type: live-code
+    prompt: |
+      Add a dark theme. When `<html>` has `data-theme="dark"`, the page should be dark, and the
+      body text and the button text must both reach 4.5:1. Change only the
+      `[data-theme="dark"]` rule.
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/theme.html, editable: false }
+      style.css: { file: snippets/theme.starter.css }
+    solution:
+      index.html: { file: snippets/theme.html }
+      style.css: { file: snippets/theme.solution.css }
+    tests: { file: snippets/theme.test.js }
+    hints:
+      - Redeclare the same three properties inside `[data-theme="dark"]`.
+      - The button's text uses `--surface`, so on a dark surface the accent must be light.
+    explanation: |
+      The components never change: they keep reading `--surface`, `--text` and `--accent`.
+      The theme only answers those three questions differently.
+
+  - id: why-not-sass
+    type: choice
+    prompt: A team uses Sass variables for colours. Why can't they add a dark-mode toggle by changing a Sass variable?
+    options:
+      - text: Sass variables are replaced by their values at build time; the browser never sees them.
+        correct: true
+        why: The CSS that ships contains only the final colours, so there is nothing left to switch at run time.
+      - text: Sass variables can't hold colours.
+        why: They can hold any value; the problem is when they exist, not what they hold.
+      - text: Sass variables don't support fallbacks.
+        why: Sass has defaults (`!default`); fallbacks are not the issue.
+      - text: Browsers block Sass for security reasons.
+        why: Browsers never receive Sass at all; it is compiled to plain CSS first.
+    explanation: Custom properties are part of the cascade at run time, so one attribute, media query or line of JavaScript can change them.
+
+production:
+  - title: Design tokens in two layers
+    body: |
+      Design systems usually name raw values first (`--blue-500`) and then give them roles
+      (`--accent: var(--blue-500)`). Components use only the roles, so a new theme is a new set
+      of role values.
+  - title: JavaScript drives values, CSS draws
+    body: |
+      Scripts set a custom property and leave the styling to CSS: a progress bar, a cursor
+      position, a value from a slider.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/runtime.html
+          output: 40%
+          verify: browser
+
+mistake:
+  title: Gluing a unit onto `var()`
+  body: |
+    `var(--gap)px` doesn't make `20px`; it makes the number `20` followed by a separate `px`,
+    which isn't a valid gap. The browser throws the whole declaration away when it computes it,
+    so `gap` falls back to its initial value, not to an earlier rule.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/units.bad.html
+        output: normal
+        verify: browser
+  fix: 'Store the unit in the value (`--gap: 20px`), or multiply: `calc(var(--gap) * 1px)`.'
+  good:
+    tabs:
+      - lang: html
+        file: snippets/units.good.html
+        output: 20px
+        verify: browser
+
+recap:
+  - 'Declare with `--name: value`, read with `var(--name, fallback)`; the fallback is used only when nothing sets it.'
+  - Custom properties inherit, so redeclaring one on a scope (a component, `[data-theme="dark"]`) restyles everything inside.
+  - They are live in the browser; JavaScript and media queries can change them.
+
+related: [css.colors, css.inheritance, css.typography]

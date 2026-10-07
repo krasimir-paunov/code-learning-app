@@ -1,0 +1,12 @@
+<div class="bar"></div>
+<style>
+  .bar {
+    --progress: 10%;
+    width: var(--progress);
+  }
+</style>
+<script>
+  const bar = document.querySelector('.bar');
+  bar.style.setProperty('--progress', '40%');
+  console.log(getComputedStyle(bar).getPropertyValue('--progress'));
+</script>

@@ -1,0 +1,22 @@
+<div class="a">
+  <p class="x">X</p>
+  <p class="z">Z</p>
+</div>
+<p class="y">Y</p>
+<style>
+  .a {
+    --size: 20px;
+  }
+  .z {
+    --size: 30px;
+  }
+  p {
+    padding: var(--size, 8px);
+  }
+</style>
+<script>
+  for (const name of ['x', 'y', 'z']) {
+    const p = document.querySelector('.' + name);
+    console.log(getComputedStyle(p).paddingTop);
+  }
+</script>

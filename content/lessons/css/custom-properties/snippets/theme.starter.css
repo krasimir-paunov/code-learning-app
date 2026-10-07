@@ -1,0 +1,18 @@
+:root {
+  --surface: #ffffff;
+  --text: #1f2937;
+  --accent: oklch(50% 0.2 262);
+}
+
+[data-theme="dark"] {
+}
+
+body {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.buy {
+  background: var(--accent);
+  color: var(--surface);
+}

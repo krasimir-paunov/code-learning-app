@@ -1,0 +1,18 @@
+:root {
+  --surface: #ffffff;
+  --text: #1f2937;
+  --accent: oklch(55% 0.2 262);
+  --radius: 8px;
+}
+
+[data-theme="dark"] {
+  --surface: #111827;
+  --text: #e5e7eb;
+  --accent: oklch(75% 0.15 262);
+}
+
+.button {
+  background: var(--accent);
+  color: var(--surface);
+  border-radius: var(--radius, 4px);
+}
