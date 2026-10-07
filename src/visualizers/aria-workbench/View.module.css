@@ -1,0 +1,126 @@
+.frame {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+}
+
+.toggles {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+
+  & legend {
+    padding-inline: var(--space-1);
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+  }
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--touch-target);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+
+  & input {
+    flex: none;
+    accent-color: var(--accent);
+  }
+
+  & code {
+    overflow-wrap: anywhere;
+  }
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+@container (min-width: 680px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.stage {
+  overflow: hidden;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-inline-start: 3px solid var(--accent);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+  font-size: var(--fs-sm);
+}
+
+.title {
+  font-size: var(--fs-base);
+  font-weight: 700;
+}
+
+.speech {
+  font-family: var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+.facts {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+
+  & div {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+
+  & dt {
+    color: var(--text-2);
+  }
+
+  & dd {
+    margin: 0;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+
+  & [data-missing] {
+    color: var(--danger);
+  }
+}
+
+.log {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  & li:not(.empty, [data-heard]) {
+    color: var(--warning);
+  }
+
+  & li[data-heard] {
+    color: var(--success);
+  }
+}
+
+.empty {
+  color: var(--text-2);
+}
