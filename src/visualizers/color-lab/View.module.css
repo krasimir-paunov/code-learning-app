@@ -67,7 +67,7 @@
   color: var(--text-1);
   font-family: var(--font-mono);
   /* Below 16px, iOS Safari zooms the page when the field gets focus. */
-  font-size: var(--fs-md);
+  font-size: var(--fs-base);
 
   &[aria-invalid] {
     border-color: var(--danger);
