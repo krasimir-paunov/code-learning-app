@@ -1,0 +1,139 @@
+id: html.form-basics
+version: 1
+title: How forms submit
+summary: See exactly what a form sends, where it sends it, and why a field without a name never arrives.
+minutes: 7
+tags: [form, label, name, action, method, get, post]
+
+concept:
+  title: A form sends name=value pairs
+  body: |
+    - `action` is where the data goes; `method` is how.
+    - Each control's `name` is the key and what the user entered is the value. No `name`,
+      not sent.
+    - `method="get"` puts the pairs in the URL (`/search?q=trail+shoes`): right for searches
+      and filters, which people bookmark and share.
+    - `method="post"` puts them in the request body: right for anything that changes data.
+
+    `<label for="email">` connects to the control with `id="email"`. Clicking the label focuses
+    the field, and screen readers announce the label as the field's name.
+  code:
+    caption: A labelled field in a form that posts
+    tabs:
+      - lang: html
+        file: snippets/form.html
+
+playground:
+  visualizer: form-inspector
+  props:
+    action: /subscribe
+    method: get
+    fields:
+      - { label: Name, name: name, type: text, value: Ana Ruiz }
+      - { label: Email, name: email, type: email, value: ana@example.com, nameToggle: true }
+      - { label: Weekly digest, name: digest, type: checkbox }
+    submit: { label: Subscribe }
+  prompt: |
+    Press **Subscribe**: with GET, everything in the form ends up in the URL. Switch to POST and
+    submit again.
+  explore:
+    - "Switch off the email field's `name` and submit. What happens to the address?"
+    - Tick **Weekly digest** and submit. Where does `yes` come from?
+    - Disconnect the labels, then click the word **Email**. Does the field get focus?
+
+challenges:
+  - id: what-gets-sent
+    type: predict-output
+    prompt: 'The script builds the query string a GET submission would add after the `?`. What does it print?'
+    code: { lang: html, file: snippets/predict.html }
+    answer: q=trail+shoes&page=1
+    choices:
+      - q=trail+shoes&page=1
+      - q=trail+shoes&42&waterproof=&page=1
+      - q=trail shoes&waterproof=no&page=1
+      - q=trail+shoes&waterproof=yes&page=1
+    verify: browser
+    hints:
+      - Which field has no `name`?
+      - An unchecked checkbox sends nothing at all.
+    explanation: |
+      The second input has no `name`, so it is skipped. The checkbox isn't checked, so it is
+      skipped too. Hidden inputs are sent like any other field, and spaces become `+`.
+
+  - id: missing-name
+    type: find-bug
+    prompt: Subscribers arrive with a name but never an email address. Click the buggy line, then choose the fix.
+    code: { lang: html, file: snippets/name.bug.html }
+    bugLines: [5]
+    fix:
+      choices:
+        - { text: '<input type="email" id="email" name="email">', correct: true }
+        - { text: '<input type="email" name="email">' }
+        - { text: '<input type="email" id="email" value="email">' }
+        - { text: '<input type="email" id="email" for="email">' }
+    tests: { file: snippets/name.test.js }
+    hints:
+      - What does a field need to be sent at all?
+      - Keep the `id`, or the label loses its field.
+    explanation: '`name` decides whether and under which key a field is sent; `id` is what the label connects to. A field usually needs both.'
+
+  - id: delete-method
+    type: choice
+    prompt: "A form deletes the user's account. Which method should it use?"
+    options:
+      - text: '`method="post"`'
+        correct: true
+        why: Anything that changes data on the server is a POST; the data travels in the body, not the URL.
+      - text: '`method="get"`'
+        why: GET must never change data. The URL would end up in the history, and a link or a prefetch could repeat it.
+      - text: 'Either; they only differ in where the data travels'
+        why: Browsers, caches and crawlers treat GET as safe to repeat. That makes it wrong for anything with side effects.
+      - text: 'No method; the browser picks the safe one'
+        why: Without `method`, a form uses GET, the wrong one here.
+    explanation: GET reads, POST changes. Searches and filters use GET; sign-ups, orders and deletions use POST.
+
+production:
+  - title: The same request from JavaScript
+    body: |
+      Apps often submit with `fetch` to stay on the page. `new FormData(form)` collects exactly
+      the fields the browser would send, by the same `name` rules. As a `fetch` body it is sent
+      as `multipart/form-data`.
+    code:
+      tabs:
+        - lang: js
+          file: snippets/fetch.js
+  - title: Search forms
+    body: |
+      Site search uses GET, so results can be bookmarked and shared, and the `<search>` element
+      marks the form as the page's search for assistive technology.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/search.html
+
+mistake:
+  title: A placeholder instead of a label
+  body: |
+    The hint disappears as soon as people type, so they can't check what the field was for, and
+    placeholder text is usually too faint to read comfortably. The field also has no label to
+    click.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/placeholder.bad.html
+        output: '0'
+        verify: browser
+  fix: Always give the field a visible `<label>`; keep the placeholder for an example value.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/placeholder.good.html
+        output: '1'
+        verify: browser
+
+recap:
+  - 'A form sends `name=value` pairs; fields without a `name` (and unchecked boxes) are left out.'
+  - 'GET puts the data in the URL (searches); POST puts it in the body (anything that changes data).'
+  - '`<label for>` + `id` connects a label: it focuses the field and names it for screen readers.'
+
+related: [html.input-types, html.buttons, html.validation]

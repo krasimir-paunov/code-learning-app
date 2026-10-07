@@ -1,0 +1,10 @@
+<form id="search" action="/search">
+  <input name="q" value="trail shoes">
+  <input value="42">
+  <input type="checkbox" name="waterproof" value="yes">
+  <input type="hidden" name="page" value="1">
+</form>
+<script>
+  const form = document.querySelector('#search');
+  console.log(new URLSearchParams(new FormData(form)).toString());
+</script>
