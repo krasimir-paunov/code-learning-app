@@ -1,0 +1,134 @@
+id: html.tables
+version: 1
+title: Data tables
+summary: Mark up a table so every value comes with its headers, and keep tables for data only.
+minutes: 6
+tags: [table, caption, thead, th, scope, accessibility]
+
+concept:
+  title: Every value needs its headers
+  body: |
+    Use a table for data that has rows and columns: a price comparison, a timetable. Never
+    for page layout; CSS Grid does that.
+
+    - `<caption>`: the table's title, and its accessible name.
+    - `<thead>` with `<th scope="col">`: one header per column.
+    - `<th scope="row">`: the header of each row.
+    - `<td>`: the data.
+
+    The headers are what make a cell understandable on its own. Moving through a marked-up
+    table, a screen reader announces the matching headers with each value. Without them, "310 g"
+    is just a number with no shoe and no meaning.
+  code:
+    caption: A caption, column headers, row headers and data
+    tabs:
+      - lang: html
+        file: snippets/table.html
+
+playground:
+  visualizer: table-builder
+  props:
+    caption: Trail shoes compared
+    columns: [Shoe, Weight, Drop, Price]
+    rows:
+      - { header: Ridgeline, values: [280 g, 6 mm, $129] }
+      - { header: Summit, values: [310 g, 8 mm, $149] }
+      - { header: Talus, values: [255 g, 4 mm, $139] }
+  prompt: |
+    Look at **310 g**. Nothing tells a screen reader which shoe or which property it is. Switch on
+    column headers, then row headers, and look again.
+  explore:
+    - Switch on `<caption>`. What does the table get?
+    - With only row headers on, which header does **$139** get? Which one is missing?
+
+challenges:
+  - id: bus-timetable
+    type: live-code
+    prompt: |
+      Make this timetable accessible: turn the paragraph into the table's caption, put the first
+      row in `<thead>` as column headers, and make each stop the header of its row.
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/timetable.starter.html }
+    solution:
+      index.html: { file: snippets/timetable.solution.html }
+    tests: { file: snippets/timetable.test.js }
+    hints:
+      - '`<caption>` goes first inside `<table>`.'
+      - 'Header cells are `<th>`; `scope="col"` in the header row, `scope="row"` for each stop.'
+    explanation: |
+      Now "23:22" comes with "Last bus" and "Harbour", and the caption names the table so it can
+      be found in a list of tables.
+
+  - id: bold-header
+    type: find-bug
+    prompt: The Price column looks like it has a header, but its values get none. Click the buggy line, then choose the fix.
+    code: { lang: html, file: snippets/bold-header.bug.html }
+    bugLines: [7]
+    fix:
+      choices:
+        - { text: '<th scope="col">Price</th>', correct: true }
+        - { text: '<th scope="row">Price</th>' }
+        - { text: '<td scope="col"><strong>Price</strong></td>' }
+        - { text: '<th><strong>Price</strong></th>' }
+    tests: { file: snippets/bold-header.test.js }
+    hints:
+      - Bold text looks like a header. Which element *is* one?
+    explanation: '`<strong>` only changes how the text looks. A header cell is a `<th>`, and `scope="col"` says it labels the cells below it.'
+
+  - id: row-header
+    type: choice
+    prompt: A timetable lists stops down the first column and times across. How do you mark up "Harbour" in the first column?
+    options:
+      - text: '`<th scope="row">Harbour</th>`'
+        correct: true
+        why: It labels every time in its row, so it is a header with row scope.
+      - text: '`<th scope="col">Harbour</th>`'
+        why: '`col` would make it the header of the cells below it, which are other stops.'
+      - text: '`<td><strong>Harbour</strong></td>`'
+        why: Bold data is still data; the times in its row would have no row header.
+      - text: '`<caption>Harbour</caption>`'
+        why: A table has one caption, its title; it can't label a row.
+    explanation: Ask what the cell labels. Everything to its right means a row header; everything below means a column header.
+
+production:
+  - title: Wide tables on phones
+    body: |
+      Wrap a wide table in a focusable scroll region, named by the caption, so it scrolls on its
+      own instead of pushing the page sideways.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/scroll.html
+  - title: Sortable columns
+    body: |
+      A sortable header holds a real `<button>`, and `aria-sort` on the `<th>` tells screen
+      readers which column is sorted and in which direction.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/sort.html
+
+mistake:
+  title: A table for page layout
+  body: |
+    Old sites put the menu and the content in two table cells. Screen readers then announce a
+    table with rows and columns that mean nothing, and the layout can't rearrange itself for a
+    phone. Without headers or a caption, Chrome even treats a small table as layout, so it isn't
+    announced as data at all.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/layout.bad.html
+  fix: Lay out pages with CSS Grid or Flexbox; keep `<table>` for data.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/layout.good.html
+
+recap:
+  - 'Tables are for data with rows and columns, never for layout.'
+  - '`<caption>` names the table; `<th scope="col">` and `<th scope="row">` label the data.'
+  - Headers travel with each value, so a single cell makes sense on its own.
+
+related: [html.lists, html.landmarks, css.grid-basics]

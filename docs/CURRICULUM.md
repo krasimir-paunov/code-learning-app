@@ -119,7 +119,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| H4.1 | `html.tables` | Data tables | Core | Build accessible tables (`caption`, `thead`, `th scope`); never tables for layout. | — | `table-builder` + `sr-preview` of cell announcements | LC, BUG | 6 | todo |
+| H4.1 | `html.tables` | Data tables | Core | Build accessible tables (`caption`, `thead`, `th scope`); never tables for layout. | — | `table-builder`: switch on caption and headers, click a value to see the headers it carries | LC, BUG, CH | 6 | done |
 
 ### H5 · Forms — Entry: H4.1
 
