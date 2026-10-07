@@ -172,3 +172,13 @@ describe('states: invalid', () => {
     expect(good && states(good)).not.toContain('invalid entry');
   });
 });
+
+describe('accessibleName: placeholder', () => {
+  it('falls back to the placeholder after the title, as Chromium does', () => {
+    document.body.innerHTML =
+      '<input id="a" placeholder="From placeholder" title="From title"><input id="b" placeholder="Only placeholder">';
+    const [a, b] = document.querySelectorAll('input');
+    expect(a && accessibleName(a)).toBe('From title');
+    expect(b && accessibleName(b)).toBe('Only placeholder');
+  });
+});

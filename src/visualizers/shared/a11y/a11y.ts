@@ -238,7 +238,12 @@ export function accessibleName(element: Element): string {
     const text = squash(Array.from(element.childNodes, textOf).join(''));
     if (text) return text;
   }
-  return squash(element.getAttribute('title') ?? '');
+  const title = squash(element.getAttribute('title') ?? '');
+  if (title) return title;
+  // Last resort for text fields, after title (as Chromium does): the placeholder.
+  return tag === 'input' || tag === 'textarea'
+    ? squash(element.getAttribute('placeholder') ?? '')
+    : '';
 }
 
 /** The accessible description: what aria-describedby points at, read after the name. */
