@@ -1,0 +1,104 @@
+.frame {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+}
+
+@container (min-width: 640px) {
+  .layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.figure {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.caption {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.stage {
+  overflow: hidden;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.rule {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.selector {
+  float: inline-start;
+  margin-block-end: var(--space-1);
+  padding: 0;
+}
+
+.hint,
+.note {
+  color: var(--text-2);
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1.25rem 9.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-2);
+  padding-inline-start: var(--space-2);
+
+  & input {
+    accent-color: var(--accent);
+  }
+
+  &[data-off] .name {
+    color: var(--text-2);
+    text-decoration: line-through;
+  }
+}
+
+@container (max-width: 420px) {
+  .row {
+    grid-template-columns: 1.25rem minmax(0, 1fr);
+
+    & > :last-child {
+      grid-column: 2;
+    }
+  }
+}
+
+.name {
+  color: var(--code-property);
+}
+
+.select {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  padding: var(--space-1) var(--space-2);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-1);
+  color: var(--text-1);
+  font-family: var(--font-mono);
+  /* Below 16px, iOS Safari zooms the page when the field gets focus. */
+  font-size: var(--fs-base);
+}
