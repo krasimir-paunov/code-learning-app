@@ -1,0 +1,155 @@
+.frame {
+  container-type: inline-size;
+}
+
+.layout {
+  display: grid;
+  gap: var(--space-5);
+}
+
+@container (min-width: 760px) {
+  .layout {
+    grid-template-columns: 3fr 2fr;
+    align-items: start;
+  }
+}
+
+.panel {
+  display: grid;
+  gap: var(--space-3);
+  min-inline-size: 0;
+}
+
+.title {
+  font-size: var(--fs-md);
+  font-weight: 700;
+}
+
+.preview {
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.sample {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+}
+
+.sampleSmall {
+  font-size: var(--fs-sm);
+}
+
+.fields {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.field {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+}
+
+.fieldLabel {
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.input {
+  inline-size: 100%;
+  padding: var(--space-2);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-1);
+  color: var(--text-1);
+  font-family: var(--font-mono);
+  /* Below 16px, iOS Safari zooms the page when the field gets focus. */
+  font-size: var(--fs-md);
+
+  &[aria-invalid] {
+    border-color: var(--danger);
+  }
+}
+
+.error {
+  grid-column: 2;
+  color: var(--danger);
+  font-size: var(--fs-xs);
+}
+
+.contrast {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--fs-sm);
+}
+
+.verdicts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--danger);
+
+  & svg {
+    inline-size: 1em;
+    block-size: 1em;
+  }
+
+  &[data-ok] {
+    color: var(--success);
+  }
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  & li {
+    display: grid;
+    gap: var(--space-1);
+    justify-items: center;
+  }
+}
+
+.swatch {
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+  aspect-ratio: 1;
+  padding: var(--space-1);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ratio {
+  font-size: var(--fs-xs);
+  font-weight: 400;
+}
+
+.swatchLabel {
+  color: var(--text-3);
+  font-size: var(--fs-xs);
+}
+
+.note {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
