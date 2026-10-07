@@ -231,7 +231,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| C8.1 | `css.transitions` | Transitions | Core | Transition properties with good durations and easing. | — | `easing-editor` | VM, FB | 6 | todo |
+| C8.1 | `css.transitions` | Transitions | Core | Transition properties with good durations and easing. | — | `easing-editor`: drag a cubic-bezier, read the motion as a filmstrip, play it if motion is allowed | PO, FB, CH | 6 | done |
 | C8.2 | `css.keyframes` | Keyframe animations | Ext | `@keyframes` and animation properties. | ↑ | `timeline-scrubber` | VM | 6 | todo |
 | C8.3 | `css.render-performance` | Smooth animation | Ext | Animate `transform`/`opacity`; see layout → paint → composite costs. | ↑ | `render-pipeline` meter | CH, BUG | 6 | todo |
 

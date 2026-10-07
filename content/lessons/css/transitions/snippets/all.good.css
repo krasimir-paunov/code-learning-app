@@ -1,0 +1,5 @@
+.card {
+  transition:
+    translate 200ms ease-out,
+    box-shadow 200ms ease-out;
+}

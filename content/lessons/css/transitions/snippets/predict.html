@@ -1,0 +1,26 @@
+<div class="box linear"></div>
+<div class="box out"></div>
+<style>
+  .box {
+    width: 10px;
+    height: 10px;
+    transition: translate 1000ms linear;
+  }
+  .out {
+    transition-timing-function: ease-out;
+  }
+  .moved {
+    translate: 200px;
+  }
+</style>
+<script>
+  for (const box of document.querySelectorAll('.box')) {
+    getComputedStyle(box).translate;
+    box.classList.add('moved');
+    // Freeze each transition halfway through its 1000ms.
+    const [transition] = box.getAnimations();
+    transition.pause();
+    transition.currentTime = 500;
+    console.log(Math.round(parseFloat(getComputedStyle(box).translate)));
+  }
+</script>

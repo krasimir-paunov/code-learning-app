@@ -1,0 +1,13 @@
+.card {
+  translate: 0 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card {
+    transition: translate 200ms ease-out;
+  }
+}
+
+.card:hover {
+  translate: 0 -4px;
+}

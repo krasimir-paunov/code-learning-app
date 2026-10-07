@@ -1,0 +1,139 @@
+id: css.transitions
+version: 1
+title: Transitions
+summary: Animate a change of state with the right property, duration and easing, and keep it optional for people who reduce motion.
+minutes: 6
+tags: [transition, easing, cubic-bezier, duration, reduced motion]
+
+concept:
+  title: Tell the browser how to get there
+  body: |
+    `transition: background-color 150ms ease-out` animates a property whenever its value
+    changes: on hover, when a class is added, when a state flips.
+
+    - **Property**: name what you animate instead of `all`.
+    - **Duration**: in common practice, about 100 to 200ms for small feedback such as a hover
+      and up to about 400ms for larger moves. Longer starts to feel sluggish.
+    - **Easing**: `ease-out` starts fast and settles gently, which suits things that respond
+      or appear. `ease-in` suits things leaving, and `linear` suits constant motion only.
+
+    People can ask for less motion; respect `prefers-reduced-motion`.
+  code:
+    caption: A hover colour that eases in
+    tabs:
+      - lang: css
+        file: snippets/button.css
+
+playground:
+  visualizer: easing-editor
+  props:
+    start: linear
+    durations: [150, 300, 600]
+  prompt: |
+    The filmstrip shows where the motion is at each tenth of the time. With `linear`, it moves
+    the same amount every step. Pick `ease-out` and look at the first three frames.
+  explore:
+    - Drag the second handle above the box. What happens near the end of the filmstrip?
+    - Which preset spends the most time near the start? When would you want that?
+
+challenges:
+  - id: halfway
+    type: predict-output
+    prompt: Both boxes move 200px over 1000ms. The script freezes each one at 500ms. What does it print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      100
+      137
+    choices:
+      - |
+        100
+        137
+      - |
+        100
+        100
+      - |
+        100
+        63
+      - |
+        137
+        100
+    verify: browser
+    hints:
+      - '`linear` covers equal distances in equal times.'
+      - '`ease-out` starts fast. Has it covered more or less than half by the halfway point?'
+    explanation: |
+      Linear is exactly halfway at half the time: 100px. Ease-out front-loads the movement, so at
+      half the time it has already covered about two-thirds of the way: 137px.
+
+  - id: quick-fade
+    type: fill-blank
+    prompt: Make the Save button's colour change take 150ms, starting fast and settling gently.
+    code: { lang: html, file: snippets/fade.html }
+    blanks:
+      duration:
+        accept: ['150ms', '0.15s']
+        label: the duration
+      easing:
+        accept: [ease-out]
+        caseSensitive: false
+        label: the easing
+    check:
+      file: snippets/fade.check.html
+      output: 0.15s ease-out
+      verify: browser
+    hints:
+      - Durations take a unit, `ms` or `s`.
+      - '"Starts fast, settles gently" is the out curve.'
+    explanation: '`150ms ease-out` responds immediately to the hover and settles without a jolt.'
+
+  - id: closing-menu
+    type: choice
+    prompt: A dropdown menu slides away when it closes. Which easing suits the closing movement?
+    options:
+      - text: '`ease-in`'
+        correct: true
+        why: It starts slowly and speeds up as the menu leaves, like something moving away under its own momentum.
+      - text: '`ease-out`'
+        why: That suits things arriving; a leaving element that starts fast feels abrupt.
+      - text: '`linear`'
+        why: Constant speed looks mechanical for an element moving on and off screen.
+      - text: '`steps(4)`'
+        why: Steps jump between frames; they're for things like sprite animations.
+    explanation: Out for arriving, in for leaving, linear only for constant motion such as a spinner.
+
+production:
+  - title: Motion only when it's welcome
+    body: |
+      Teams add transitions inside `@media (prefers-reduced-motion: no-preference)`, so the
+      change still happens for everyone, but only animates for people who haven't asked for less.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/reduced.css
+  - title: Design tokens for motion
+    body: |
+      Design systems name a few durations and easings (`--duration-fast: 150ms`,
+      `--ease-out`) so motion feels the same across the whole product.
+
+mistake:
+  title: '`transition: all`'
+  body: |
+    Every property that changes now animates: colours when the theme switches, sizes when the
+    layout reflows, even properties you add later. It costs performance and creates motion
+    nobody designed.
+  bad:
+    tabs:
+      - lang: css
+        file: snippets/all.bad.css
+  fix: Name the properties you mean to animate.
+  good:
+    tabs:
+      - lang: css
+        file: snippets/all.good.css
+
+recap:
+  - '`transition` animates a property between two values: name the property, a duration and an easing.'
+  - 'Small feedback 100–200ms; ease-out for arriving, ease-in for leaving.'
+  - 'Respect `prefers-reduced-motion`, and never use `transition: all`.'
+
+related: [css.pseudo-classes, css.custom-properties, css.accessible-styling]
