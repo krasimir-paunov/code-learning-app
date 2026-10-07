@@ -6,26 +6,13 @@ import { ShadowStage } from '../shared/ShadowStage.tsx';
 import type { PatternLabProps } from './build.ts';
 import { lineCount, patternCss } from './model.ts';
 import styles from './View.module.css';
+import { useElementWidth } from '../../components/use-element-width.ts';
 
 const PAGE_CSS = `
   :host { color: #1f2937; color-scheme: light; }
   *, *::before, *::after { box-sizing: border-box; }
   .viewport { box-sizing: border-box; padding: 12px; background: #eef1f5; font: 15px/1.4 system-ui, sans-serif; }
 `;
-
-/** The element's content width, kept current with a ResizeObserver (attached by a callback ref). */
-function useWidth() {
-  const [width, setWidth] = useState<number | null>(null);
-  const ref = (element: HTMLDivElement | null) => {
-    if (!element) return;
-    const observer = new ResizeObserver(([entry]) => {
-      if (entry) setWidth(Math.floor(entry.contentRect.width));
-    });
-    observer.observe(element);
-    return () => observer.disconnect();
-  };
-  return [ref, width] as const;
-}
 
 interface Measured {
   lines: number;
@@ -38,7 +25,7 @@ export default function PatternLabView({ props }: VisualizerViewProps<PatternLab
   const [enabled, setEnabled] = useState<Set<number>>(() => new Set());
   const [width, setWidth] = useState(props.width.start);
   const [measured, setMeasured] = useState<Measured | null>(null);
-  const [areaRef, available] = useWidth();
+  const [areaRef, available] = useElementWidth();
   if (!pattern) return null;
 
   // Never wider than the space on screen, so the page itself never scrolls sideways.

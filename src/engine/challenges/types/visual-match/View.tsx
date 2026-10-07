@@ -8,6 +8,7 @@ import { CheckButton } from '../../shared/CheckButton.tsx';
 import styles from '../../shared/challenge.module.css';
 import type { VisualMatchAnswer, VisualMatchSpec } from './index.ts';
 import local from './View.module.css';
+import { useElementWidth } from '../../../../components/use-element-width.ts';
 
 const PREVIEW_DELAY_MS = 400;
 /** Wider pages get the full width under the editor instead of a column beside it. */
@@ -77,20 +78,6 @@ function Stage({
   );
 }
 
-/** The element's content width, kept current with a ResizeObserver (attached by a callback ref). */
-function useWidth() {
-  const [width, setWidth] = useState<number | null>(null);
-  const ref = (element: HTMLDivElement | null) => {
-    if (!element) return;
-    const observer = new ResizeObserver(([entry]) => {
-      if (entry) setWidth(entry.contentRect.width);
-    });
-    observer.observe(element);
-    return () => observer.disconnect();
-  };
-  return [ref, width] as const;
-}
-
 export default function VisualMatchView({
   spec,
   state,
@@ -101,7 +88,7 @@ export default function VisualMatchView({
   const [overlay, setOverlay] = useState(false);
   const [opacity, setOpacity] = useState(50);
   const failing = (state.lastResult?.details ?? []).filter((d) => !d.passed);
-  const [previewsRef, available] = useWidth();
+  const [previewsRef, available] = useElementWidth();
   const scale = available ? Math.min(1, available / spec.viewport.width) : 1;
   const scaled = scale < 1 ? ` (shown at ${Math.round(scale * 100)}%)` : '';
 

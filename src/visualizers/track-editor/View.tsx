@@ -7,22 +7,9 @@ import { ShadowStage } from '../shared/ShadowStage.tsx';
 import type { TrackEditorProps } from './build.ts';
 import { frMath, linePositions, parseTrack } from './model.ts';
 import styles from './View.module.css';
+import { useElementWidth } from '../../components/use-element-width.ts';
 
 const round = (n: number) => Math.round(n * 10) / 10;
-
-/** The element's content width, kept current with a ResizeObserver (attached by a callback ref). */
-function useWidth() {
-  const [width, setWidth] = useState<number | null>(null);
-  const ref = (element: HTMLDivElement | null) => {
-    if (!element) return;
-    const observer = new ResizeObserver(([entry]) => {
-      if (entry) setWidth(Math.floor(entry.contentRect.width));
-    });
-    observer.observe(element);
-    return () => observer.disconnect();
-  };
-  return [ref, width] as const;
-}
 
 const STAGE_CSS = `
   :host { color: #1f2937; color-scheme: light; }
@@ -42,7 +29,7 @@ export default function TrackEditorView({ props }: VisualizerViewProps<TrackEdit
   const [gap, setGap] = useState(String(props.gap));
   const [width, setWidth] = useState(props.width.start);
   const [resolved, setResolved] = useState<number[]>([]);
-  const [areaRef, available] = useWidth();
+  const [areaRef, available] = useElementWidth();
 
   // Never wider than the space on screen (minus the stage's padding), so the page never scrolls sideways.
   const max = Math.max(

@@ -7,22 +7,9 @@ import { ShadowStage } from '../shared/ShadowStage.tsx';
 import type { AutoGridLabProps } from './build.ts';
 import { autoTracks, type Repeat } from './model.ts';
 import styles from './View.module.css';
+import { useElementWidth } from '../../components/use-element-width.ts';
 
 const round = (n: number) => Math.round(n * 10) / 10;
-
-/** The element's content width, kept current with a ResizeObserver (attached by a callback ref). */
-function useWidth() {
-  const [width, setWidth] = useState<number | null>(null);
-  const ref = (element: HTMLDivElement | null) => {
-    if (!element) return;
-    const observer = new ResizeObserver(([entry]) => {
-      if (entry) setWidth(Math.floor(entry.contentRect.width));
-    });
-    observer.observe(element);
-    return () => observer.disconnect();
-  };
-  return [ref, width] as const;
-}
 
 const STAGE_CSS = `
   :host { color: #1f2937; color-scheme: light; }
@@ -45,7 +32,7 @@ export default function AutoGridLabView({ props }: VisualizerViewProps<AutoGridL
   const [width, setWidth] = useState(props.width.start);
   const [flow, setFlow] = useState<'row' | 'row dense'>('row');
   const [resolved, setResolved] = useState<number[]>([]);
-  const [areaRef, available] = useWidth();
+  const [areaRef, available] = useElementWidth();
 
   const max = Math.max(
     props.width.min,
