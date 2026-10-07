@@ -1,0 +1,6 @@
+.dashboard {
+  grid-template-areas:
+    "stats  stats  ..."
+    "chart  chart  feed"
+    "...    table  feed";
+}

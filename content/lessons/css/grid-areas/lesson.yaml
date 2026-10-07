@@ -1,0 +1,142 @@
+id: css.grid-areas
+version: 1
+title: Template areas
+summary: Draw a page layout as a text map with grid-template-areas, and rearrange it for any screen without touching the HTML.
+minutes: 6
+tags: [grid, grid-template-areas, grid-area, layout, responsive]
+
+concept:
+  title: Draw the layout as text
+  body: |
+    `grid-template-areas` names the cells, one string per row:
+
+    ```css
+    "header header"
+    "nav    main"
+    "footer footer"
+    ```
+
+    Each element then claims its area with `grid-area: header`. The rules:
+
+    - every row has the same number of cells;
+    - a name repeated over cells makes one area, and it must be a **rectangle**;
+    - `.` is an empty cell.
+
+    Break a rule and the browser ignores the whole declaration. The pay-off: a different layout
+    at another screen width is just a different map.
+  code:
+    caption: A classic page layout
+    tabs:
+      - lang: css
+        file: snippets/areas.css
+
+playground:
+  visualizer: area-painter
+  props:
+    palette:
+      - { name: header, color: '#93c5fd' }
+      - { name: nav, color: '#fcd34d' }
+      - { name: main, color: '#86efac' }
+      - { name: aside, color: '#f9a8d4' }
+      - { name: footer, color: '#c4b5fd' }
+    map:
+      - [header, header, header]
+      - [nav, main, main]
+      - [nav, main, main]
+      - [footer, footer, footer]
+  prompt: |
+    Pick `aside` and paint the right-hand column of `main`. Then paint one cell of `main` as
+    `nav` to make an L shape, and watch the whole layout fall apart.
+  explore:
+    - Paint a cell `.` (empty). What happens to the page there?
+    - 'Turn the layout into one column: header, main, nav, footer from top to bottom.'
+
+challenges:
+  - id: page-layout
+    type: visual-match
+    prompt: Lay out the page with template areas, a header across the top, the menu beside the main content, and a footer across the bottom.
+    html: { file: snippets/page.html }
+    starterCss: { file: snippets/page.starter.css }
+    targetCss: { file: snippets/page.target.css }
+    compare:
+      selectors: [.top, .side, .body, .bottom]
+      tolerancePx: 1
+    viewport: { width: 380, height: 260 }
+    hints:
+      - 'Three rows of two cells: `"header header" "nav main" "footer footer"`.'
+      - Then give each element its `grid-area`.
+    explanation: The map says where everything goes; the four `grid-area` declarations connect the elements to it.
+
+  - id: invalid-map
+    type: predict-output
+    prompt: The second rule tries to replace the map. What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: '"a a" "b c"'
+    choices:
+      - '"a a" "b c"'
+      - '"a b" "b a"'
+      - none
+      - '"a b" "a b"'
+    verify: browser
+    hints:
+      - Draw the second map. Is "a" a rectangle?
+    explanation: |
+      In `"a b" "b a"`, neither area is a rectangle, so the second declaration is invalid and
+      dropped, as if it weren't there. The first map stays.
+
+  - id: responsive-map
+    type: choice
+    prompt: On phones the page should stack header, main, nav and footer; on wide screens it has a sidebar. What changes at the breakpoint?
+    options:
+      - text: '`grid-template-areas` (and the columns) in a media query'
+        correct: true
+        why: The elements keep their `grid-area` names; only the map they're placed on changes.
+      - text: The order of the elements in the HTML
+        why: The HTML order should follow the reading order and doesn't need to change for a layout.
+      - text: Every element's `grid-area`
+        why: The names can stay the same; it's the map that moves the areas.
+      - text: Nothing; grid areas adapt by themselves
+        why: A map is fixed until you give the grid a different one.
+    explanation: Name the parts once, then draw a new map wherever the layout should change.
+
+production:
+  - title: One map per screen size
+    body: Responsive page layouts are usually a single-column map for phones and a wider map in a media query.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/responsive.css
+  - title: Line the strings up
+    body: |
+      Extra spaces between names are allowed, so teams align the strings into columns to make the
+      map readable. A run of dots like `...` counts as a single empty cell.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/dots.css
+
+mistake:
+  title: Rows of different lengths
+  body: |
+    The second row has three cells, the first only two. The map is invalid, and the browser
+    ignores the declaration completely.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/rows.bad.html
+        output: none
+        verify: browser
+  fix: Give every row the same number of cells; repeat a name to stretch it.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/rows.good.html
+        output: '"header header header" "nav main aside"'
+        verify: browser
+
+recap:
+  - '`grid-template-areas` draws the layout as one string per row; elements join with `grid-area`.'
+  - Every row needs the same number of cells and every area must be a rectangle, or the whole map is ignored.
+  - Rearranging a layout for another screen size means drawing a new map, not changing the HTML.
+
+related: [css.grid-placement, css.grid-basics, css.media-queries]

@@ -1,0 +1,13 @@
+<div class="page"></div>
+<style>
+  .page {
+    display: grid;
+    grid-template-areas: "a a" "b c";
+  }
+  .page {
+    grid-template-areas: "a b" "b a";
+  }
+</style>
+<script>
+  console.log(getComputedStyle(document.querySelector('.page')).gridTemplateAreas);
+</script>

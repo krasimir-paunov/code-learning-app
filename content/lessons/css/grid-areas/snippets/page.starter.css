@@ -1,0 +1,10 @@
+.page {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 8px;
+  width: 340px;
+}
+.page > * {
+  padding: 8px;
+  border: 1px solid #5d6e87;
+}

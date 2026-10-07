@@ -1,0 +1,12 @@
+<div class="page"></div>
+<style>
+  .page {
+    display: grid;
+    grid-template-areas:
+      "header header"
+      "nav main aside";
+  }
+</style>
+<script>
+  console.log(getComputedStyle(document.querySelector('.page')).gridTemplateAreas);
+</script>

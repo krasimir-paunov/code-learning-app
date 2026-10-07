@@ -1,0 +1,18 @@
+.page {
+  display: grid;
+  grid-template-areas:
+    "header"
+    "main"
+    "nav"
+    "footer";
+}
+
+@media (min-width: 48rem) {
+  .page {
+    grid-template-columns: 200px 1fr;
+    grid-template-areas:
+      "header header"
+      "nav    main"
+      "footer footer";
+  }
+}
