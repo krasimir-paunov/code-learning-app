@@ -67,6 +67,8 @@ export interface VisualizerBuild<Props = unknown, TraceProps = unknown, Compiled
   props: ZodType<Props>;
   /** Turns authored props into what the view receives (e.g. inlining snippet files). */
   compile?(props: Props, ctx: CompileContext): Compiled;
+  /** Proves the props are sound (e.g. a reference solution meets every check). Returns problems. */
+  buildCheck?(props: Props, ctx: BuildCheckContext): Promise<string[]>;
   /** Learner-drives mode for `trace` challenges: the visualizer's own step list. */
   trace?: {
     props: ZodType<TraceProps>;

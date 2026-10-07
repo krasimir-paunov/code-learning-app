@@ -96,15 +96,23 @@ for (const lesson of bundle.lessons) {
     runInBrowser,
     execute,
   };
+  // Snippet contents are part of the keys: editing a test or solution re-runs the checks.
+  const files = fs.readdirSync(lesson.dir, { recursive: true }).map(String).sort();
+  const contents = files.map((f) => {
+    const full = path.join(lesson.dir, f);
+    return fs.statSync(full).isFile() ? fs.readFileSync(full, 'utf8') : '';
+  });
+  const { plugin: visualizer, props } = lesson.playground;
+  if (visualizer.buildCheck) {
+    await verify(
+      hash('playground', visualizer.id, props, contents),
+      `${file} playground (${visualizer.id})`,
+      () => visualizer.buildCheck?.(props, ctx) ?? Promise.resolve([]),
+    );
+  }
   for (const { plugin, data } of lesson.challenges) {
     if (!plugin.buildCheck) continue;
     const label = `${file} challenge "${data.id}" (${data.type})`;
-    // Snippet contents are part of the key: editing a test or solution re-runs the check.
-    const files = fs.readdirSync(lesson.dir, { recursive: true }).map(String).sort();
-    const contents = files.map((f) => {
-      const full = path.join(lesson.dir, f);
-      return fs.statSync(full).isFile() ? fs.readFileSync(full, 'utf8') : '';
-    });
     await verify(
       hash('check', data, contents),
       label,

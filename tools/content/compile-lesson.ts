@@ -9,6 +9,7 @@ import type {
   ChallengeBuild,
   CompileContext,
   OutputClaim,
+  VisualizerBuild,
 } from '../../src/engine/challenges/build-contract.ts';
 import type { CompiledCodeBlock } from '../../src/engine/content/code.ts';
 import {
@@ -28,11 +29,18 @@ export interface AuthoredChallenge {
   data: ChallengeBase;
 }
 
+/** The playground's parsed props, kept for visualizers that prove them at verify time. */
+export interface AuthoredPlayground {
+  plugin: VisualizerBuild;
+  props: unknown;
+}
+
 export interface LessonBuild {
   id: string;
   file: string;
   dir: string;
   authored: Lesson;
+  playground: AuthoredPlayground;
   challenges: AuthoredChallenge[];
   claims: OutputClaim[];
   compiled: CompiledLesson;
@@ -126,6 +134,7 @@ export function compileLesson(
     ...(lesson.concept.code && { code: codeBlock(lesson.concept.code, 'concept.code') }),
   }));
 
+  let authoredPlayground: AuthoredPlayground | undefined;
   const playground = step('playground', () => {
     const visualizer = plugins.visualizers.get(lesson.playground.visualizer);
     if (!visualizer) {
@@ -135,6 +144,7 @@ export function compileLesson(
     }
     const props = visualizer.props.safeParse(lesson.playground.props);
     if (!props.success) throw new LocatedError(`props: ${formatZodIssues(props.error).join('; ')}`);
+    authoredPlayground = { plugin: visualizer, props: props.data };
     return {
       visualizer: visualizer.id,
       props: visualizer.compile ? visualizer.compile(props.data, ctx) : props.data,
@@ -201,13 +211,15 @@ export function compileLesson(
   }));
   const recapHtml = lesson.recap.map((r, i) => step(`recap[${i}]`, () => markdown.inline(r)) ?? '');
 
-  if (issues.length > before || !concept || !playground || !mistake) return undefined;
+  if (issues.length > before || !concept || !playground || !authoredPlayground || !mistake)
+    return undefined;
 
   return {
     id: lesson.id,
     file: source.file,
     dir: source.dir,
     authored: lesson,
+    playground: authoredPlayground,
     challenges: authoredChallenges,
     claims,
     ctx,
