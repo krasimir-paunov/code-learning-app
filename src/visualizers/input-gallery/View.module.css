@@ -1,0 +1,184 @@
+.frame {
+  container-type: inline-size;
+  display: grid;
+  gap: var(--space-4);
+}
+
+.picker {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.label {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.option {
+  min-block-size: var(--touch-target);
+  padding: var(--space-1) var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-2);
+  color: var(--text-1);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+
+  &[data-code] {
+    font-family: var(--font-mono);
+  }
+
+  &[aria-pressed='true'] {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+@container (min-width: 680px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 17rem;
+    align-items: start;
+  }
+}
+
+.column {
+  display: grid;
+  gap: var(--space-3);
+  min-inline-size: 0;
+}
+
+.try {
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--fs-sm);
+}
+
+.input {
+  justify-self: start;
+  max-inline-size: 100%;
+  padding: var(--space-2);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-1);
+  color: var(--text-1);
+  /* Below 16px, iOS Safari zooms the page when the field gets focus. */
+  font-size: var(--fs-base);
+  color-scheme: dark;
+}
+
+.verdict {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-inline-start: 3px solid var(--warning);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+  font-size: var(--fs-sm);
+
+  &[data-best] {
+    border-inline-start-color: var(--success);
+  }
+
+  & svg {
+    flex: none;
+    color: var(--success);
+  }
+}
+
+.code {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+
+  & figcaption {
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+  }
+
+  & pre {
+    margin: 0;
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--code-bg);
+    font-family: var(--font-mono);
+    font-size: var(--fs-code);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}
+
+.keyboard {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+
+  & figcaption {
+    color: var(--text-2);
+    font-size: var(--fs-xs);
+  }
+}
+
+.phone {
+  display: grid;
+  align-content: end;
+  min-block-size: 11rem;
+  padding: var(--space-2);
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-3);
+}
+
+.keys {
+  display: grid;
+  gap: 4px;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+}
+
+.key {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  max-inline-size: 1.6rem;
+  block-size: 1.9rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-1);
+  color: var(--text-1);
+  font-size: var(--fs-xs);
+
+  &[data-wide] {
+    max-inline-size: 4.5rem;
+  }
+
+  .keys[data-pad] & {
+    max-inline-size: none;
+    block-size: 2.1rem;
+    font-size: var(--fs-sm);
+  }
+}
+
+.noKeys {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-1);
+  place-self: center;
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+}
