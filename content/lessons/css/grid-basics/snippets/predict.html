@@ -1,0 +1,12 @@
+<div class="grid"><div></div><div></div><div></div></div>
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: 100px 1fr 1fr;
+    gap: 20px;
+    width: 500px;
+  }
+</style>
+<script>
+  console.log(getComputedStyle(document.querySelector('.grid')).gridTemplateColumns);
+</script>

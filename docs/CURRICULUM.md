@@ -203,7 +203,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| C5.1 | `css.grid-basics` | Grid basics | Core | Tracks, `fr`, `gap`. | — | `grid-sandbox` with line-number overlay | VM | 6 | todo |
+| C5.1 | `css.grid-basics` | Grid basics | Core | Tracks, `fr`, `gap`. | — | `track-editor`: edit tracks as chips, see line numbers over the real grid and the fr maths | VM, PO, CH | 6 | done |
 | C5.2 | `css.grid-placement` | Placing items | Core | Place items by line numbers and `span`. | ↑ | `grid-sandbox` | VM, PO | 7 | todo |
 | C5.3 | `css.grid-areas` | Template areas | Core | Lay out a page with `grid-template-areas`. | ↑ | `grid-sandbox` | VM | 6 | todo |
 | C5.4 | `css.grid-auto` | Intrinsic grids | Core | `repeat(auto-fit, minmax())`, implicit tracks, `grid-auto-flow`. | ↑ | `grid-sandbox` + resizable container | VM | 7 | todo |

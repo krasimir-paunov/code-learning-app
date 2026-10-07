@@ -1,0 +1,132 @@
+id: css.grid-basics
+version: 1
+title: Grid basics
+summary: Draw column tracks with fixed sizes and fr, space them with gap, and read the numbered grid lines.
+minutes: 6
+tags: [grid, grid-template-columns, fr, gap, repeat, grid lines]
+
+concept:
+  title: Draw the tracks; the items fill the cells
+  body: |
+    `display: grid` with `grid-template-columns` lists the column tracks, such as
+    `200px 1fr 2fr`. The items then fill the cells in order, row after row, and new rows
+    appear as they're needed.
+
+    - `fr` is a share of the **free space**, what's left after fixed tracks and gaps. In
+      `1fr 2fr` the second column gets twice as much.
+    - `repeat(3, 1fr)` writes three equal columns.
+    - `gap` puts space between tracks, never at the edges.
+
+    The lines between tracks are numbered from 1 at the start, and from −1 back from the end.
+    Placing items uses those numbers.
+  code:
+    caption: A sidebar layout and a three-column gallery
+    tabs:
+      - lang: css
+        file: snippets/grid.css
+
+playground:
+  visualizer: track-editor
+  props:
+    tracks: ['200px', '1fr', '2fr']
+    presets: ['1fr', '100px', 'auto', 'minmax(120px, 1fr)']
+    items: 6
+    gap: 12
+    width: { min: 240, max: 720, start: 600 }
+  prompt: |
+    The 200px column takes its share first; the two fr columns split what's left 1 : 2. Drag
+    the container width and watch which columns change.
+  explore:
+    - Change `200px` to `1fr`. What does 1fr equal now?
+    - Add a fourth track. How many grid lines are there, counting from both ends?
+
+challenges:
+  - id: sidebar-layout
+    type: visual-match
+    prompt: Make a two-column layout, a 120px sidebar and a main column that takes the rest, with 16px between them.
+    html: { file: snippets/layout.html }
+    starterCss: { file: snippets/layout.starter.css }
+    targetCss: { file: snippets/layout.target.css }
+    compare:
+      selectors: [.side, .main]
+      tolerancePx: 1
+    viewport: { width: 380, height: 200 }
+    hints:
+      - '`display: grid` and `grid-template-columns` on `.layout`.'
+      - 'A fixed track and an `fr` track: `120px 1fr`.'
+    explanation: '`120px 1fr` gives the sidebar its fixed width and the main column everything left after the 16px gap.'
+
+  - id: resolved-tracks
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: 100px 180px 180px
+    choices:
+      - 100px 180px 180px
+      - 100px 200px 200px
+      - 166.667px 166.667px 166.667px
+      - 100px 1fr 1fr
+    verify: browser
+    hints:
+      - '`getComputedStyle` reports the sizes the browser worked out, in px.'
+      - Take off the 100px track and both 20px gaps before sharing.
+    explanation: |
+      500 − 100 − 2 × 20 leaves 360px, shared by 2fr, so 1fr = 180px. The computed value shows
+      the resolved sizes, not the `fr` you wrote.
+
+  - id: fr-not-percent
+    type: choice
+    prompt: 'Two equal columns with a 20px gap. Why write `1fr 1fr` rather than `50% 50%`?'
+    options:
+      - text: '`fr` shares the space left after the gap; the percentages take the full width each, so the gap pushes the grid past its container.'
+        correct: true
+        why: 50% + 50% + 20px is 20px wider than the container.
+      - text: '`fr` is faster for the browser to compute.'
+        why: Speed is not the difference; overflow is.
+      - text: Percentages don't work in `grid-template-columns`.
+        why: They work; they just ignore the gap.
+      - text: '`1fr 1fr` makes the columns follow their content.'
+        why: Equal fr columns are equal shares of the free space, whatever their content (unless content is too wide to fit).
+    explanation: '`fr` is the unit for "a share of what''s left", so it always fits gaps and fixed tracks around it.'
+
+production:
+  - title: 12-column design grids
+    body: Many design systems lay pages out on 12 equal columns; components then span 3, 4 or 6 of them.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/twelve.css
+  - title: '`minmax(0, 1fr)` for columns with long content'
+    body: |
+      A `1fr` track won't get narrower than its content, so a long URL or a wide code block can
+      stretch it, just like flex items. `minmax(0, 1fr)` lets the column shrink to its share.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/minmax.css
+
+mistake:
+  title: Percentage columns plus a gap
+  body: |
+    `50% 50%` already adds up to the full width. The 20px gap comes on top, so the grid is 20px
+    wider than its container and the page can scroll sideways.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/percent.bad.html
+        output: '420'
+        verify: browser
+  fix: "Use `1fr 1fr`: fr tracks share what's left after the gap."
+  good:
+    tabs:
+      - lang: html
+        file: snippets/percent.good.html
+        output: '400'
+        verify: browser
+
+recap:
+  - '`grid-template-columns` lists the tracks; items fill the cells in order and new rows appear as needed.'
+  - '`fr` shares the free space after fixed tracks and gaps; `repeat(n, 1fr)` writes equal columns.'
+  - 'Grid lines are numbered 1, 2, 3… from the start and −1, −2… from the end.'
+
+related: [css.grid-placement, css.flex-sizing, css.grid-auto]

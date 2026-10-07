@@ -1,0 +1,11 @@
+.layout {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 16px;
+  width: 340px;
+}
+.side,
+.main {
+  padding: 12px;
+  border: 1px solid #5d6e87;
+}

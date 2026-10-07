@@ -1,0 +1,15 @@
+<div class="grid"><div></div><div></div></div>
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 400px;
+  }
+  .grid div {
+    height: 20px;
+  }
+</style>
+<script>
+  console.log(document.querySelector('.grid').scrollWidth);
+</script>
