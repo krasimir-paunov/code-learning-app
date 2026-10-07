@@ -1,0 +1,122 @@
+.frame {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+}
+
+.toggles {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+
+  & legend {
+    padding-inline: var(--space-1);
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+  }
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--touch-target);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+
+  & input {
+    flex: none;
+    accent-color: var(--accent);
+  }
+}
+
+.board {
+  position: relative;
+}
+
+.stage {
+  overflow: hidden;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.path {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+  pointer-events: none;
+
+  & marker path {
+    fill: var(--info);
+  }
+}
+
+.step {
+  stroke: var(--info);
+  stroke-width: 2.5;
+  stroke-dasharray: 6 4;
+
+  &[data-back] {
+    stroke: var(--danger);
+    stroke-dasharray: none;
+  }
+}
+
+.badge {
+  & circle {
+    fill: var(--bg-0);
+    stroke: var(--info);
+    stroke-width: 2;
+  }
+
+  & text {
+    fill: var(--text-1);
+    font-family: var(--font-body);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+  }
+
+  &[data-current] circle {
+    fill: var(--warning);
+  }
+
+  &[data-current] text {
+    fill: var(--bg-0);
+  }
+}
+
+.hint {
+  color: var(--text-2);
+  font-size: var(--fs-xs);
+}
+
+.report {
+  display: grid;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+}
+
+.stops {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  & [data-current] {
+    color: var(--warning);
+    font-weight: 700;
+  }
+}
+
+.flag,
+.warn {
+  color: var(--warning);
+}
