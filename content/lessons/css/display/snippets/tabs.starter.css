@@ -1,0 +1,14 @@
+.tabs {
+  width: 340px;
+  padding: 8px;
+  border: 2px solid #5d6e87;
+}
+.tab {
+  width: 96px;
+  height: 36px;
+  margin-block: 8px;
+  text-align: center;
+  line-height: 36px;
+  background: #1f2937;
+  color: #e5e7eb;
+}

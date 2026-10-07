@@ -1,0 +1,12 @@
+<nav class="menu" hidden>Menu</nav>
+<style>
+  [hidden] {
+    display: none !important;
+  }
+  .menu {
+    display: flex;
+  }
+</style>
+<script>
+  console.log(getComputedStyle(document.querySelector('.menu')).display);
+</script>

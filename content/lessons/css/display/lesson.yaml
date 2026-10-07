@@ -1,0 +1,147 @@
+id: css.display
+version: 1
+title: '`display`'
+summary: Decide whether a box starts its own line, flows like text, or disappears.
+minutes: 5
+tags: [display, block, inline, inline-block, visibility, hidden]
+
+concept:
+  title: How a box joins the line
+  body: |
+    - `block` (`div`, `p`, `h1`, `li`): starts on a new line and stretches to the full width.
+      `width`, `height` and all margins apply.
+    - `inline` (`span`, `a`, `strong`): flows inside the line like a word. `width` and `height`
+      are ignored, and top and bottom margins don't push the lines apart.
+    - `inline-block`: sits in the line like a word, but is sized like a block.
+    - `none`: no box at all. The layout closes the gap, and screen readers skip it.
+
+    `visibility: hidden` is different: the box is invisible, but its space stays.
+  code:
+    caption: Each value in a real stylesheet
+    tabs:
+      - lang: css
+        file: snippets/display.css
+
+playground:
+  visualizer: flow-lab
+  props:
+    sentence:
+      - 'Our '
+      - { id: a, text: trail shoes }
+      - ' are light, '
+      - { id: b, text: waterproof }
+      - ' and '
+      - { id: c, text: on sale }
+      - ' this week.'
+    itemCss: 'width: 120px; height: 40px; margin: 12px;'
+  prompt: |
+    Every phrase asks for 120 × 40px, but it is `inline`, so the browser ignores the size. Set
+    **trail shoes** to `inline-block` and watch it take the size without leaving the line.
+  explore:
+    - Set **waterproof** to `block`. What happens to the text around it?
+    - 'Hide **on sale** with `display: none`, then with `visibility: hidden` instead. Which one leaves a gap?'
+
+challenges:
+  - id: hidden-widths
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      200
+      0
+      100
+    choices:
+      - |
+        200
+        0
+        100
+      - |
+        300
+        0
+        100
+      - |
+        100
+        0
+        0
+      - |
+        300
+        100
+        100
+    verify: browser
+    hints:
+      - Each span is 100px wide and the row is as wide as its content.
+      - One of the hidden spans still has a box; the other has none.
+    explanation: |
+      `.a` has `display: none`: no box, so its width is 0 and the row ignores it. `.b` is
+      invisible but keeps its 100px, so the row is 200px (B's space and C).
+
+  - id: sized-tabs
+    type: visual-match
+    prompt: Each tab should be a 96 × 36px box, all three side by side in one row. The size is already set, but nothing changes. Fix it.
+    html: { file: snippets/tabs.html }
+    starterCss: { file: snippets/tabs.starter.css }
+    targetCss: { file: snippets/tabs.target.css }
+    compare:
+      selectors: [.one, .two, .three, .tabs]
+      tolerancePx: 1
+    viewport: { width: 380, height: 200 }
+    hints:
+      - Links are `inline`. Which properties does an inline box ignore?
+      - The tabs must stay in one line, so `block` is not the answer.
+    explanation: '`display: inline-block` keeps the tabs in the line and makes `width`, `height` and the vertical margins apply.'
+
+  - id: keep-space
+    type: choice
+    prompt: An error message under a field appears only after a failed submit. When it appears, the form must not jump. How do you hide it until then?
+    options:
+      - text: '`visibility: hidden`'
+        correct: true
+        why: The box keeps its space, so showing it changes nothing else on the page. Screen readers skip it while hidden.
+      - text: '`display: none`'
+        why: The box is gone, so the space opens up when it appears and everything below jumps.
+      - text: '`opacity: 0`'
+        why: The space stays, but screen readers still read the invisible message.
+      - text: '`height: 0`'
+        why: The text still overflows the zero-height box and stays visible.
+    explanation: 'Reach for `visibility` when the space must stay reserved, and `display: none` when it must close.'
+
+production:
+  - title: Links that look like buttons
+    body: |
+      A link styled as a button needs `display: inline-block` (or `inline-flex`), or its vertical
+      padding overlaps the lines above and below instead of pushing them away. `<button>` already
+      behaves this way by default.
+  - title: Text only screen readers hear
+    body: |
+      Labels for icon buttons are hidden visually but not with `display: none`, which would hide
+      them from screen readers too. A clipping utility keeps the text in the accessibility tree.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/visually-hidden.css
+
+mistake:
+  title: Your `display` beats the `hidden` attribute
+  body: |
+    The `hidden` attribute works through the browser's own `display: none`. Any `display` you set
+    on the element wins over it, so the "hidden" menu stays on screen.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/hidden.bad.html
+        output: flex
+        verify: browser
+  fix: Add one rule to your reset so `hidden` always wins.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/hidden.good.html
+        output: none
+        verify: browser
+
+recap:
+  - '`block` takes its own line; `inline` flows like text and ignores `width` and `height`; `inline-block` stays in the line but takes a size.'
+  - '`display: none` removes the box; `visibility: hidden` keeps its space.'
+  - 'Setting `display` overrides the `hidden` attribute; guard it with `[hidden] { display: none !important; }`.'
+
+related: [css.box-model, css.overflow, css.flex-axes]

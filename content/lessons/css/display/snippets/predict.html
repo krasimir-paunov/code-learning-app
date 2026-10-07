@@ -1,0 +1,21 @@
+<div class="row"><span class="a">A</span><span class="b">B</span><span class="c">C</span></div>
+<style>
+  .row {
+    width: fit-content;
+  }
+  span {
+    display: inline-block;
+    width: 100px;
+  }
+  .a {
+    display: none;
+  }
+  .b {
+    visibility: hidden;
+  }
+</style>
+<script>
+  console.log(document.querySelector('.row').offsetWidth);
+  console.log(document.querySelector('.a').offsetWidth);
+  console.log(document.querySelector('.b').offsetWidth);
+</script>
