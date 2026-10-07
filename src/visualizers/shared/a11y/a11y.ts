@@ -241,6 +241,21 @@ export function accessibleName(element: Element): string {
   return squash(element.getAttribute('title') ?? '');
 }
 
+/** The accessible description: what aria-describedby points at, read after the name. */
+export function accessibleDescription(element: Element): string {
+  const ids = element.getAttribute('aria-describedby')?.trim();
+  if (!ids) return '';
+  const scope = scopeOf(element);
+  return squash(
+    ids
+      .split(/\s+/)
+      .map((id) => scope.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null)
+      .map((el) => textOf(el))
+      .join(' '),
+  );
+}
+
 export function headingLevel(element: Element): number | undefined {
   const aria = Number(element.getAttribute('aria-level'));
   if (aria >= 1) return aria;

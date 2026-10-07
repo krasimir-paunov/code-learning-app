@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
 import {
+  accessibleDescription,
   accessibleName,
   announce,
   axTree,
@@ -145,5 +146,20 @@ describe('inside a shadow root', () => {
     expect(input && accessibleName(input)).toBe('Email');
     expect(output && accessibleName(output)).toBe('Total');
     host.remove();
+  });
+});
+
+describe('accessibleDescription', () => {
+  it('reads the elements aria-describedby points at, in order', () => {
+    document.body.innerHTML =
+      '<input id="pw" aria-describedby="a b"><p id="a">At least 12 characters.</p><p id="b">No spaces.</p>';
+    const input = document.querySelector('input');
+    expect(input && accessibleDescription(input)).toBe('At least 12 characters. No spaces.');
+  });
+
+  it('is empty without aria-describedby', () => {
+    document.body.innerHTML = '<input>';
+    const input = document.querySelector('input');
+    expect(input && accessibleDescription(input)).toBe('');
   });
 });
