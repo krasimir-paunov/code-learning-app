@@ -1,0 +1,7 @@
+/* In almost every reset: form controls don't inherit fonts by default */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}

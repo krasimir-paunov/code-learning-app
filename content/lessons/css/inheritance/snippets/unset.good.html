@@ -1,0 +1,14 @@
+<button class="icon-button">Close</button>
+<style>
+  .icon-button {
+    all: unset;
+  }
+  .icon-button:focus-visible {
+    outline: 2px solid #4da3ff;
+  }
+</style>
+<script>
+  const button = document.querySelector('button');
+  button.focus();
+  console.log(getComputedStyle(button).outlineStyle);
+</script>

@@ -1,0 +1,11 @@
+<button class="icon-button">Close</button>
+<style>
+  .icon-button {
+    all: unset;
+  }
+</style>
+<script>
+  const button = document.querySelector('button');
+  button.focus();
+  console.log(getComputedStyle(button).outlineStyle);
+</script>

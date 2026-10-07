@@ -1,0 +1,8 @@
+body {
+  font-family: Georgia, serif;
+}
+.footer {
+  color: rgb(154, 166, 184);
+}
+/* 1. Make the input and the button use the page's font. */
+/* 2. Make the link in the footer use the footer's colour. */

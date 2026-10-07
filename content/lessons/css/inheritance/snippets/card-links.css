@@ -1,0 +1,5 @@
+/* A whole card is a link: keep the card's text colour, not link blue */
+.card-link {
+  color: inherit;
+  text-decoration: none;
+}

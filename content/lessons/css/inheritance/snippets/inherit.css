@@ -1,0 +1,12 @@
+/* Set once; every element inside inherits it */
+body {
+  font-family: Inter, system-ui, sans-serif;
+  color: #1f2933;
+  line-height: 1.5;
+}
+
+/* Box properties never inherit: this border is on .card only */
+.card {
+  border: 1px solid #d4dae3;
+  padding: 16px;
+}

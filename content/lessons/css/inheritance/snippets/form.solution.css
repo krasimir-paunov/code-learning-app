@@ -1,0 +1,13 @@
+body {
+  font-family: Georgia, serif;
+}
+.footer {
+  color: rgb(154, 166, 184);
+}
+input,
+button {
+  font: inherit;
+}
+.footer a {
+  color: inherit;
+}

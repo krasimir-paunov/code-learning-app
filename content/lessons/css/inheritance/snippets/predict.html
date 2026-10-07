@@ -1,0 +1,13 @@
+<div class="box">
+  <p>Hello <a href="/more">more</a></p>
+</div>
+<style>
+  .box { color: rgb(0, 128, 0); padding: 10px; }
+</style>
+<script>
+  const p = document.querySelector('p');
+  const a = document.querySelector('a');
+  console.log(getComputedStyle(p).color);
+  console.log(getComputedStyle(p).paddingTop);
+  console.log(getComputedStyle(a).color === getComputedStyle(p).color);
+</script>

@@ -1,0 +1,156 @@
+id: css.inheritance
+version: 1
+title: Inheritance and defaults
+summary: Know which values flow down the tree, where they stop, and how to reset them.
+minutes: 5
+tags: [inheritance, inherit, initial, unset, revert]
+
+concept:
+  title: Text styles flow down, box styles don't
+  body: |
+    When no rule sets a property on an element, **inherited** properties take the parent's
+    value: text properties such as `color`, `font-family`, `font-size` and `line-height`. Box
+    properties such as `padding`, `border`, `margin` and `background` don't inherit; they start
+    from their **initial** value.
+
+    The browser's own stylesheet also sets values, which stop inheritance: links are blue and
+    buttons keep their own font, whatever their parent says.
+
+    Four keywords work on any property: `inherit` (take the parent's value), `initial` (the
+    property's default), `unset` (inherit if it normally does, otherwise initial) and `revert`
+    (go back to the browser's own style).
+  code:
+    caption: Set text styles once, high up
+    tabs:
+      - lang: css
+        file: snippets/inherit.css
+
+playground:
+  visualizer: cascade-trace
+  props:
+    html: |
+      <article class="card">
+        <h2>Trail Shoes</h2>
+        <p class="note">Light, grippy and <a href="/shoes">waterproof</a>.</p>
+        <button>Add to cart</button>
+      </article>
+    css: |
+      .card { color: #9a3412; font-family: Georgia, serif; line-height: 1.6; padding: 16px; border: 2px solid #3a4558; }
+      .note { letter-spacing: 0.02em; }
+    properties: [color, font-family, line-height, padding, border]
+    start: [0, 1]
+  prompt: |
+    `p.note` is rust-red, yet no rule colours it: follow the trail up to `.card`. Now pick the link,
+    then the button. The browser's own styles stop the inheritance there.
+  explore:
+    - On the button, set `color` to `inherit`, then `revert`. Which one gets the card's colour?
+    - Switch to `padding` and pick `p.note`. Why isn't it 16px like the card?
+
+challenges:
+  - id: what-inherits
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      rgb(0, 128, 0)
+      0px
+      false
+    choices:
+      - |
+        rgb(0, 128, 0)
+        0px
+        false
+      - |
+        rgb(0, 128, 0)
+        10px
+        true
+      - |
+        rgb(0, 0, 0)
+        0px
+        false
+      - |
+        rgb(0, 128, 0)
+        0px
+        true
+    verify: browser
+    hints:
+      - Is `color` a text property or a box property? And `padding`?
+      - The browser's own stylesheet gives links a colour.
+    explanation: |
+      The paragraph inherits the box's green; padding never inherits, so it stays `0px`. The link
+      doesn't inherit the colour at all: the browser's stylesheet sets one for links.
+
+  - id: inherit-fonts
+    type: live-code
+    prompt: |
+      The input and button ignore the page's Georgia font, and the footer link is blue. Add rules
+      so the controls use the page's font and the footer link uses the footer's colour.
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/form.html, editable: false }
+      style.css: { file: snippets/form.starter.css }
+    solution:
+      index.html: { file: snippets/form.html }
+      style.css: { file: snippets/form.solution.css }
+    tests: { file: snippets/form.test.js }
+    hints:
+      - Form controls have their own fonts from the browser. Tell them to take the parent's.
+      - 'The keyword is the same for both fixes: `inherit`.'
+    explanation: |
+      `font: inherit` and `color: inherit` override the browser's own values with "whatever my
+      parent has", so the controls and the link follow the page.
+
+  - id: which-keyword
+    type: choice
+    prompt: You restyled a list, and now want one `<ul>` to look exactly like the browser's default list again. Which keyword?
+    options:
+      - text: '`revert`'
+        correct: true
+        why: It rolls the property back to what the browser's own stylesheet says, bullets and indentation included.
+      - text: '`initial`'
+        why: That is the property's spec default, not the browser's style. For `padding` that's 0, so the indentation vanishes.
+      - text: '`inherit`'
+        why: That copies the parent's values, which are probably not a list's.
+      - text: '`unset`'
+        why: For non-inherited properties like `padding` it acts like `initial`.
+    explanation: '`revert` means "as if I never styled this"; `initial` means "the property''s textbook default".'
+
+production:
+  - title: Every reset makes form controls inherit
+    body: Inputs, buttons and selects get their own fonts from the browser, so resets tell them to inherit.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/reset.css
+  - title: '`color: inherit` for links inside components'
+    body: A card that is entirely a link, or a link in a dark footer, usually takes its colour from its surroundings.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/card-links.css
+
+mistake:
+  title: '`all: unset` removes the focus ring too'
+  body: |
+    `all: unset` is a quick way to strip a button's default look. It also strips the browser's
+    focus outline, so keyboard users can't see the button is focused.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/unset.bad.html
+        output: none
+        verify: browser
+  fix: Add your own `:focus-visible` style right after, or reset only the properties you need.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/unset.good.html
+        output: solid
+        verify: browser
+
+recap:
+  - Text properties inherit; box properties start from their initial value.
+  - The browser's own styles (links, buttons) stop inheritance; `inherit` overrides them.
+  - '`inherit`, `initial`, `unset` and `revert` work on any property; `revert` means "browser default".'
+
+related: [css.specificity, css.typography]
