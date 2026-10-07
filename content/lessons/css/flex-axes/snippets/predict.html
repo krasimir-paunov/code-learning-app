@@ -1,0 +1,21 @@
+<div class="row">
+  <div id="a">A</div>
+  <div id="b">B</div>
+  <div id="c">C</div>
+</div>
+<style>
+  .row {
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
+    width: 200px;
+  }
+  .row div {
+    width: 50px;
+  }
+</style>
+<script>
+  for (const id of ['a', 'b', 'c']) {
+    console.log(id, document.getElementById(id).offsetLeft);
+  }
+</script>

@@ -1,0 +1,10 @@
+.toolbar {
+  display: flex;
+  gap: 8px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

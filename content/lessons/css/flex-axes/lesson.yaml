@@ -1,0 +1,143 @@
+id: css.flex-axes
+version: 1
+title: Flex axes
+summary: Find the main and cross axis of any flex container, and know which property works along which.
+minutes: 6
+tags: [flexbox, flex-direction, main axis, cross axis, justify-content, align-items]
+
+concept:
+  title: Two axes, and the direction picks which is which
+  body: |
+    `display: flex` lines the children up along the **main axis**. `flex-direction` sets it:
+    `row` (the default) runs in the direction text flows, `column` top to bottom, and
+    `-reverse` flips either.
+
+    The **cross axis** runs across it.
+
+    - `justify-content` works along the main axis.
+    - `align-items` works along the cross axis.
+
+    So in a `column`, `justify-content: center` centres vertically and `align-items: center`
+    centres horizontally. The properties follow the axes, not the screen.
+  code:
+    caption: A row of tools and a column of links
+    tabs:
+      - lang: css
+        file: snippets/axes.css
+
+playground:
+  visualizer: axis-compass
+  props:
+    items: [Trails, Gear, Maps]
+  prompt: |
+    Set `justify-content` to `center`. Now click the ↓ arrow to switch to `column`. Same
+    property, same value, but the items moved the other way.
+  explore:
+    - In `column`, which property centres the items left to right?
+    - Click ←. Where does item 1 go, and why?
+
+challenges:
+  - id: centered-sidebar
+    type: visual-match
+    prompt: Stack the links vertically, at the top of the sidebar, each centred left to right.
+    html: { file: snippets/sidebar.html }
+    starterCss: { file: snippets/sidebar.starter.css }
+    targetCss: { file: snippets/sidebar.target.css }
+    compare:
+      selectors: [.one, .two, .three]
+      tolerancePx: 1
+    viewport: { width: 300, height: 240 }
+    hints:
+      - '`flex-direction: column` stacks them. Where does `justify-content: center` move them then?'
+      - In a column, left to right is the cross axis.
+    explanation: |
+      In a column, the main axis runs down, so `justify-content: center` would centre the
+      links vertically. Centring left to right is the cross axis: `align-items: center`.
+
+  - id: row-reverse
+    type: predict-output
+    prompt: Each child is 50px wide in a 200px container. What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      a 150
+      b 100
+      c 50
+    choices:
+      - |
+        a 150
+        b 100
+        c 50
+      - |
+        a 0
+        b 50
+        c 100
+      - |
+        a 100
+        b 50
+        c 0
+      - |
+        a 50
+        b 100
+        c 150
+    verify: browser
+    hints:
+      - '`row-reverse` starts the main axis on the right.'
+      - Items still pack at the start of the main axis.
+    explanation: |
+      With `row-reverse`, the main axis runs right to left, so the first item sits at the
+      right end (150px) and the items pack from there. The free space ends up on the left.
+
+  - id: column-center
+    type: choice
+    prompt: 'A container has `flex-direction: column`. Which declaration centres its items horizontally?'
+    options:
+      - text: '`align-items: center`'
+        correct: true
+        why: In a column the cross axis is horizontal, and `align-items` works on the cross axis.
+      - text: '`justify-content: center`'
+        why: In a column that works on the main axis, which is now vertical.
+      - text: '`text-align: center`'
+        why: That centres text inside each item, not the items themselves.
+      - text: '`align-content: center`'
+        why: That positions whole lines of wrapped items; a single column has nothing to move.
+    explanation: Find the axis first, then pick the property that works along it.
+
+production:
+  - title: Rows follow the writing direction
+    body: |
+      `row` means "the way text flows", not "left to right". In a right-to-left page the same
+      toolbar lays out from the right, with no extra CSS.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/rtl.html
+  - title: Stacks are flex columns
+    body: |
+      Sidebars, forms and card bodies are usually `flex-direction: column` with a `gap`, which
+      spaces the children evenly without margins on each one.
+
+mistake:
+  title: Centring vertically with `justify-content` in a row
+  body: |
+    In a row, `justify-content: center` centres along the main axis, which is horizontal. The
+    title stays at the top of the 300px hero.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/center.bad.html
+        output: '0'
+        verify: browser
+  fix: 'Vertical in a row is the cross axis, so add `align-items: center`.'
+  good:
+    tabs:
+      - lang: html
+        file: snippets/center.good.html
+        output: '140'
+        verify: browser
+
+recap:
+  - '`flex-direction` sets the main axis; the cross axis runs across it.'
+  - '`justify-content` works along the main axis, `align-items` along the cross axis.'
+  - 'In a column the two swap roles on screen; find the axis before picking the property.'
+
+related: [css.flex-alignment, css.flex-sizing, css.display]
