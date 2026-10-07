@@ -1,0 +1,21 @@
+<header class="bar"><span class="logo"></span><nav class="nav"></nav><a class="login"></a></header>
+<style>
+  .bar {
+    position: relative;
+    display: flex;
+    gap: 16px;
+    width: 600px;
+  }
+  .logo, .login {
+    width: 100px;
+  }
+  .nav {
+    width: 200px;
+  }
+  .login {
+    margin-inline-start: auto;
+  }
+</style>
+<script>
+  console.log(document.querySelector('.nav').offsetLeft);
+</script>

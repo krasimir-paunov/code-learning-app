@@ -1,0 +1,9 @@
+.site-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.site-header .account {
+  margin-inline-start: auto;
+}

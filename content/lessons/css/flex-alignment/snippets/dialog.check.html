@@ -1,0 +1,21 @@
+<div class="overlay">
+  <div class="dialog">Saved!</div>
+</div>
+<style>
+  .overlay {
+    position: relative;
+    display: flex;
+    justify-content: [[main]];
+    align-items: [[cross]];
+    width: 400px;
+    height: 300px;
+  }
+  .dialog {
+    width: 200px;
+    height: 100px;
+  }
+</style>
+<script>
+  const dialog = document.querySelector('.dialog');
+  console.log(dialog.offsetLeft, dialog.offsetTop);
+</script>

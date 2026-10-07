@@ -1,0 +1,128 @@
+id: css.flex-alignment
+version: 1
+title: Aligning with Flexbox
+summary: Place flex items anywhere in their container, spread them out, space them with gap and push one aside with an auto margin.
+minutes: 6
+tags: [flexbox, justify-content, align-items, gap, auto margins]
+
+concept:
+  title: Place them, spread them, push one
+  body: |
+    - `justify-content` places the items along the main axis (`start`, `center`, `end`) or
+      spreads them out: `space-between` leaves no space at the ends, `space-evenly` gives
+      every gap the same size.
+    - `align-items` places them on the cross axis. The default, `stretch`, makes them fill it.
+    - `gap` is the space **between** items, never at the edges.
+    - An auto margin takes all the free space on its side. `margin-inline-start: auto` on one
+      item pushes it, and everything after it, to the end of a row: logo left, account right.
+  code:
+    caption: The header pattern on almost every site
+    tabs:
+      - lang: css
+        file: snippets/header.css
+
+playground:
+  visualizer: align-pad
+  props:
+    items: [Logo, Trails, Gear, Log in]
+  prompt: |
+    Click the middle of the grid to centre the items both ways. Then switch to `column`: the
+    items stay put, but look how the CSS swaps.
+  explore:
+    - Back in `row`, set the auto margin on **Log in**. What happens to the free space?
+    - Try `space-between`, then `space-evenly`. Where does the space go at the edges?
+
+challenges:
+  - id: site-header
+    type: visual-match
+    prompt: 'Lay out the header: logo and links side by side with 16px between them, "Log in" pushed to the far right, and everything centred vertically.'
+    html: { file: snippets/header.html }
+    starterCss: { file: snippets/header.starter.css }
+    targetCss: { file: snippets/header.target.css }
+    compare:
+      selectors: [.logo, .links, .login]
+      tolerancePx: 1
+    viewport: { width: 400, height: 120 }
+    hints:
+      - Vertical centring in a row is the cross axis.
+      - '`justify-content` would move all three. Only "Log in" should move, so give it an auto margin.'
+    explanation: |
+      `align-items: center` centres on the cross axis, `gap` spaces the items, and
+      `margin-inline-start: auto` on the login link takes all the free space before it.
+
+  - id: centre-dialog
+    type: fill-blank
+    prompt: Centre the dialog in the overlay, both left to right and top to bottom.
+    code: { lang: html, file: snippets/dialog.html }
+    blanks:
+      main:
+        accept: [center]
+        caseSensitive: false
+        label: justify-content
+      cross:
+        accept: [center]
+        caseSensitive: false
+        label: align-items
+    check:
+      file: snippets/dialog.check.html
+      output: '100 100'
+      verify: browser
+    hints:
+      - One property per axis.
+    explanation: 'In a row, `justify-content` centres left to right and `align-items` top to bottom. Together they centre in both directions.'
+
+  - id: push-help
+    type: choice
+    prompt: A toolbar row holds five buttons. Only the last one, Help, should sit at the far right. Which declaration does that?
+    options:
+      - text: '`margin-inline-start: auto` on Help'
+        correct: true
+        why: The auto margin takes all the free space before Help, so only Help moves to the end.
+      - text: '`justify-content: end` on the toolbar'
+        why: That moves all five buttons to the right.
+      - text: '`justify-content: space-between` on the toolbar'
+        why: That spreads all five across the row.
+      - text: '`float: right` on Help'
+        why: '`float` has no effect on flex items.'
+    explanation: Container properties move every item; an auto margin on one item moves just that one (and those after it).
+
+production:
+  - title: Card buttons at the bottom
+    body: |
+      In a row of cards with different amounts of text, `stretch` makes the cards equal height.
+      Make each card a column and give its actions `margin-block-start: auto`, and the buttons
+      line up along the bottom.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/card.css
+  - title: '`gap` instead of margins'
+    body: |
+      Before `gap` worked in Flexbox, every item needed a margin and the last one had to undo it.
+      `gap` is now supported everywhere and only ever goes between items.
+
+mistake:
+  title: '`space-between` for "logo left, rest right"'
+  body: |
+    With two items it works. Add a third, and `space-between` puts it in the middle: the nav
+    drifts away from the logo, to wherever the leftover space puts it.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/between.bad.html
+        output: '200'
+        verify: browser
+  fix: 'Keep the items together with `gap`, and push only the last one with `margin-inline-start: auto`.'
+  good:
+    tabs:
+      - lang: html
+        file: snippets/between.good.html
+        output: '116'
+        verify: browser
+
+recap:
+  - '`justify-content` places or spreads items on the main axis; `align-items` places them on the cross axis.'
+  - '`gap` spaces items without touching the edges.'
+  - 'An auto margin on one item takes the free space on its side: the "push this one to the end" tool.'
+
+related: [css.flex-axes, css.flex-sizing, css.flex-wrap-patterns]
