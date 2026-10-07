@@ -1,0 +1,152 @@
+id: html.loading-resources
+version: 1
+title: Loading CSS and scripts
+summary: Predict what blocks a page from parsing and painting, and load scripts with defer, async or type="module".
+minutes: 7
+tags: [script, defer, async, module, preload, performance, render blocking]
+
+concept:
+  title: Who waits for whom
+  body: |
+    The browser reads the HTML top to bottom. Three things make it wait:
+
+    - A classic `<script src>` stops parsing until it has downloaded and run, and it also
+      waits for any stylesheet above it.
+    - Stylesheets block painting: nothing shows until the CSS in the `<head>` has loaded.
+    - `defer` scripts download alongside and run after parsing, in document order, before
+      `DOMContentLoaded`. `type="module"` scripts do the same by default.
+
+    `async` scripts run the moment they arrive, in whatever order that is: right for
+    independent scripts such as analytics. The usual head: stylesheets, then deferred scripts.
+  code:
+    caption: The usual head
+    tabs:
+      - lang: html
+        file: snippets/head.html
+
+playground:
+  visualizer: load-waterfall
+  props:
+    body: 80
+    resources:
+      - { id: style.css, kind: css, download: 120 }
+      - { id: analytics.js, kind: script, download: 250, run: 15 }
+      - { id: app.js, kind: script, download: 180, run: 40 }
+      - { id: chart.js, kind: script, download: 300, run: 30 }
+  prompt: |
+    Three classic scripts in the head: the red stripes are the parser waiting, and the page
+    can't paint until it has got past them. Make `app.js` and `chart.js` defer, and
+    `analytics.js` async.
+  explore:
+    - With both deferred, move `chart.js` above `app.js`. Which one runs first now, and why?
+    - Make everything async. What could go wrong if `chart.js` needs something from `app.js`?
+
+challenges:
+  - id: run-order
+    type: predict-output
+    prompt: In what order does this page print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      classic
+      defer
+      module
+      DOMContentLoaded
+    choices:
+      - |
+        classic
+        defer
+        module
+        DOMContentLoaded
+      - |
+        defer
+        module
+        classic
+        DOMContentLoaded
+      - |
+        classic
+        DOMContentLoaded
+        defer
+        module
+      - |
+        classic
+        module
+        defer
+        DOMContentLoaded
+    verify: browser
+    hints:
+      - Classic inline scripts run as the parser reaches them.
+      - Deferred and module scripts wait for parsing to finish, then run in document order.
+    explanation: |
+      The classic script runs at once. The deferred script and the module are both held until
+      parsing ends, then run in the order they appear, and only then does `DOMContentLoaded`
+      fire.
+
+  - id: analytics
+    type: choice
+    prompt: An analytics script doesn't touch the page or depend on other scripts. How should it load?
+    options:
+      - text: '`async`'
+        correct: true
+        why: It downloads alongside parsing and runs whenever it arrives; nothing waits for it and it waits for nothing.
+      - text: A classic script in the `<head>`
+        why: It would stop parsing for something visitors never see.
+      - text: '`defer`'
+        why: That works, but it holds the script until parsing ends for no reason; `async` lets it report sooner.
+      - text: Inline, copied into the page
+        why: Inlining skips the request but still blocks parsing, and the file can no longer be cached on its own.
+    explanation: '`async` is for independent scripts; `defer` is for scripts that need the document or each other.'
+
+  - id: dom-script
+    type: choice
+    prompt: '`app.js` sits in the `<head>` and attaches click handlers to buttons in the page. Which attribute makes it work and keeps parsing going?'
+    options:
+      - text: '`defer`'
+        correct: true
+        why: It runs after the whole document is parsed, so the buttons exist, and parsing never stops for it.
+      - text: '`async`'
+        why: It may run before the buttons have been parsed, depending on network timing.
+      - text: No attribute
+        why: It runs before the body is parsed, so the buttons don't exist yet, and it blocks parsing too.
+      - text: '`type="text/javascript"`'
+        why: That's the default type; it changes nothing about timing.
+    explanation: Scripts that need the DOM get `defer` (or are modules), which also keeps them in order.
+
+production:
+  - title: Preload what is found late
+    body: |
+      A font named inside a stylesheet is only discovered once the CSS has loaded. A `preload`
+      link in the `<head>` starts that download straight away.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/preload.html
+  - title: 'Legacy: scripts at the end of the body'
+    body: |
+      Older sites put scripts just before `</body>` so they wouldn't block parsing. It works, but
+      the download only starts when the parser gets there; `defer` in the `<head>` starts it at once.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/bottom.html
+
+mistake:
+  title: Classic scripts at the top of the head
+  body: |
+    Each script stops the parser while it downloads and runs, and the stylesheet below them
+    isn't even reached until they finish. Visitors stare at a blank page.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/blocking.bad.html
+  fix: Put stylesheets first and `defer` every script that doesn't need to run before the page is parsed.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/blocking.good.html
+
+recap:
+  - 'Classic scripts stop parsing and wait for the CSS above them; stylesheets block the first paint.'
+  - '`defer` and modules run after parsing, in order, before `DOMContentLoaded`.'
+  - '`async` runs whenever it arrives, in any order: only for independent scripts.'
+
+related: [html.browser-pipeline, html.document-skeleton, html.images]

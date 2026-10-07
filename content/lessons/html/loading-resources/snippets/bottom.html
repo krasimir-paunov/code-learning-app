@@ -1,0 +1,6 @@
+<!-- Legacy: scripts at the end of <body> don't block parsing,
+     but their download starts late. `defer` in <head> does better. -->
+<body>
+  …
+  <script src="/js/app.js"></script>
+</body>

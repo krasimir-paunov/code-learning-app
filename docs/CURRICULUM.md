@@ -145,7 +145,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
 | H7.1 | `html.meta-seo` | Metadata and sharing | Ext | Write `title`, description, canonical and Open Graph tags. | — | `share-preview`: search result + social card update live | FB | 5 | todo |
-| H7.2 | `html.loading-resources` | Loading CSS and scripts | Core | Predict render blocking; use `defer`, `async`, `type="module"`, `preload`. | ↑ | `load-waterfall`: parser timeline with blocking resources | PO, CH | 7 | todo |
+| H7.2 | `html.loading-resources` | Loading CSS and scripts | Core | Predict render blocking; use `defer`, `async`, `type="module"`, `preload`. | ↑ | `load-waterfall`: edit the head, see the parser timeline, blocking, first paint and run order | PO, CH | 7 | done |
 
 ### H8 · Boss — Entry: H7.2
 
