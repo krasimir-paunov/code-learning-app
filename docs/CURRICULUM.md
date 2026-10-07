@@ -127,7 +127,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 |---|---|---|---|---|---|---|---|---|---|
 | H5.1 | `html.form-basics` | How forms submit | Core | Connect `label`↔`input`, `name`, `action`, `method`; see GET vs POST payloads. | — | `form-inspector`: submit shows the request (query string vs body) and why each field was or wasn't sent | PO, BUG, CH | 7 | done |
 | H5.2 | `html.input-types` | Input types | Core | Pick the right `type` (email, number, date, checkbox, radio, range...) and `autocomplete`. | ↑ | `input-gallery`: match a type to a need, see the real input and the typical phone keyboard | LC, PO, CH | 6 | done |
-| H5.3 | `html.select-textarea-fieldset` | Selects, textareas, groups | Core | Group related controls with `fieldset`/`legend`; build radio groups. | ↑ | `live-editor` + `sr-preview` | LC | 5 | todo |
+| H5.3 | `html.select-textarea-fieldset` | Selects, textareas, groups | Core | Group related controls with `fieldset`/`legend`; build radio groups. | ↑ | `group-lab`: fieldset and shared-name switches on a live form, with what each focused control exposes | PO, LC, CH | 5 | done |
 | H5.4 | `html.buttons` | Buttons vs links | Core | A button acts, a link navigates; `type` defaults to `submit` inside forms. | ↑ | `form-inspector` | BUG, CH | 4 | todo |
 | H5.5 | `html.validation` | Built-in validation | Core | Use `required`, `pattern`, `min`/`max`, `minlength` and the `:user-invalid` state. | ↑ | `validation-lab` | FB, LC | 6 | todo |
 

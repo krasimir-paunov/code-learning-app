@@ -1,0 +1,11 @@
+<form>
+  <fieldset>
+    <legend>Extras</legend>
+    <label><input type="checkbox" name="extras" value="laces" checked> Spare laces</label>
+    <label><input type="checkbox" name="extras" value="insoles" checked> Insoles</label>
+  </fieldset>
+</form>
+<script>
+  const data = new FormData(document.querySelector('form'));
+  console.log(data.getAll('extras').join(', '));
+</script>

@@ -1,0 +1,6 @@
+<label><input type="radio" name="speed" value="standard"> Standard</label>
+<label><input type="radio" name="speed" value="express"> Express</label>
+<script>
+  for (const radio of document.querySelectorAll('input')) radio.click();
+  console.log(document.querySelectorAll('input:checked').length);
+</script>

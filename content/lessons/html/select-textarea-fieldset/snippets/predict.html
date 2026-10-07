@@ -1,0 +1,13 @@
+<form>
+  <input type="radio" name="size" value="s">
+  <input type="radio" name="size" value="m" checked>
+  <select name="color">
+    <option>Blue</option>
+    <option value="grey" selected>Slate grey</option>
+  </select>
+  <textarea name="note">Leave at door</textarea>
+</form>
+<script>
+  const data = new FormData(document.querySelector('form'));
+  console.log(new URLSearchParams(data).toString());
+</script>

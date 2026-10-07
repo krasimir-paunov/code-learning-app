@@ -1,0 +1,137 @@
+id: html.select-textarea-fieldset
+version: 1
+title: Selects, textareas, groups
+summary: Build radio groups that behave as one, name groups with fieldset and legend, and pick select or textarea when they fit.
+minutes: 5
+tags: [radio, fieldset, legend, select, textarea, checkbox]
+
+concept:
+  title: Group what belongs together
+  body: |
+    Radios offer one choice from a few options. Give them all the same `name`: only one can be
+    checked, the group is a single Tab stop, and the arrow keys move between its options.
+
+    `<fieldset>` with a `<legend>` groups related controls and names the group, so a screen
+    reader says "Delivery speed, group" before reading the first option.
+
+    - `<select>`: one choice from a long list, such as countries.
+    - `<textarea>`: free text over several lines.
+
+    Both get a `<label>`, like any input.
+  code:
+    caption: A radio group, a select and a textarea
+    tabs:
+      - lang: html
+        file: snippets/group.html
+
+playground:
+  visualizer: group-lab
+  props:
+    question: Delivery speed
+    name: speed
+    options: [Standard, Express, Same day]
+    select: { label: Box size, options: [Small, Medium, Large] }
+    textarea: { label: Notes for the courier }
+  prompt: |
+    Click all three delivery speeds. They don't behave like one choice. Switch on
+    `name="speed"` and click them again.
+  explore:
+    - Tab from the top of the form. How many stops do the radios take with and without the shared name?
+    - Focus **Express**, then switch on the fieldset. What does it gain under Group?
+
+challenges:
+  - id: form-values
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: size=m&color=grey&note=Leave+at+door
+    choices:
+      - size=m&color=grey&note=Leave+at+door
+      - size=s&size=m&color=Slate+grey&note=Leave+at+door
+      - size=m&color=Slate+grey&note=
+      - size=on&color=grey&note=Leave+at+door
+    verify: browser
+    hints:
+      - A radio group sends only the checked radio's `value`.
+      - An `<option>` with a `value` sends the value, not its text.
+    explanation: |
+      Only the checked radio is sent, with its `value`. The selected option sends `grey`, its
+      value; its text is only for people. A textarea sends what is between its tags (or what
+      the user typed).
+
+  - id: size-group
+    type: live-code
+    prompt: |
+      Make the sizes a proper radio group named by its own legend, and turn the gift message
+      into a labelled, multi-line field.
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/size.starter.html }
+    solution:
+      index.html: { file: snippets/size.solution.html }
+    tests: { file: snippets/size.test.js }
+    hints:
+      - '`<fieldset>` around the radios, with `<legend>Size</legend>` as its first child.'
+      - 'The radios share `name="size"`; the message becomes `<textarea>` with a `<label for>`.'
+    explanation: |
+      The radios now act as one choice and are announced as the "Size" group. The message
+      field accepts several lines and has a label you can click.
+
+  - id: radios-or-select
+    type: choice
+    prompt: Checkout offers three delivery speeds, each with a different price and delivery time. Which control fits?
+    options:
+      - text: A radio group in a fieldset
+        correct: true
+        why: With only a few options, people compare them best when all are visible at once, prices included.
+      - text: A `<select>`
+        why: A select hides the options until it is opened, which makes comparing three prices harder than it needs to be.
+      - text: Three checkboxes
+        why: Checkboxes allow several choices; delivery speed is exactly one.
+      - text: A text input
+        why: People would have to type an option exactly; nothing guides or checks them.
+    explanation: A few options that people compare suit radios; a long list (countries, years) suits a select.
+
+production:
+  - title: Checkbox groups send every checked value
+    body: |
+      Checkboxes for "pick any" share one `name` too. Each checked box sends its own pair, so the
+      server receives a list.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/extras.html
+          output: laces, insoles
+          verify: browser
+  - title: Long selects get headings
+    body: '`<optgroup>` adds labelled sections to a long `<select>`, so people can scan it by category.'
+    code:
+      tabs:
+        - lang: html
+          file: snippets/optgroup.html
+
+mistake:
+  title: Radios without a shared name
+  body: |
+    Each radio without a `name` is its own group of one, so they don't uncheck each other. The
+    "one choice" form now accepts several, and every option is a separate Tab stop.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/names.bad.html
+        output: '2'
+        verify: browser
+  fix: Give every radio in the group the same `name`.
+  good:
+    tabs:
+      - lang: html
+        file: snippets/names.good.html
+        output: '1'
+        verify: browser
+
+recap:
+  - 'Radios with one shared `name` form a group: one choice, one Tab stop, arrow keys inside.'
+  - '`<fieldset>` and `<legend>` group related controls and give the group a name.'
+  - '`<select>` for one choice from a long list, `<textarea>` for multi-line text; both need a label.'
+
+related: [html.form-basics, html.input-types, html.validation]
