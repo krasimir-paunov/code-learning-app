@@ -50,6 +50,10 @@ export function mountSandbox(
   if (request.viewport) {
     frame.style.width = `${request.viewport.width}px`;
     frame.style.height = `${request.viewport.height}px`;
+    // An exact viewport is the point: the base iframe cap would shrink grading frames to their
+    // 1px off-screen host, so pages were measured at the wrong width.
+    frame.style.maxInlineSize = 'none';
+    frame.style.border = '0';
   }
 
   const stdout: ConsoleEntry[] = [];
