@@ -1,0 +1,17 @@
+<div class="a"></div>
+<div class="b"></div>
+<style>
+  .a {
+    background-color: navy;
+    background: linear-gradient(white, transparent);
+  }
+  .b {
+    background: linear-gradient(white, transparent);
+    background-color: navy;
+  }
+</style>
+<script>
+  for (const box of document.querySelectorAll('div')) {
+    console.log(getComputedStyle(box).backgroundColor);
+  }
+</script>

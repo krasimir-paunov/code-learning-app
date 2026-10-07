@@ -1,0 +1,21 @@
+body {
+  padding: 24px;
+  background: #eef1f5;
+}
+
+.card {
+  width: 240px;
+  background: #ffffff;
+  color: #1f2937;
+}
+
+.card img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.card h2,
+.card p {
+  margin: 8px 12px;
+}

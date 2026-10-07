@@ -1,0 +1,153 @@
+id: css.surfaces
+version: 1
+title: Backgrounds, borders, shadows
+summary: See the layers a box paints, from shadow to border, and style a card that holds together.
+minutes: 6
+tags: [background, gradient, border, border-radius, box-shadow, outline]
+
+concept:
+  title: A box paints in layers
+  body: |
+    From the bottom up, every box paints:
+
+    1. its `box-shadow` (x offset, y offset, blur, spread, colour),
+    2. its `background-color`,
+    3. its `background-image`: gradients are images, and several stack, the first listed on top,
+    4. its `border`,
+    5. its content.
+
+    Backgrounds reach under the border, so a dashed border shows the background in its gaps.
+    `border-radius` rounds the shadow, backgrounds and border together, but not the children:
+    a photo inside keeps square corners unless the card clips it with `overflow: hidden`.
+  code:
+    caption: Every layer on one card
+    tabs:
+      - lang: css
+        file: snippets/surface.css
+
+playground:
+  visualizer: surface-studio
+  props:
+    title: Ridgeline loop
+    text: 12 km, 600 m of climbing
+    options:
+      border-radius: ['16px', '0', '40px 4px']
+      box-shadow:
+        ['0 12px 24px rgb(0 0 0 / 0.25)', '0 2px 3px rgb(0 0 0 / 0.35)', '0 0 0 6px #f59e0b']
+      background-color: ['#bfdbfe', '#ffffff', 'transparent']
+      background-image:
+        - 'linear-gradient(160deg, #ffffff, transparent 70%)'
+        - 'radial-gradient(circle at top right, #f9a8d4, transparent 60%)'
+        - none
+      border: ['4px dashed #1e3a8a', '2px solid #1f2937', 'none']
+  prompt: |
+    The card on the left is the stack on the right, pulled apart. Switch off `background-image`
+    and watch its layer disappear from both.
+  explore:
+    - "Look at the dashed border's gaps. Which layer shows through them?"
+    - 'Pick `transparent` for `background-color`. What do you see through the card now?'
+    - 'Change `border-radius`. Which layers follow it?'
+
+challenges:
+  - id: card-surface
+    type: live-code
+    prompt: |
+      Turn this into a card: round its corners (at least 8px), lift it off the page with a shadow
+      that falls below it, and make sure the photo's top corners are rounded too.
+    runner: web-sandbox
+    files:
+      index.html: { file: snippets/card.html, editable: false }
+      style.css: { file: snippets/card.starter.css }
+    solution:
+      index.html: { file: snippets/card.html }
+      style.css: { file: snippets/card.solution.css }
+    tests: { file: snippets/card.test.js }
+    hints:
+      - 'A shadow "below" needs a positive y offset: `box-shadow: 0 8px 24px …`.'
+      - "`border-radius` doesn't round the photo inside. The card has to clip its children."
+    explanation: |
+      `border-radius` and `box-shadow` shape the card itself; `overflow: hidden` makes the photo
+      follow the rounded corners instead of poking out of them.
+
+  - id: shorthand-reset
+    type: predict-output
+    prompt: What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: |
+      rgba(0, 0, 0, 0)
+      rgb(0, 0, 128)
+    choices:
+      - |
+        rgba(0, 0, 0, 0)
+        rgb(0, 0, 128)
+      - |
+        rgb(0, 0, 128)
+        rgb(0, 0, 128)
+      - |
+        rgba(0, 0, 0, 0)
+        rgba(0, 0, 0, 0)
+      - |
+        rgb(0, 0, 128)
+        rgba(0, 0, 0, 0)
+    verify: browser
+    hints:
+      - "`background` is a shorthand. What happens to the parts it doesn't mention?"
+    explanation: |
+      A shorthand sets every one of its longhands, and the ones you leave out go back to their
+      initial value. In `.a`, `background` comes second and resets the colour to transparent.
+      In `.b`, the colour is set after the shorthand, so it stays.
+
+  - id: dashed-gaps
+    type: choice
+    prompt: A card has `background-color` light blue and `border` 4px dashed navy, on a white page. What colour shows in the gaps between the dashes?
+    options:
+      - text: Light blue
+        correct: true
+        why: Backgrounds extend under the border by default, so the gaps show the card's own background.
+      - text: White
+        why: 'That would only happen with `background-clip: padding-box`, which stops the background at the border.'
+      - text: Navy
+        why: Navy is the dashes themselves; the gaps are where the border isn't painted.
+      - text: Transparent black
+        why: Nothing is painted black; the background underneath shows.
+    explanation: The border is painted on top of the backgrounds, which reach all the way to the outer edge of the border.
+
+production:
+  - title: Elevation from layered shadows
+    body: |
+      Design systems build "elevation" from two shadows: a small, sharp one for the contact edge
+      and a large, soft one for depth. Commas separate them; the first is drawn on top.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/shadows.css
+  - title: Focus rings use `outline`
+    body: |
+      `outline` is drawn outside the border and takes no space, so showing it never moves the
+      layout. Current browsers also make it follow `border-radius`.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/focus.css
+
+mistake:
+  title: Square photo corners on a rounded card
+  body: |
+    The card has rounded corners, but the photo at its top still has square ones that stick out.
+    `border-radius` shapes the card's own layers, not its children.
+  bad:
+    tabs:
+      - lang: css
+        file: snippets/corners.bad.css
+  fix: "Clip the children with `overflow: hidden` (or round the photo's own top corners)."
+  good:
+    tabs:
+      - lang: css
+        file: snippets/corners.good.css
+
+recap:
+  - 'Paint order, bottom up: shadow, background colour, background images, border, content.'
+  - "`border-radius` shapes all of the box's own layers; children need `overflow: hidden` to follow it."
+  - "The `background` shorthand resets every background longhand it doesn't mention."
+
+related: [css.colors, css.box-model, css.stacking]

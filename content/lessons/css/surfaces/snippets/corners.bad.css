@@ -1,0 +1,8 @@
+.card {
+  border-radius: 12px;
+}
+
+.card img {
+  display: block;
+  width: 100%;
+}
