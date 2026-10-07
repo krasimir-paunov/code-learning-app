@@ -1,0 +1,70 @@
+.frame {
+  display: grid;
+  /* A zero minimum, so the area measures the space it gets rather than the stage's width. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.rule {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-3);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+
+  & legend {
+    padding-inline: var(--space-1);
+    color: var(--text-2);
+    font-size: var(--fs-sm);
+  }
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-block-size: var(--touch-target);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+
+  & input {
+    flex: none;
+    accent-color: var(--accent);
+  }
+
+  & code {
+    overflow-wrap: anywhere;
+  }
+}
+
+.area {
+  min-inline-size: 0;
+  overflow: hidden;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-1);
+}
+
+.stage {
+  inline-size: max-content;
+}
+
+.report {
+  display: grid;
+  gap: var(--space-2);
+  font-size: var(--fs-sm);
+}
+
+.bad {
+  color: var(--danger);
+}
+
+.missing {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding-inline-start: var(--space-4);
+  color: var(--warning);
+}
