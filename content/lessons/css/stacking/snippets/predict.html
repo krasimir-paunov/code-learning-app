@@ -1,0 +1,26 @@
+<header id="header">
+  <div id="menu"></div>
+</header>
+<div id="card"></div>
+<style>
+  body { margin: 0; }
+  #header {
+    height: 40px;
+    opacity: 0.9;
+  }
+  #menu {
+    position: absolute;
+    top: 30px;
+    width: 200px;
+    height: 100px;
+    z-index: 9999;
+  }
+  #card {
+    position: relative;
+    z-index: 1;
+    height: 100px;
+  }
+</style>
+<script>
+  console.log(document.elementFromPoint(50, 80).id);
+</script>

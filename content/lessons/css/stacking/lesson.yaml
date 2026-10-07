@@ -1,0 +1,136 @@
+id: css.stacking
+version: 1
+title: z-index and stacking contexts
+summary: Understand why z-index 9999 sometimes loses, by seeing which stacking context an element is painted in.
+minutes: 7
+tags: [z-index, stacking context, isolation, opacity, position]
+
+concept:
+  title: z-index only competes inside its context
+  body: |
+    `z-index` orders positioned elements (and flex and grid items). But elements are only
+    compared within their **stacking context**: a sealed layer that is painted as one unit, at
+    its own place in its parent.
+
+    A new context starts with position plus a `z-index` other than `auto`, `opacity` below 1,
+    `transform`, `filter`, `isolation: isolate`, or `position: fixed` or `sticky`.
+
+    So a menu with `z-index: 9999` inside a header with `z-index: 10` can't rise above a card
+    with `z-index: 20`: the whole header context sits at 10. Raise the context, not the child.
+  code:
+    caption: A sticky header above the page, a card that keeps its layers to itself
+    tabs:
+      - lang: css
+        file: snippets/contexts.css
+
+playground:
+  visualizer: stack-layers
+  props:
+    html: |
+      <header id="header" class="header">Trailhead
+        <div id="menu" class="menu">Trails<br>Gear<br>Maps</div>
+      </header>
+      <article id="card" class="card">Ridgeline loop: 12 km over the ridge</article>
+    css: |
+      .header { position: relative; height: 44px; padding: 12px; background: #0f172a; color: #fff; font-weight: 700; }
+      .menu { position: absolute; top: 36px; left: 90px; width: 140px; padding: 8px 12px; border-radius: 6px; background: #1d4ed8; color: #fff; font-weight: 400; }
+      .card { position: relative; margin-top: 16px; height: 110px; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; }
+    boxes:
+      - { id: page, label: Page, parent: null, position: static, z: auto }
+      - { id: header, label: Header, parent: page, position: relative, z: 10, editable: true }
+      - { id: menu, label: Menu, parent: header, position: absolute, z: 9999, editable: true }
+      - { id: card, label: Card, parent: page, position: relative, z: 20, editable: true }
+    triggers:
+      - { box: header, kind: opacity }
+    compare: [menu, card]
+  prompt: |
+    The menu has `z-index: 9999` but hides behind the card (20). In the layers panel it sits
+    inside the header's context. Raise the header to 30.
+  explore:
+    - Set the header's z-index to `auto`. Why does the 9999 work now?
+    - Keep it on `auto` and switch on `opacity` for the header. What changed?
+
+challenges:
+  - id: opacity-context
+    type: predict-output
+    prompt: The menu overlaps the card at the point being tested. What does this print?
+    code: { lang: html, file: snippets/predict.html }
+    answer: card
+    choices: [card, menu, header]
+    verify: browser
+    hints:
+      - The header has no z-index. Does it still start a stacking context?
+    explanation: |
+      `opacity: 0.9` makes the header a stacking context, painted as one unit at z-index 0.
+      The card, at 1, is above that whole context, so it wins over the menu's 9999.
+
+  - id: buried-menu
+    type: find-bug
+    prompt: The export menu opens behind the hero, although it has z-index 100. Click the buggy line, then choose the fix.
+    code: { lang: css, file: snippets/toolbar.bug.css }
+    page: { file: snippets/toolbar.html }
+    bugLines: [6]
+    fix:
+      choices:
+        - { text: '  z-index: 3;', correct: true }
+        - { text: '  z-index: 1 !important;' }
+        - { text: '  z-index: -1;' }
+        - { text: '  z-index: auto; opacity: 0.9;' }
+    tests: { file: snippets/toolbar.test.js }
+    hints:
+      - Which stacking context is the menu in?
+      - The toolbar's context has to beat the hero's z-index of 2.
+    explanation: The menu's 100 only counts inside the toolbar's context. Raising the toolbar above the hero lifts the whole context, menu included.
+
+  - id: no-context
+    type: choice
+    prompt: Which of these does NOT start a new stacking context?
+    options:
+      - text: '`position: relative` with no `z-index`'
+        correct: true
+        why: Position alone isn't enough; it needs a `z-index` other than `auto`.
+      - text: '`opacity: 0.99`'
+        why: Any opacity below 1 starts a context, which surprises many developers.
+      - text: '`transform: translateX(0)`'
+        why: Any transform, even one that does nothing visible, starts a context.
+      - text: '`isolation: isolate`'
+        why: That property exists only to start a context.
+    explanation: Contexts come from more than z-index; opacity and transforms are the usual surprises.
+
+production:
+  - title: '`isolation: isolate` on components'
+    body: |
+      A component that uses z-index inside itself gets `isolation: isolate`, so its inner
+      layers can't leak out and fight with the rest of the page.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/isolate.css
+  - title: A small z-index scale
+    body: Teams define a handful of named layers as tokens instead of choosing numbers on the spot.
+    code:
+      tabs:
+        - lang: css
+          file: snippets/scale.css
+
+mistake:
+  title: The z-index arms race
+  body: |
+    When 9999 doesn't work, 99999 won't either: the problem is the context the element is in,
+    not the size of the number. Ever-bigger values only make the next bug harder to find.
+  bad:
+    tabs:
+      - lang: css
+        file: snippets/war.bad.css
+  fix: Find the stacking context (DevTools shows it in the Layers panel), raise that, and use named layers.
+  good:
+    tabs:
+      - lang: css
+        file: snippets/war.good.css
+
+recap:
+  - 'z-index only orders elements within the same stacking context.'
+  - 'Contexts start with position + z-index, opacity < 1, transform, filter, isolation, fixed or sticky.'
+  - 'To lift a buried element, raise its context; use `isolation: isolate` and a named z-index scale.'
+
+related: [css.position, css.transforms, css.surfaces]

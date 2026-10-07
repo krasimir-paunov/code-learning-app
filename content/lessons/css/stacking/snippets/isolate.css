@@ -1,0 +1,4 @@
+/* Inner z-index values can't leak out of the card or fight with the page. */
+.card {
+  isolation: isolate;
+}

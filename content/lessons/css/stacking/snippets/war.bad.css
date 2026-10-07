@@ -1,0 +1,9 @@
+.menu {
+  z-index: 9999;
+}
+.modal {
+  z-index: 99999;
+}
+.toast {
+  z-index: 999999;
+}

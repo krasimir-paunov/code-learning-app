@@ -215,7 +215,7 @@ Recommended (soft) cross-track gates, shown as a "Recommended path" banner with 
 | # | id | Lesson | Tier | Objective | Req | Interactive | Ch | Min | Status |
 |---|---|---|---|---|---|---|---|---|---|
 | C6.1 | `css.position` | Positioning | Core | `relative`, `absolute`, `fixed`, `sticky`; find the containing block. | — | `position-lab`: a real scrolling page with the containing block outlined for every position value | VM, PO, CH | 8 | done |
-| C6.2 | `css.stacking` | z-index and stacking contexts | Core | Why `z-index: 9999` doesn't work: stacking contexts. | ↑ | `stack-3d`: exploded 3-D view of layers | PO, BUG | 7 | todo |
+| C6.2 | `css.stacking` | z-index and stacking contexts | Core | Why `z-index: 9999` doesn't work: stacking contexts. | ↑ | `stack-layers`: a real overlap next to a layers panel grouped by stacking context | PO, BUG, CH | 7 | done |
 | C6.3 | `css.transforms` | Transforms | Ext | `translate`, `rotate`, `scale` (individual properties) without affecting layout. | ↑ | `live-editor` | VM | 5 | todo |
 
 ### C7 · Responsive design — Entry: C6.2

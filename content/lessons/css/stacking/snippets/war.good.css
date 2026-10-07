@@ -1,0 +1,9 @@
+.site-header {
+  z-index: var(--z-sticky);
+}
+.modal {
+  z-index: var(--z-modal);
+}
+.toast {
+  z-index: var(--z-toast);
+}

@@ -1,0 +1,20 @@
+body {
+  margin: 0;
+}
+.toolbar {
+  position: relative;
+  z-index: 1;
+  height: 40px;
+}
+.menu {
+  position: absolute;
+  top: 30px;
+  width: 200px;
+  height: 100px;
+  z-index: 100;
+}
+.hero {
+  position: relative;
+  z-index: 2;
+  height: 120px;
+}
