@@ -1,0 +1,11 @@
+<button type="button" class="toggle" aria-expanded="false" aria-controls="menu">Menu</button>
+<ul id="menu" hidden>
+  <li><a href="/trails">Trails</a></li>
+</ul>
+<script>
+  const button = document.querySelector('.toggle');
+  const menu = document.querySelector('#menu');
+  button.addEventListener('click', () => {
+    menu.hidden = !menu.hidden;
+  });
+</script>

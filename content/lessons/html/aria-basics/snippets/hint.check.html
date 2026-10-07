@@ -1,0 +1,7 @@
+<label for="pw">Password</label>
+<input type="password" id="pw" aria-describedby="[[ref]]">
+<p id="pw-hint">At least 12 characters.</p>
+<script>
+  const ids = document.querySelector('#pw').getAttribute('aria-describedby').split(' ');
+  console.log(ids.map((id) => document.getElementById(id)?.textContent).join(' '));
+</script>

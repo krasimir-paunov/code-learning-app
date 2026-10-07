@@ -1,0 +1,171 @@
+id: html.aria-basics
+version: 1
+title: ARIA, carefully
+summary: Use native elements first, and ARIA only to name, describe, report state and announce changes, kept true by your script.
+minutes: 7
+tags: [aria, aria-label, aria-describedby, aria-expanded, aria-live, accessibility]
+
+concept:
+  title: Native first, ARIA to fill gaps
+  body: |
+    ARIA attributes change only what assistive technology is told, never how an element looks
+    or behaves. The first rule of ARIA: if a native element does the job (`<button>`,
+    `<nav>`, a checkbox), use it instead.
+
+    Where ARIA is the right tool:
+
+    - `aria-label` names something with no visible text, such as an icon button.
+    - `aria-describedby` adds a hint or an error after the name.
+    - `aria-expanded` reports open or closed on a button that shows content. Your script must
+      keep it true.
+    - `role="status"` (or `aria-live`) announces text that changes while focus stays put.
+  code:
+    caption: An icon button, a disclosure and a status message
+    tabs:
+      - lang: html
+        file: snippets/aria.html
+
+playground:
+  visualizer: aria-workbench
+  props:
+    widgets:
+      - name: Icon button
+        html: <button type="button" class="close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2"/></svg></button>
+        inspect: .close
+        toggles:
+          - { label: 'Name it:', selector: .close, attr: aria-label, value: Close dialog }
+      - name: Disclosure
+        html: |
+          <button type="button" class="menu-btn" aria-controls="menu">Menu</button>
+          <ul id="menu" hidden><li>Trails</li><li>Gear</li></ul>
+        inspect: .menu-btn
+        behavior: disclosure
+        toggles:
+          - {
+              label: 'Report open or closed:',
+              selector: .menu-btn,
+              attr: aria-expanded,
+              value: 'false',
+            }
+      - name: Field error
+        html: |
+          <label for="email">Email</label>
+          <input id="email" type="email" value="ana(at)example.com">
+          <p id="email-error" class="error">Enter an address like ana@example.com.</p>
+        inspect: '#email'
+        toggles:
+          - {
+              label: 'Connect the message:',
+              selector: '#email',
+              attr: aria-describedby,
+              value: email-error,
+            }
+          - { label: 'Mark the field:', selector: '#email', attr: aria-invalid, value: 'true' }
+      - name: Status message
+        html: |
+          <button type="button" class="add">Add to cart</button>
+          <p class="status"></p>
+        inspect: .status
+        behavior: status
+        toggles:
+          - { label: 'Make it a live region:', selector: .status, attr: role, value: status }
+  prompt: |
+    The close button is only an icon: a screen reader hears "button" and nothing more. Switch on
+    its `aria-label`, then try the other widgets.
+  explore:
+    - In **Disclosure**, open and close the menu with and without `aria-expanded`. What changes in the state?
+    - In **Status message**, press the button a few times, then switch on `role="status"`.
+
+challenges:
+  - id: stale-expanded
+    type: find-bug
+    prompt: The menu opens and closes, but screen readers always hear "collapsed". Click the buggy line, then choose the fix.
+    code: { lang: html, file: snippets/disclosure.bug.html }
+    bugLines: [9]
+    fix:
+      choices:
+        - {
+            text: "menu.hidden = !menu.hidden;\nbutton.setAttribute('aria-expanded', String(!menu.hidden));",
+            correct: true,
+          }
+        - { text: "menu.hidden = !menu.hidden;\nbutton.setAttribute('aria-expanded', 'true');" }
+        - {
+            text: "menu.hidden = !menu.hidden;\nmenu.setAttribute('aria-expanded', String(!menu.hidden));",
+          }
+        - { text: "button.setAttribute('aria-expanded', String(menu.hidden));" }
+    tests: { file: snippets/disclosure.test.js }
+    hints:
+      - The attribute says "false" in the HTML. What ever changes it?
+      - The state belongs on the button, and it must flip both ways.
+    explanation: |
+      ARIA doesn't watch the page for you: `aria-expanded` says whatever the script last set.
+      Update it on the button every time the menu opens or closes.
+
+  - id: describe-hint
+    type: fill-blank
+    prompt: Connect the password hint to the field, so screen readers read it after the field's name.
+    code: { lang: html, file: snippets/hint.html }
+    blanks:
+      ref:
+        accept: [pw-hint]
+        label: the id of the hint
+    check:
+      file: snippets/hint.check.html
+      output: At least 12 characters.
+      verify: browser
+    hints:
+      - '`aria-describedby` takes the `id` of the element that holds the text.'
+    explanation: 'Now the field reads as "Password, secure text field. At least 12 characters." The hint stays visible for everyone.'
+
+  - id: first-rule
+    type: choice
+    prompt: You need a toggle button that is either pressed or not, like "Bold" in an editor. Which markup?
+    options:
+      - text: '`<button type="button" aria-pressed="false">Bold</button>`'
+        correct: true
+        why: The native button brings focus, Enter and Space; `aria-pressed` adds the one thing HTML lacks, the pressed state.
+      - text: '`<div role="button" aria-pressed="false">Bold</div>`'
+        why: Without a native button you must add focus and both keys yourself, and the role alone does none of that.
+      - text: '`<span tabindex="0" aria-pressed="false">Bold</span>`'
+        why: A span has no button role, so the pressed state means nothing to assistive technology.
+      - text: '`<input type="checkbox" aria-label="Bold">` styled as a button'
+        why: It works for a form setting, but toolbar toggles are announced as buttons, as people expect.
+    explanation: Start from the native element and add only the ARIA it can't express.
+
+production:
+  - title: The label starts with the visible text
+    body: |
+      When a control has visible text and an `aria-label`, start the label with that text. Voice
+      control users say what they see ("click Buy"), and it has to match the name.
+    code:
+      tabs:
+        - lang: html
+          file: snippets/label-in-name.html
+  - title: Status and alert messages
+    body: '`role="status"` waits for a pause in speech (saved, added to cart); `role="alert"` interrupts, so keep it for errors that need attention now.'
+    code:
+      tabs:
+        - lang: html
+          file: snippets/alert.html
+
+mistake:
+  title: Hiding focusable content with `aria-hidden`
+  body: |
+    `aria-hidden="true"` removes the slide from the accessibility tree, but its link can still
+    be reached with Tab. Keyboard users land on something their screen reader can't describe.
+  bad:
+    tabs:
+      - lang: html
+        file: snippets/hidden.bad.html
+  fix: 'Use `inert`: it hides the content from assistive technology and takes it out of the focus order too.'
+  good:
+    tabs:
+      - lang: html
+        file: snippets/hidden.good.html
+
+recap:
+  - "First rule: use a native element; add ARIA only for what HTML can't say."
+  - '`aria-label` names, `aria-describedby` describes, `aria-expanded` reports state; your script keeps it true.'
+  - '`role="status"` announces changes without moving focus; `inert` hides content from everyone, focus included.'
+
+related: [html.keyboard-focus, html.buttons, css.accessible-styling]
